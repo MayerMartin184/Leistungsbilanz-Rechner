@@ -143,6 +143,10 @@ table.cable tr.active td.hl{color:var(--green);font-weight:600;}
 /* FOOTER */
 footer{margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--border);font-size:11px;color:var(--text3);font-family:var(--mono);line-height:1.8;}
 
+/* SCHEMA */
+.schema-wrap{width:100%;overflow-x:auto;}
+.schema-svg text{font-family:'IBM Plex Mono',monospace;}
+
 /* =====================
    PRINT / PDF STYLES
    ===================== */
@@ -174,6 +178,19 @@ footer{margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--border);fon
   footer{font-size:9px;margin-top:1rem;}
   .full-panel{page-break-before:auto;}
   .detail-grid{grid-template-columns:repeat(3,1fr) !important;}
+  /* schema in print: lighter bg */
+  #leitungsschema_svg svg{background:#f8f8f8 !important;}
+  #leitungsschema_svg svg rect[fill="#16161a"]{fill:#f8f8f8 !important;}
+  #leitungsschema_svg svg rect[fill="#1e1e24"]{fill:#f0f4f8 !important;}
+  #leitungsschema_svg svg rect[fill="#1e3a5f"]{fill:#dce8f8 !important;}
+  #leitungsschema_svg svg rect[fill="#3d2a00"]{fill:#fff3d0 !important;}
+  #leitungsschema_svg svg rect[fill="#1a3a22"]{fill:#d6f0dc !important;}
+  #leitungsschema_svg svg rect[fill="#0d2540"]{fill:#d0e8ff !important;}
+  #leitungsschema_svg svg rect[fill="#0d3324"]{fill:#c8f0e0 !important;}
+  #leitungsschema_svg svg rect[fill="#3d2800"]{fill:#fde8c0 !important;}
+  #leitungsschema_svg svg rect[fill="#271a40"]{fill:#e8dcff !important;}
+  #leitungsschema_svg svg rect[fill="#0d2e2c"]{fill:#c8f0ee !important;}
+  #leitungsschema_svg svg text{fill:#111 !important;}
 }
 /* hide pdf-only header on screen */
 .pdf-only{display:none;}
@@ -467,6 +484,14 @@ footer{margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--border);fon
   </div>
 </div>
 
+<!-- LEITUNGSSCHEMA -->
+<div class="panel full-panel" id="leitungsschema_panel">
+  <div class="panel-header"><div class="panel-icon pi-blue">LS</div><span class="panel-title">Leitungsschema – Netz → HAK → Zählerschrank → Verbraucher</span></div>
+  <div class="panel-body">
+    <div id="leitungsschema_svg" style="width:100%;overflow-x:auto;"></div>
+  </div>
+</div>
+
 <footer>
   Berechnung nach DIN 18015-1:2020 · VDE-AR-N 4100:2019 · DIN VDE 0298-4:2013 · §14a EnWG 2024<br>
   Alle Angaben ohne Gewähr. Verbindliche Auslegung durch zugelassenen Elektrofachplaner / VNB-Abstimmung erforderlich.
@@ -722,6 +747,7 @@ function calc(){
   window._calcState={n_we,p_we,gz_we,p_wp,gz_wp,n_em,p_em,gz_em,p_aufz,gz_aufz,p_sonst,volt,cosPhi,
     we_sum,we_gz,wp_gz,em_sum,em_gz,aufz_gz,allg_sum,allg_gz,sonst_gz,total_sum,total_gz,I_bem,
     azData,recRow};
+  renderSchema();
 }
 
 // ─── ALLGEMEINZÄHLER ANZAHL ──────────────────────────────────────────────────
@@ -852,6 +878,152 @@ function doExcel(){
 
   const fname=`Leistungsbilanz_${(document.getElementById('inp_projekt').value||'Projekt').replace(/[^a-zA-Z0-9äöüÄÖÜ_-]/g,'_')}_${new Date().toISOString().slice(0,10)}.xlsx`;
   XLSX.writeFile(WB, fname);
+}
+
+// ─── LEITUNGSSCHEMA ──────────────────────────────────────────────────────────
+function renderSchema(){
+  const s=window._calcState;
+  if(!s) return;
+  const {n_we,p_we,gz_we,p_wp,gz_wp,n_em,p_em,gz_em,p_aufz,gz_aufz,
+         allg_sum,allg_gz,total_gz,I_bem,recRow,azData,volt,cosPhi}=s;
+  const sqrt3=Math.sqrt(3);
+
+  // Leitungen pro Abschnitt
+  const I_ha = I_bem; // HAK → Zählerschrank (= Bemessungsstrom)
+  const cHA  = recRow||{hak:0,cu:'–',al:'–',iz_cu:0};
+
+  // Leitungen je WE (Unterverteiler)
+  const P_we_bez = p_we*gz_we; // Bemessungsleistung je WE
+  const I_we     = p_we/(sqrt3*(volt/1000)*cosPhi);
+  const cWE      = getCable(I_we);
+
+  // WP Leitung
+  const I_wp = p_wp/(sqrt3*(volt/1000)*cosPhi);
+  const cWP  = getCable(I_wp);
+
+  // eMob Leitung (gesamt zur Ladeverteilung)
+  const I_em = (n_em*p_em*gz_em)/(sqrt3*(volt/1000)*cosPhi);
+  const cEM  = getCable(I_em);
+
+  // Aufzug
+  const I_au = (p_aufz*gz_aufz)/(sqrt3*(volt/1000)*cosPhi);
+  const cAU  = getCable(I_au);
+
+  // Farben
+  const COL={
+    netz:'#1a6aaa', netzFill:'#1e3a5f',
+    hak:'#c47d0e',  hakFill:'#3d2a00',
+    zs:'#2e7d3e',   zsFill:'#1a3a22',
+    we:'#4a9eff',   weFill:'#0d2540',
+    wp:'#3ecf8e',   wpFill:'#0d3324',
+    em:'#f5a623',   emFill:'#3d2800',
+    au:'#9b72e6',   auFill:'#271a40',
+    az:'#2ec4b6',   azFill:'#0d2e2c',
+    line:'#555577',
+    lineHA:'#c47d0e',
+    txt:'#e8e8f0',
+    txt2:'#9898b0',
+    bg:'#16161a',
+    bg2:'#1e1e24',
+  };
+
+  // Layout constants
+  const W=900, BOX_H=54, BOX_W=130, GAP=18;
+  // Rows: Netz(top) → HAK → Zählerschrank → [WE, WP, EM, AU, AZ...]
+  const consumers=[
+    {id:'we', label:'Wohnungen',   sub:`${n_we}×WE`,      detail:`${n_we}× ${(p_we).toFixed(1)} kW`, I:I_we, I_bez:p_we*gz_we*n_we, cable:cWE, col:COL.we, fill:COL.weFill},
+    {id:'wp', label:'Wärmepumpe',  sub:`zentral`,          detail:`${p_wp} kW el.`,   I:I_wp, I_bez:p_wp*gz_wp, cable:cWP, col:COL.wp, fill:COL.wpFill},
+    {id:'em', label:'E-Mobilität', sub:`${n_em} LP`,       detail:`${n_em}× ${p_em} kW`, I:I_em, I_bez:n_em*p_em*gz_em, cable:cEM, col:COL.em, fill:COL.emFill},
+    {id:'au', label:'Aufzug',      sub:`Nennleistung`,     detail:`${p_aufz} kW`,     I:I_au, I_bez:p_aufz*gz_aufz, cable:cAU, col:COL.au, fill:COL.auFill},
+    ...azData.map((az,i)=>{
+      const Iaz=az.pbez/(sqrt3*(volt/1000)*cosPhi);
+      const caz=getCable(Iaz);
+      return{id:'az'+i,label:az.name.length>14?az.name.slice(0,13)+'…':az.name,sub:`Allg. ${i+1}`,detail:`${az.p.toFixed(1)} kW`,I:Iaz,I_bez:az.pbez,cable:caz,col:COL.az,fill:COL.azFill};
+    }),
+  ].filter(c=>c.I_bez>0.01);
+
+  const nCon=consumers.length;
+  const conBoxW=Math.min(BOX_W, Math.floor((W-40)/Math.max(nCon,1))-GAP);
+  const totalConW=nCon*(conBoxW+GAP)-GAP;
+  const conStartX=(W-totalConW)/2;
+
+  const SVG_H=320;
+  // Y positions
+  const Y_NETZ=20, Y_HAK=105, Y_ZS=190, Y_CON=265;
+  const CX=W/2; // center x
+
+  // helper: box
+  const box=(x,y,w,h,fill,stroke,rx=6)=>`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${rx}" fill="${fill}" stroke="${stroke}" stroke-width="1.5"/>`;
+  const txt=(x,y,t,size,fill,weight=400,anchor='middle')=>`<text x="${x}" y="${y}" font-size="${size}" fill="${fill}" font-weight="${weight}" text-anchor="${anchor}" font-family="IBM Plex Mono,monospace">${t}</text>`;
+  const line=(x1,y1,x2,y2,col,w=1.5,dash='')=>`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${col}" stroke-width="${w}" stroke-dasharray="${dash}"/>`;
+  const pill=(x,y,label,bg,tc)=>`<rect x="${x-28}" y="${y-8}" width="56" height="16" rx="8" fill="${bg}"/><text x="${x}" y="${y+4}" font-size="9" fill="${tc}" text-anchor="middle" font-family="IBM Plex Mono,monospace">${label}</text>`;
+
+  let svg=`<svg viewBox="0 0 ${W} ${SVG_H}" width="100%" class="schema-svg" style="max-width:${W}px;display:block;margin:0 auto;" xmlns="http://www.w3.org/2000/svg">
+  <rect width="${W}" height="${SVG_H}" fill="${COL.bg}" rx="8"/>`;
+
+  // ── NETZ ──
+  const NW=140, NH=42, NX=CX-NW/2, NY=Y_NETZ;
+  svg+=box(NX,NY,NW,NH,COL.netzFill,COL.netz,6);
+  svg+=txt(CX,NY+14,'NETZ / VNB',10,COL.netz,600);
+  svg+=txt(CX,NY+28,'400 V · TN-C-S',9,COL.txt2);
+
+  // line Netz→HAK
+  svg+=line(CX,NY+NH,CX,Y_HAK,COL.lineHA,2.5);
+  // label on line
+  svg+=pill(CX,(NY+NH+Y_HAK)/2,`${Math.round(I_bem)} A`,COL.hakFill,COL.hak);
+
+  // ── HAK ──
+  const HW=200, HH=46, HX=CX-HW/2, HY=Y_HAK;
+  svg+=box(HX,HY,HW,HH,COL.hakFill,COL.hak,6);
+  svg+=txt(CX,HY+14,'HAUSANSCHLUSSKASTEN (HAK)',9,COL.hak,600);
+  svg+=txt(CX,HY+27,`NH ${cHA.hak} A · ${cHA.cu}`,9,COL.txt);
+  svg+=txt(CX,HY+39,`I_z = ${cHA.iz_cu} A · Verlegeart A2`,8,COL.txt2);
+
+  // line HAK→ZS
+  svg+=line(CX,HY+HH,CX,Y_ZS,COL.lineHA,2.5);
+  svg+=pill(CX,(HY+HH+Y_ZS)/2,`${Math.round(I_bem)} A`,COL.hakFill,COL.hak);
+
+  // ── ZÄHLERSCHRANK ──
+  const ZW=280, ZH=46, ZX=CX-ZW/2, ZY=Y_ZS;
+  svg+=box(ZX,ZY,ZW,ZH,COL.zsFill,COL.zs,6);
+  svg+=txt(CX,ZY+14,'ZÄHLERSCHRANK',10,COL.zs,600);
+  svg+=txt(CX,ZY+27,`DIN VDE 0603-1 Typ II · ${n_we + azData.length} Zählerstellen`,9,COL.txt);
+  svg+=txt(CX,ZY+39,`${n_we} WE + ${azData.length} Allg. · HAK ${cHA.hak} A`,8,COL.txt2);
+
+  // ── CONSUMER BOXES ──
+  consumers.forEach((c,i)=>{
+    const bx=conStartX+i*(conBoxW+GAP);
+    const by=Y_CON;
+    const bcx=bx+conBoxW/2;
+
+    // line from ZS bottom center to consumer top
+    const zsBottom=ZY+ZH;
+    // vertical from ZS to horizontal bus
+    const busY=Y_CON-16;
+    svg+=line(CX,zsBottom,CX,busY,COL.line,1);
+    // horizontal bus
+    if(i===0||i===nCon-1){
+      svg+=line(conStartX+conBoxW/2,busY, conStartX+(nCon-1)*(conBoxW+GAP)+conBoxW/2, busY, COL.line, 1);
+    }
+    // vertical drop to box
+    svg+=line(bcx,busY,bcx,by,c.col,1.5);
+
+    // cable label on drop
+    const cLabel=c.cable?c.cable.cu:'–';
+    const iLabel=`${Math.round(c.I)} A`;
+    svg+=`<rect x="${bcx-22}" y="${busY+8}" width="44" height="12" rx="3" fill="${c.fill}"/>`;
+    svg+=txt(bcx,busY+17,iLabel,8,c.col,500);
+
+    // box
+    svg+=box(bx,by,conBoxW,BOX_H,c.fill,c.col,5);
+    svg+=txt(bcx,by+13,c.label,8.5,c.col,600);
+    svg+=txt(bcx,by+25,c.sub,8,COL.txt2);
+    svg+=txt(bcx,by+36,cLabel,7.5,COL.txt);
+    svg+=txt(bcx,by+46,c.detail,7,COL.txt2);
+  });
+
+  svg+='</svg>';
+  document.getElementById('leitungsschema_svg').innerHTML=svg;
 }
 
 // ─── INIT ─────────────────────────────────────────────────────────────────────
