@@ -472,7 +472,7 @@ footer{margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--border);fon
 
 <!-- ═══ ZÄHLERANLAGEN MIT LEITUNGSLÄNGEN ═══════════════════════════════════ -->
 <div class="panel full-panel" style="margin-top:1rem;">
-  <div class="panel-header"><div class="panel-icon pi-amber">ZA</div><span class="panel-title">Zähleranlagen – Anzahl · Leitungslängen · Spannungsabfall ΔU (DIN VDE 0100-520)</span></div>
+  <div class="panel-header"><div class="panel-icon pi-amber">ZA</div><span class="panel-title">Zähleranlagen – Zuleitung HAK → Zähler · Spannungsfall ΔU (TAB / DIN VDE 0100-520)</span></div>
   <div class="panel-body">
 
     <!-- ANZAHL ZÄHLERANLAGEN -->
@@ -490,15 +490,24 @@ footer{margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--border);fon
     <!-- DYNAMISCHE ZA-KARTEN -->
     <div id="za_cards_grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem;margin-bottom:1rem;"></div>
 
-    <!-- ΔU ERGEBNIS TABELLE -->
+    <!-- ΔU ERGEBNIS TABELLE: NUR HAK → ZÄHLER -->
     <div class="din-table-wrap" style="margin-bottom:.75rem;">
       <table class="din" id="du_table">
         <thead>
           <tr>
-            <th>ZA</th><th>Bezeichnung</th><th>WE-Zähler</th><th>Wandlerzähler</th><th>WE</th><th>GZ</th>
-            <th>I HAK→ZA</th><th>Länge</th><th>Qs</th>
-            <th>ΔU HAK→ZA <span style="color:var(--amber)">(≤0,5%)</span></th><th>Min-Qs</th>
-            <th>ΔU ZA→WE <span style="color:var(--amber)">(≤1,0%)</span></th><th>ΔU gesamt</th><th>Status</th>
+            <th>ZA</th>
+            <th>Bezeichnung</th>
+            <th>WE-Zähler</th>
+            <th>Wandlerzähler</th>
+            <th>WE</th>
+            <th>GZ</th>
+            <th>Bemess. (kW)</th>
+            <th>I HAK→ZA (A)</th>
+            <th>Länge (m)</th>
+            <th>Qs eingebaut (mm²)</th>
+            <th style="color:var(--amber)">ΔU HAK→ZA (%)</th>
+            <th style="color:var(--accent)">Empf. Normquerschnitt</th>
+            <th>Status (&lt;0,5%)</th>
           </tr>
         </thead>
         <tbody id="du_tbody"></tbody>
@@ -507,7 +516,9 @@ footer{margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--border);fon
     </div>
 
     <div class="note note-amber">
-      ΔU = √3 × I × 2L × ρ / A &nbsp;·&nbsp; <strong>HAK→Zähler max. 0,5 %</strong> (TAB Netzbetreiber) &nbsp;·&nbsp; ZA→WE max. 1,0 % &nbsp;·&nbsp; Gesamt max. 3 % (DIN VDE 0100-520)
+      <strong>Spannungsfall HAK → Zähler:</strong> ΔU = √3 × I × 2L × ρ / U_n &nbsp;·&nbsp;
+      Grenzwert: <strong>&lt; 0,5 %</strong> (TAB Netzbetreiber, vor Zählerschrank) &nbsp;·&nbsp;
+      Querschnittsempfehlung aus Normreihe nach DIN VDE 0298-4
     </div>
   </div>
 </div>
@@ -594,15 +605,26 @@ function minQS(I_A, L_m, rho, volt, limit_pct){
   // A_min = √3 × I × 2L × ρ / (limit/100 × U_n)
   return Math.sqrt(3) * I_A * 2 * L_m * rho / (limit_pct/100 * volt);
 }
-function duClass(pct){
-  if(pct<=1.5)return'du-ok';
-  if(pct<=3.0)return'du-warn';
-  return'du-crit';
+// Nächster Normquerschnitt aus DIN VDE 0298-4 Normreihe
+const NORM_QS=[1.5,2.5,4,6,10,16,25,35,50,70,95,120,150,185,240];
+function normQS(qs_min){
+  return NORM_QS.find(s=>s>qs_min)||'> 240';
 }
 function duLabel(pct){
   if(pct<=1.5)return'✓ OK';
   if(pct<=3.0)return'⚠ Grenzwert';
   return'✗ Überschritten';
+}
+// HAK→ZA strict: grün nur wenn UNTER 0,5% (nicht gleich)
+function hakDuLabel(pct){
+  if(pct<0.5) return'✓ &lt; 0,5 %';
+  if(pct===0.5) return'⚠ = 0,5 %';
+  return'✗ &gt; 0,5 %';
+}
+function hakDuColor(pct){
+  if(pct<0.5) return'#3ecf8e';
+  if(pct<=0.5) return'#f5a623';
+  return'#e05252';
 }
 
 function renderAllgzRows(){
@@ -765,58 +787,79 @@ function calc(){
     {l:'WP §14a',               v:'Steuerbox / SG-Ready nötig'},
   ].map(i=>`<div class="detail-cell"><div class="detail-label">${i.l}</div><div class="detail-val">${i.v}</div></div>`).join('');
 
-  // ── ΔU TABELLE ──────────────────────────────────────────────────────────────
+  // ── ΔU BERECHNUNG (nur HAK→ZA) ──────────────────────────────────────────────
   const duCards=za.map(z=>{
     if(z.nwe===0) return null;
     const gz_za=getGZ(z.nwe);
     const P_za=z.nwe*p_we*gz_za;
     const I_hak=P_za/(sqrt3*(volt/1000)*cosPhi);
     const du_hak=calcDU(I_hak,z.l_hak,rho,z.qs,volt);
-    const qs_min_hak=minQS(I_hak,z.l_hak,rho,volt,0.5);   // TAB: max 0,5% vor Zähler
+    const qs_min_hak=minQS(I_hak,z.l_hak,rho,volt,0.5);  // TAB: strikt <0,5%
+    const norm_qs=normQS(qs_min_hak);
+    // ZA→WE still calculated for schema/export but not shown prominently
     const I_we_za=p_we/(sqrt3*(volt/1000)*cosPhi);
     const du_we=calcDU(I_we_za,z.l_we,rho,z.qs_we,volt);
-    const qs_min_we=minQS(I_we_za,z.l_we,rho,volt,1.0);   // max 1,0% ZA→WE
+    const qs_min_we=minQS(I_we_za,z.l_we,rho,volt,1.0);
     const du_total=du_hak+du_we;
-    return{z,gz_za,P_za,I_hak,du_hak,qs_min_hak,I_we_za,du_we,qs_min_we,du_total};
+    return{z,gz_za,P_za,I_hak,du_hak,qs_min_hak,norm_qs,I_we_za,du_we,qs_min_we,du_total};
   });
 
-  // Wandlerzähler: typ. ab 63A Pflicht — Info in Karte
+  // ── INLINE ZA KARTEN: NUR HAK→ZA ────────────────────────────────────────────
   za.forEach((z,i)=>{
     const el=document.getElementById(`za_result_${i}`);
     if(!el) return;
     const d=duCards[i];
     const wandlerInfo=z.n_wandler>0
-      ? `<div style="margin-top:5px;padding:5px 7px;background:rgba(46,196,182,.08);border:1px solid rgba(46,196,182,.25);border-radius:4px;font-size:10.5px;color:var(--teal);">
-           <strong>${z.n_wandler}× Wandlermessung</strong> · CT ${z.wandler_ct}/5 A<br>
-           <span style="color:var(--text3);">Eichrechtlich zugelassen · DIN EN 62053-22 · Zählerfeld mit CT-Klemmen erforderlich</span>
-         </div>` : '';
+      ?`<div style="margin-top:6px;padding:5px 8px;background:rgba(46,196,182,.08);border:1px solid rgba(46,196,182,.3);border-radius:4px;font-size:10.5px;color:var(--teal);">
+          <strong>${z.n_wandler}× Wandlermessung</strong> · CT ${z.wandler_ct}/5 A · DIN EN 62053-22
+        </div>`:'' ;
     if(!d){el.innerHTML=wandlerInfo;return;}
-    const hc=d.du_hak<0.5?'#3ecf8e':d.du_hak<=0.5?'#f5a623':'#e05252';  // exakt 0,5% = orange
-    const wc=d.du_we<1.0?'#3ecf8e':d.du_we<=1.0?'#f5a623':'#e05252';    // exakt 1,0% = orange
-    const tc=d.du_hak<=0.5&&d.du_we<=1.0&&d.du_total<=1.5?'#3ecf8e':d.du_total<=3?'#f5a623':'#e05252';
+    const hc=hakDuColor(d.du_hak);
+    const hlbl=hakDuLabel(d.du_hak);
+    const normOk=typeof d.norm_qs==='number'&&d.z.qs>=d.norm_qs;
     el.innerHTML=`
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:3px;font-size:11px;margin-top:4px;">
-        <div style="color:var(--text2);">I HAK→ZA</div><div style="font-family:var(--mono);text-align:right;">${r0(d.I_hak)} A</div>
-        <div style="color:var(--text2);">ΔU HAK→ZA <span style="color:var(--text3);font-size:9px;">(≤0,5%)</span></div><div style="font-family:var(--mono);text-align:right;color:${hc};font-weight:600;">${r2(d.du_hak)} %</div>
-        <div style="color:var(--text2);">Min-Qs HAK→ZA</div><div style="font-family:var(--mono);text-align:right;color:var(--accent);">${r2(d.qs_min_hak)} mm²</div>
-        <div style="color:var(--text2);">ΔU ZA→WE <span style="color:var(--text3);font-size:9px;">(≤1,0%)</span></div><div style="font-family:var(--mono);text-align:right;color:${wc};font-weight:600;">${r2(d.du_we)} %</div>
-        <div style="color:var(--text2);">Min-Qs ZA→WE</div><div style="font-family:var(--mono);text-align:right;color:var(--accent);">${r2(d.qs_min_we)} mm²</div>
-        <div style="font-weight:600;color:var(--text);padding-top:3px;border-top:1px solid var(--border);">ΔU gesamt</div>
-        <div style="font-family:var(--mono);text-align:right;color:${tc};font-weight:700;padding-top:3px;border-top:1px solid var(--border);">${r2(d.du_total)} %</div>
-      </div>
-      <div style="background:var(--bg);border-radius:3px;height:6px;overflow:hidden;margin-top:5px;">
-        <div style="height:100%;width:${Math.min(100,d.du_total/3*100).toFixed(0)}%;background:${tc};border-radius:3px;"></div>
+      <div style="border-top:1px solid var(--border);padding-top:6px;margin-top:4px;">
+        <div style="font-family:var(--mono);font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px;">ΔU HAK → Zähler</div>
+        <div style="display:grid;grid-template-columns:1fr auto;gap:3px 8px;font-size:11px;">
+          <span style="color:var(--text2);">Strom I HAK→ZA</span>
+          <span style="font-family:var(--mono);text-align:right;font-weight:600;">${r0(d.I_hak)} A</span>
+          <span style="color:var(--text2);">Bemessungsleistung</span>
+          <span style="font-family:var(--mono);text-align:right;">${r0(d.P_za)} kW</span>
+          <span style="color:var(--text2);">ΔU HAK→ZA <span style="font-size:9px;">(< 0,5 %)</span></span>
+          <span style="font-family:var(--mono);text-align:right;color:${hc};font-weight:700;font-size:12px;">${r2(d.du_hak)} %</span>
+          <span style="color:var(--text2);">Status</span>
+          <span style="font-family:var(--mono);text-align:right;color:${hc};font-weight:600;" title="Grenzwert: strikt < 0,5 %">${hlbl}</span>
+        </div>
+        <div style="background:var(--bg);border-radius:4px;height:7px;overflow:hidden;margin:6px 0 4px;position:relative;">
+          <div style="height:100%;width:${Math.min(100,(d.du_hak/0.5*80)).toFixed(0)}%;background:${hc};border-radius:4px;min-width:2px;"></div>
+          <div style="position:absolute;left:80%;top:0;height:100%;width:1.5px;background:var(--text3);"></div>
+        </div>
+        <div style="font-size:9px;color:var(--text3);text-align:right;margin-bottom:6px;">80 % = 0,4 % · Limit = 0,5 %</div>
+
+        <div style="border-top:1px solid var(--border);padding-top:5px;">
+          <div style="font-family:var(--mono);font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;">Querschnittsempfehlung</div>
+          <div style="display:grid;grid-template-columns:1fr auto;gap:3px 8px;font-size:11px;">
+            <span style="color:var(--text2);">Min. Qs (< 0,5 %)</span>
+            <span style="font-family:var(--mono);text-align:right;color:var(--accent);">${r2(d.qs_min_hak)} mm²</span>
+            <span style="color:var(--text2);font-weight:600;">Empf. Normquerschnitt</span>
+            <span style="font-family:var(--mono);text-align:right;font-weight:700;font-size:13px;color:${normOk?'#3ecf8e':'#f5a623'};">${d.norm_qs} mm²</span>
+            <span style="color:var(--text2);">Eingebaut</span>
+            <span style="font-family:var(--mono);text-align:right;color:${normOk?'#3ecf8e':'#f5a623'};">${z.qs} mm² ${normOk?'✓':'→ erhöhen?'}</span>
+          </div>
+        </div>
       </div>
       ${wandlerInfo}`;
   });
 
-  const duColor=p=>p<0.5?'#3ecf8e':p<=0.5?'#f5a623':'#e05252';   // HAK→ZA: <0,5% grün, =0,5% orange, >0,5% rot
-  const duColorWE=p=>p<1.0?'#3ecf8e':p<=1.0?'#f5a623':'#e05252'; // ZA→WE: <1,0% grün, =1,0% orange, >1,0% rot
+  const duColor=p=>hakDuColor(p);
   document.getElementById('du_tbody').innerHTML=duCards.map((d,i)=>{
-    if(!d) return`<tr><td style="font-weight:600;color:var(--text3);">ZA ${za[i].id}</td><td style="color:var(--text3);">${za[i].name}</td><td>${za[i].n_we_zaehler}</td><td style="color:var(--teal);">${za[i].n_wandler>0?za[i].n_wandler+'× CT '+za[i].wandler_ct+'/5A':'–'}</td><td colspan="10" style="color:var(--text3);">0 WE – nicht berücksichtigt</td></tr>`;
-    const hc=duColor(d.du_hak), wc=duColorWE(d.du_we);
-    const tc=d.du_hak<=0.5&&d.du_we<=1.0&&d.du_total<=1.5?'#3ecf8e':d.du_total<=3?'#f5a623':'#e05252';
+    if(!d){
+      const z=za[i];
+      return`<tr><td style="font-weight:600;color:var(--text3);">ZA ${z.id}</td><td style="color:var(--text3);">${z.name}</td><td>${z.n_we_zaehler}</td><td style="color:var(--teal);">${z.n_wandler>0?z.n_wandler+'× CT '+z.wandler_ct+'/5A':'–'}</td><td colspan="9" style="color:var(--text3);">0 WE – nicht berücksichtigt</td></tr>`;
+    }
+    const hc=hakDuColor(d.du_hak);
     const wandlerTxt=d.z.n_wandler>0?`${d.z.n_wandler}× CT ${d.z.wandler_ct}/5A`:'–';
+    const normOk=typeof d.norm_qs==='number'&&d.z.qs>=d.norm_qs;
     return`<tr>
       <td style="font-weight:600;color:var(--accent);">ZA ${d.z.id}</td>
       <td>${d.z.name}</td>
@@ -824,14 +867,13 @@ function calc(){
       <td style="color:var(--teal);">${wandlerTxt}</td>
       <td>${d.z.nwe}</td>
       <td>${d.gz_za.toFixed(2)}</td>
-      <td>${r0(d.I_hak)} A</td>
+      <td style="font-weight:500;">${r0(d.P_za)} kW</td>
+      <td style="font-weight:500;">${r0(d.I_hak)} A</td>
       <td>${d.z.l_hak} m</td>
       <td>${d.z.qs} mm²</td>
-      <td style="color:${hc};font-weight:600;">${r2(d.du_hak)} %</td>
-      <td style="color:var(--accent);">${r2(d.qs_min_hak)} mm²</td>
-      <td style="color:${wc};font-weight:600;">${r2(d.du_we)} %</td>
-      <td style="color:${tc};font-weight:700;font-size:12px;">${r2(d.du_total)} %</td>
-      <td style="color:${tc};">${duLabel(d.du_hak<=0.5&&d.du_we<=1.0&&d.du_total<=1.5?0:d.du_total)}</td>
+      <td style="color:${hc};font-weight:700;font-size:12px;">${r2(d.du_hak)} %</td>
+      <td style="color:${normOk?'#3ecf8e':'#f5a623'};font-weight:700;">${d.norm_qs} mm²</td>
+      <td style="color:${hc};font-weight:600;">${hakDuLabel(d.du_hak)}</td>
     </tr>`;
   }).join('');
 
@@ -843,7 +885,7 @@ function calc(){
     <td style="font-weight:600;">${totalWEZaehler} WE-Zähler</td>
     <td style="color:var(--teal);font-weight:600;">${totalWandler} Wandlerzähler</td>
     <td style="font-weight:600;">${za.reduce((s,z)=>s+z.nwe,0)} WE</td>
-    <td colspan="9"></td>
+    <td colspan="8"></td>
   </tr>`;
 
   // LEITUNGSSCHEMA
