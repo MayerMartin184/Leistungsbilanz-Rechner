@@ -182,7 +182,27 @@ footer{margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--border);fon
   /* ZA Karten */
   .za-dyn-card{background:#f8f8f8!important;}
   footer{font-size:9px;margin-top:1rem;}
-  /* Schema wird als eigenes SVG mit Print-Farben neu gerendert */
+  /* Ergebnis-KPI Karten farbig hinterlegen */
+  .kpi:nth-child(1){background:#fdf3e0!important;border-color:#c8960a!important;}
+  .kpi:nth-child(2){background:#e8f0fb!important;border-color:#1a5fb4!important;}
+  .kpi:nth-child(3){background:#e6f4ed!important;border-color:#2d7a4f!important;}
+  /* Hausanschluss-Empfehlung Zeilen abwechselnd */
+  .ab-row:nth-child(odd){background:#f8f8f8;}
+  .ab-row:nth-child(even){background:#ffffff;}
+  /* ΔU Tabelle: HAK→ZA Spalte leicht gelb, ΔU gesamt leicht grün/orange/rot */
+  #du_table thead th{background:#e8e8e8!important;color:#111!important;}
+  /* Zählerschrank-Detail Zellen */
+  .detail-cell{background:#f4f8ff!important;border-left:3px solid #1a5fb4!important;}
+  /* ZA Karten im Print: farbige obere Border je ZA */
+  .za-dyn-card:nth-child(1){border-top:3px solid #1a5fb4!important;}
+  .za-dyn-card:nth-child(2){border-top:3px solid #2d7a4f!important;}
+  .za-dyn-card:nth-child(3){border-top:3px solid #7a5000!important;}
+  .za-dyn-card:nth-child(4){border-top:3px solid #5a3a9a!important;}
+  .za-dyn-card:nth-child(5){border-top:3px solid #1a6a65!important;}
+  .za-dyn-card:nth-child(6){border-top:3px solid #a00!important;}
+  /* Inline ZA-Ergebnis Boxen */
+  [id^="za_result_"]{background:#f4f8ff!important;border-radius:4px;padding:4px!important;}
+  /* Panel-Körper leicht gefärbt für Hauptgruppen */
   #leitungsschema_svg{margin-top:4px;}
 }
 .pdf-only{display:none;}
@@ -289,7 +309,8 @@ footer{margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--border);fon
         </select>
         <span class="unit-label"></span>
       </div>
-      <div class="note note-green">§14a EnWG: Pflicht zur steuerbaren Einrichtung bei Neuinstallation ab 4,2 kW.</div>
+      <div class="note note-green">§14a EnWG: Pflicht zur steuerbaren Einrichtung bei Neuinstallation ab 4,2 kW.<br>
+      <span style="font-family:var(--mono);font-size:10px;">Typischer Zuleitungsquerschnitt WP: 6–16 mm² Cu (je nach Länge und P_el)</span></div>
     </div>
   </div>
 
@@ -317,7 +338,8 @@ footer{margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--border);fon
         </select>
         <span class="unit-label"></span>
       </div>
-      <div class="note note-amber">Ab 6 LP gesetzlich Pflicht: §14a EnWG 2024.</div>
+      <div class="note note-amber">Ab 6 LP gesetzlich Pflicht: §14a EnWG 2024.<br>
+      <span style="font-family:var(--mono);font-size:10px;">Typischer Zuleitungsquerschnitt je LP: 2,5 mm² (11 kW/16 A) · 6 mm² (22 kW/32 A)</span></div>
     </div>
   </div>
 
@@ -769,9 +791,9 @@ function calc(){
            <span style="color:var(--text3);">Eichrechtlich zugelassen · DIN EN 62053-22 · Zählerfeld mit CT-Klemmen erforderlich</span>
          </div>` : '';
     if(!d){el.innerHTML=wandlerInfo;return;}
-    const hc=d.du_hak<=0.5?'#3ecf8e':d.du_hak<=1?'#f5a623':'#e05252';
-    const wc=d.du_we<=1.0?'#3ecf8e':d.du_we<=2?'#f5a623':'#e05252';
-    const tc=d.du_total<=3?( d.du_hak<=0.5&&d.du_we<=1.0?'#3ecf8e':'#f5a623'):'#e05252';
+    const hc=d.du_hak<0.5?'#3ecf8e':d.du_hak<=0.5?'#f5a623':'#e05252';  // exakt 0,5% = orange
+    const wc=d.du_we<1.0?'#3ecf8e':d.du_we<=1.0?'#f5a623':'#e05252';    // exakt 1,0% = orange
+    const tc=d.du_hak<=0.5&&d.du_we<=1.0&&d.du_total<=1.5?'#3ecf8e':d.du_total<=3?'#f5a623':'#e05252';
     el.innerHTML=`
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:3px;font-size:11px;margin-top:4px;">
         <div style="color:var(--text2);">I HAK→ZA</div><div style="font-family:var(--mono);text-align:right;">${r0(d.I_hak)} A</div>
@@ -788,12 +810,12 @@ function calc(){
       ${wandlerInfo}`;
   });
 
-  const duColor=p=>p<=0.5?'#3ecf8e':p<=1?'#f5a623':'#e05252'; // HAK→ZA limit 0.5%
-  const duColorWE=p=>p<=1.0?'#3ecf8e':p<=2?'#f5a623':'#e05252'; // ZA→WE limit 1.0%
+  const duColor=p=>p<0.5?'#3ecf8e':p<=0.5?'#f5a623':'#e05252';   // HAK→ZA: <0,5% grün, =0,5% orange, >0,5% rot
+  const duColorWE=p=>p<1.0?'#3ecf8e':p<=1.0?'#f5a623':'#e05252'; // ZA→WE: <1,0% grün, =1,0% orange, >1,0% rot
   document.getElementById('du_tbody').innerHTML=duCards.map((d,i)=>{
     if(!d) return`<tr><td style="font-weight:600;color:var(--text3);">ZA ${za[i].id}</td><td style="color:var(--text3);">${za[i].name}</td><td>${za[i].n_we_zaehler}</td><td style="color:var(--teal);">${za[i].n_wandler>0?za[i].n_wandler+'× CT '+za[i].wandler_ct+'/5A':'–'}</td><td colspan="10" style="color:var(--text3);">0 WE – nicht berücksichtigt</td></tr>`;
     const hc=duColor(d.du_hak), wc=duColorWE(d.du_we);
-    const tc=d.du_hak<=0.5&&d.du_we<=1.0?'#3ecf8e':d.du_total<=3?'#f5a623':'#e05252';
+    const tc=d.du_hak<=0.5&&d.du_we<=1.0&&d.du_total<=1.5?'#3ecf8e':d.du_total<=3?'#f5a623':'#e05252';
     const wandlerTxt=d.z.n_wandler>0?`${d.z.n_wandler}× CT ${d.z.wandler_ct}/5A`:'–';
     return`<tr>
       <td style="font-weight:600;color:var(--accent);">ZA ${d.z.id}</td>
@@ -809,7 +831,7 @@ function calc(){
       <td style="color:var(--accent);">${r2(d.qs_min_hak)} mm²</td>
       <td style="color:${wc};font-weight:600;">${r2(d.du_we)} %</td>
       <td style="color:${tc};font-weight:700;font-size:12px;">${r2(d.du_total)} %</td>
-      <td style="color:${tc};">${duLabel(d.du_hak<=0.5&&d.du_we<=1.0?0:d.du_total)}</td>
+      <td style="color:${tc};">${duLabel(d.du_hak<=0.5&&d.du_we<=1.0&&d.du_total<=1.5?0:d.du_total)}</td>
     </tr>`;
   }).join('');
 
@@ -838,82 +860,129 @@ function renderSchema(s){
   const cHA=recRow||{hak:0,cu:'–',al:'–',iz_cu:0};
 
   const P={
-    bg:      isPrint?'#ffffff':'#0f0f11',
-    bgNetz:  isPrint?'#e8f0fb':'#1e3a5f',
-    bgHAK:   isPrint?'#fff8e8':'#3d2800',
-    bgWE:    isPrint?'#ede8ff':'#271a40',
-    cNetz:   isPrint?'#1a5fb4':'#4a9eff',
-    cHAK:    isPrint?'#7a5000':'#f5a623',
-    cBus:    isPrint?'#999':'#555577',
-    cWE:     isPrint?'#5a3a9a':'#9b72e6',
-    txtMain: isPrint?'#111':'#e8e8f0',
-    txtSub:  isPrint?'#444':'#9898b0',
-    txtMute: isPrint?'#777':'#6a6a88',
+    bg:     isPrint?'#fff':'#0f0f11',
+    bgNetz: isPrint?'#e8f0fb':'#1e3a5f',
+    bgHAK:  isPrint?'#fff8e8':'#3d2800',
+    bgWE:   isPrint?'#ede8ff':'#271a40',
+    cNetz:  isPrint?'#1a5fb4':'#4a9eff',
+    cHAK:   isPrint?'#7a5000':'#f5a623',
+    cBus:   isPrint?'#aaa':'#555577',
+    cWE:    isPrint?'#5a3a9a':'#9b72e6',
+    txMain: isPrint?'#111':'#e8e8f0',
+    txSub:  isPrint?'#555':'#9898b0',
+    txMute: isPrint?'#888':'#6a6a88',
     ZCOL:  isPrint?['#1a5fb4','#2d7a4f','#7a5000','#5a3a9a','#1a6a65','#a00']:['#4a9eff','#3ecf8e','#f5a623','#9b72e6','#2ec4b6','#e05252'],
     ZFILL: isPrint?['#e8f0fb','#e6f4ed','#fdf3e0','#ede8ff','#e0f4f2','#fde8e8']:['#0d2540','#0d3324','#3d2800','#271a40','#0d2e2c','#3a0d0d'],
   };
-  const duOk=isPrint?'#2d7a4f':'#3ecf8e';
+  const duOk  =isPrint?'#2d7a4f':'#3ecf8e';
   const duWarn=isPrint?'#7a5000':'#f5a623';
   const duCrit=isPrint?'#a00':'#e05252';
-  const duCol=p=>p<=0.5?duOk:p<=1?duWarn:duCrit;
+  const duC=p=>p<0.5?duOk:p<=0.5?duWarn:duCrit;
+  const duCwe=p=>p<1.0?duOk:p<=1.0?duWarn:duCrit;
 
-  const W=900,zaCount=za.length;
-  const NY=12,NH=34,HY=68,HH=42,BY=HY+HH+20;
-  const ZY=BY+28,ZH=50,WY=ZY+ZH+34,WH=34,H=WY+WH+14;
-  const CX=W/2;
-  const ZAW=Math.min(158,Math.floor((W-60)/zaCount)-14);
-  const ZAG=ZAW+14,ZX0=(W-(zaCount*ZAG-14))/2;
+  const zaCount=za.length;
+  // Adaptive width: wider for few ZA, narrower for many
+  const ZAW=Math.min(170,Math.max(120,Math.floor(880/zaCount)-20));
+  const ZAG=ZAW+20;
+  const W=Math.max(860, zaCount*ZAG+40);
+  const ZX0=Math.round((W-zaCount*ZAG+20)/2);
+  const CX=Math.round(W/2);
 
-  const box=(x,y,w,h,f,s2,rx=4,sw=1.5)=>`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${rx}" fill="${f}" stroke="${s2}" stroke-width="${sw}"/>`;
-  const tx=(x,y,s2,sz,f,fw=400,a='middle')=>`<text x="${x}" y="${y}" font-size="${sz}" fill="${f}" font-weight="${fw}" text-anchor="${a}" font-family="IBM Plex Mono,monospace">${s2}</text>`;
-  const vl=(x,y1,y2,c,sw=1.5)=>`<line x1="${x}" y1="${y1}" x2="${x}" y2="${y2}" stroke="${c}" stroke-width="${sw}"/>`;
-  const hl=(x1,x2,y,c,sw=1.5)=>`<line x1="${x1}" y1="${y}" x2="${x2}" y2="${y}" stroke="${c}" stroke-width="${sw}"/>`;
-  const lbl=(x,y,t,bg,tc,w=56)=>`<rect x="${x-w/2}" y="${y-9}" width="${w}" height="17" rx="8" fill="${bg}" stroke="${tc}" stroke-width="0.5"/>`+tx(x,y+4,t,8,tc,600);
+  // Row Y positions — generous spacing so labels don't overlap
+  const NY=14, NH=40;          // NETZ box
+  const VN=NY+NH;              // netz bottom
+  const LH=VN+14;              // strom-label center on NETZ→HAK line
+  const HY=LH+20, HH=46;      // HAK box
+  const BY=HY+HH+18;          // bus Y
+  // Bus→ZA line: enough room for 2 labels (strom + ΔU) stacked
+  const LABEL_H=44;            // height needed for 2 labels
+  const ZY=BY+LABEL_H+12;     // ZA box top
+  const ZH=54;
+  // ZA→WE line: room for 1 label
+  const WY=ZY+ZH+36;
+  const WH=38;
+  const H=WY+WH+16;
 
-  let svg=`<svg viewBox="0 0 ${W} ${H}" width="100%" xmlns="http://www.w3.org/2000/svg" style="max-width:${W}px;display:block;margin:0 auto;border-radius:6px;">`+
-    `<rect width="${W}" height="${H}" fill="${P.bg}" rx="6"/>`;
+  const bx=(x,y,w,h,f,s2,rx=5,sw=1.5)=>
+    `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${rx}" fill="${f}" stroke="${s2}" stroke-width="${sw}"/>`;
+  const tx=(x,y,str,sz,f,fw=400,a='middle')=>
+    `<text x="${x}" y="${y}" font-size="${sz}" fill="${f}" font-weight="${fw}" text-anchor="${a}" font-family="IBM Plex Mono,monospace">${str}</text>`;
+  const vl=(x,y1,y2,c,sw=1.5)=>
+    `<line x1="${x}" y1="${y1}" x2="${x}" y2="${y2}" stroke="${c}" stroke-width="${sw}"/>`;
+  const hl=(x1,x2,y,c,sw=1.5)=>
+    `<line x1="${x1}" y1="${y}" x2="${x2}" y2="${y}" stroke="${c}" stroke-width="${sw}"/>`;
+  // Pill label: centered at (x,y)
+  const pill=(x,y,str,bg,tc,pw=60)=>
+    `<rect x="${x-pw/2}" y="${y-10}" width="${pw}" height="20" rx="10" fill="${bg}" stroke="${tc}" stroke-width="1"/>` +
+    tx(x,y+4,str,8.5,tc,700);
 
-  // NETZ
-  svg+=box(CX-65,NY,130,NH,P.bgNetz,P.cNetz);
-  svg+=tx(CX,NY+14,'NETZ / VNB',10,P.cNetz,600);
-  svg+=tx(CX,NY+26,'400 V · TN-C-S',8,P.txtSub);
-  // NETZ→HAK
-  svg+=vl(CX,NY+NH,HY,P.cHAK,2);
-  svg+=lbl(CX,NY+NH+11,r0(I_bem)+' A',P.bgHAK,P.cHAK,58);
-  // HAK
-  svg+=box(CX-120,HY,240,HH,P.bgHAK,P.cHAK);
-  svg+=tx(CX,HY+14,'HAUSANSCHLUSSKASTEN (HAK)',9,P.cHAK,600);
-  svg+=tx(CX,HY+26,`NH ${cHA.hak} A  ·  ${cHA.cu}`,8,P.txtMain);
-  svg+=tx(CX,HY+37,`I_z ${cHA.iz_cu} A  ·  Verlegeart A2`,7,P.txtMute);
-  // HAK→Bus
-  svg+=vl(CX,HY+HH,BY,P.cBus,1);
-  // Busschiene
-  if(zaCount>1) svg+=hl(ZX0+ZAW/2,ZX0+(zaCount-1)*ZAG+ZAW/2,BY,P.cBus,2);
+  let svg=`<svg viewBox="0 0 ${W} ${H}" width="100%" xmlns="http://www.w3.org/2000/svg" `+
+    `style="max-width:${W}px;display:block;margin:0 auto;border-radius:8px;">` +
+    `<rect width="${W}" height="${H}" fill="${P.bg}" rx="8"/>`;
 
+  // ── NETZ ──
+  svg+=bx(CX-75,NY,150,NH,P.bgNetz,P.cNetz,6);
+  svg+=tx(CX,NY+16,'NETZ / VNB',11,P.cNetz,700);
+  svg+=tx(CX,NY+30,'400 V · TN-C-S',8.5,P.txSub);
+
+  // NETZ→HAK vertical line
+  svg+=vl(CX,VN,HY,P.cHAK,2);
+  // Strom-pill centered on the line
+  svg+=pill(CX,LH+7,r0(I_bem)+' A',P.bgHAK,P.cHAK,62);
+
+  // ── HAK ──
+  svg+=bx(CX-130,HY,260,HH,P.bgHAK,P.cHAK,6);
+  svg+=tx(CX,HY+16,'HAUSANSCHLUSSKASTEN (HAK)',9.5,P.cHAK,700);
+  svg+=tx(CX,HY+29,`NH ${cHA.hak} A  ·  ${cHA.cu}`,8.5,P.txMain);
+  svg+=tx(CX,HY+41,`I_z ${cHA.iz_cu} A  ·  Verlegeart A2`,7.5,P.txMute);
+
+  // HAK→Busschiene
+  svg+=vl(CX,HY+HH,BY,P.cBus,1.5);
+  if(zaCount>1){
+    svg+=hl(ZX0+ZAW/2,ZX0+(zaCount-1)*ZAG+ZAW/2,BY,P.cBus,2);
+  }
+
+  // ── ZA Boxen ──
   za.forEach((z,i)=>{
-    const col=P.ZCOL[i%6],fill=P.ZFILL[i%6];
-    const zx=ZX0+i*ZAG,zcx=zx+ZAW/2;
+    const col=P.ZCOL[i%6], fill=P.ZFILL[i%6];
+    const zx=ZX0+i*ZAG, zcx=zx+ZAW/2;
     const d=duCards[i];
-    // Bus→ZA senkrecht
-    svg+=vl(zcx,BY,ZY,col,1.5);
+
+    // Bus → ZA: vertical line, then 2 labels stacked with enough gap
+    svg+=vl(zcx,BY,ZY,col,2);
     if(d){
-      svg+=lbl(zcx,BY+11,r0(d.I_hak)+' A',fill,col,54);
-      svg+=lbl(zcx,BY+25,'ΔU '+r2(d.du_hak)+'%',fill,duCol(d.du_hak),60);
+      // Strom-label at 1/3 of the line
+      const l1y=BY+Math.round(LABEL_H*0.28);
+      // ΔU HAK→ZA label at 2/3
+      const l2y=BY+Math.round(LABEL_H*0.72);
+      svg+=pill(zcx,l1y,r0(d.I_hak)+' A',fill,col,60);
+      svg+=pill(zcx,l2y,'ΔU '+r2(d.du_hak)+'%',fill,duC(d.du_hak),66);
     }
+
     // ZA Box
-    svg+=box(zx,ZY,ZAW,ZH,fill,col);
-    svg+=tx(zcx,ZY+13,`ZÄHLERANLAGE ${z.id}`,8.5,col,600);
-    svg+=tx(zcx,ZY+24,(z.name||'ZA '+z.id).slice(0,Math.floor(ZAW/5.5)),7.5,P.txtMain);
-    const zStr=z.n_wandler>0?`${z.n_we_zaehler} WE + ${z.n_wandler}× CT`:`${z.n_we_zaehler||z.n_zaehler||'–'} Zähler`;
-    svg+=tx(zcx,ZY+34,zStr,7,P.txtSub);
-    if(d){const tc2=d.du_total<=1.5?duOk:d.du_total<=3?duWarn:duCrit;svg+=tx(zcx,ZY+44,`ΔU ges. ${r2(d.du_total)}%`,7,tc2);}
-    // ZA→WE senkrecht
+    svg+=bx(zx,ZY,ZAW,ZH,fill,col,6);
+    svg+=tx(zcx,ZY+15,`ZÄHLERANLAGE ${z.id}`,9,col,700);
+    const nameStr=(z.name||'ZA '+z.id).slice(0,Math.floor(ZAW/6));
+    svg+=tx(zcx,ZY+27,nameStr,8,P.txMain);
+    const zStr=z.n_wandler>0
+      ?`${z.n_we_zaehler} WE-Zähler + ${z.n_wandler}× CT`
+      :`${z.n_we_zaehler||z.n_zaehler||'–'} Zähler  ·  ${z.nwe} WE`;
+    svg+=tx(zcx,ZY+38,zStr,7.5,P.txSub);
+    if(d){
+      const tc2=d.du_total<=1.5?duOk:d.du_total<=3?duWarn:duCrit;
+      svg+=tx(zcx,ZY+50,`ΔU gesamt ${r2(d.du_total)} %`,7.5,tc2,600);
+    }
+
+    // ZA → WE
     if(z.nwe>0){
-      svg+=vl(zcx,ZY+ZH,WY,P.cWE,1.2);
-      if(d) svg+=lbl(zcx,ZY+ZH+11,'ΔU '+r2(d.du_we)+'%',P.bgWE,duCol(d.du_we),56);
-      svg+=box(zx,WY,ZAW,WH,P.bgWE,P.cWE,4,1.2);
-      svg+=tx(zcx,WY+13,`WE (${z.nwe}× ${p_we} kW)`,8,P.cWE,600);
-      svg+=tx(zcx,WY+24,`${z.l_we} m · ${z.qs_we} mm²`,7,P.txtSub);
+      svg+=vl(zcx,ZY+ZH,WY,P.cWE,1.5);
+      if(d){
+        const wedc=duCwe(d.du_we);
+        svg+=pill(zcx,ZY+ZH+18,'ΔU '+r2(d.du_we)+'%',P.bgWE,wedc,62);
+      }
+      svg+=bx(zx,WY,ZAW,WH,P.bgWE,P.cWE,5,1.5);
+      svg+=tx(zcx,WY+15,`WE (${z.nwe}× ${p_we} kW)`,8.5,P.cWE,700);
+      svg+=tx(zcx,WY+27,`${z.l_we} m · ${z.qs_we} mm²`,7.5,P.txSub);
     }
   });
 
@@ -926,12 +995,12 @@ window.addEventListener('afterprint', ()=>{window._isPrint=false;const s=window.
 
 // ── ZA KARTEN DYNAMISCH RENDERN ───────────────────────────────────────────────
 const ZA_DEFAULTS=[
-  {name:'EG / Treppenhaus',   nwe:6, n_we_zaehler:6, n_wandler:0, wandler_ct:100, l_hak:10, qs:70, l_we:15, qs_we:10},
-  {name:'OG / Dachgeschoss',  nwe:6, n_we_zaehler:6, n_wandler:0, wandler_ct:100, l_hak:25, qs:70, l_we:20, qs_we:10},
-  {name:'Seitentrakt A',      nwe:4, n_we_zaehler:4, n_wandler:1, wandler_ct:100, l_hak:35, qs:50, l_we:18, qs_we:10},
-  {name:'Seitentrakt B',      nwe:4, n_we_zaehler:4, n_wandler:1, wandler_ct:100, l_hak:40, qs:50, l_we:18, qs_we:10},
-  {name:'Anbau West',         nwe:3, n_we_zaehler:3, n_wandler:1, wandler_ct:150, l_hak:50, qs:35, l_we:22, qs_we:10},
-  {name:'Anbau Ost',          nwe:3, n_we_zaehler:3, n_wandler:1, wandler_ct:150, l_hak:55, qs:35, l_we:22, qs_we:10},
+  {name:'EG / Treppenhaus',   nwe:6, n_we_zaehler:6, n_wandler:0, wandler_ct:100, l_hak:10, qs:70, l_we:15, qs_we:16},
+  {name:'OG / Dachgeschoss',  nwe:6, n_we_zaehler:6, n_wandler:0, wandler_ct:100, l_hak:25, qs:70, l_we:20, qs_we:16},
+  {name:'Seitentrakt A',      nwe:4, n_we_zaehler:4, n_wandler:1, wandler_ct:100, l_hak:35, qs:50, l_we:18, qs_we:16},
+  {name:'Seitentrakt B',      nwe:4, n_we_zaehler:4, n_wandler:1, wandler_ct:100, l_hak:40, qs:50, l_we:18, qs_we:16},
+  {name:'Anbau West',         nwe:3, n_we_zaehler:3, n_wandler:1, wandler_ct:150, l_hak:50, qs:35, l_we:22, qs_we:16},
+  {name:'Anbau Ost',          nwe:3, n_we_zaehler:3, n_wandler:1, wandler_ct:150, l_hak:55, qs:35, l_we:22, qs_we:16},
 ];
 const ZCOLS_CSS=['rgba(74,158,255,.3)','rgba(62,207,142,.3)','rgba(245,166,35,.3)','rgba(155,114,230,.3)','rgba(46,196,182,.3)','rgba(224,82,82,.3)'];
 const ZCOLS_TXT=['var(--accent)','var(--green)','var(--amber)','var(--purple)','var(--teal)','var(--red)'];
@@ -954,7 +1023,7 @@ function readZACards(){
       l_hak:g('l_hak'),
       qs:g('qs')||70,
       l_we:g('l_we'),
-      qs_we:g('qs_we')||10,
+      qs_we:g('qs_we')||16,
     };
   });
 }
@@ -965,7 +1034,7 @@ function renderZACards(){
   const existing=readZACards();
   grid.innerHTML='';
   for(let i=0;i<n;i++){
-    const def=ZA_DEFAULTS[i]||{name:'Zähleranlage '+(i+1),nwe:4,n_we_zaehler:4,n_wandler:0,wandler_ct:100,l_hak:20,qs:70,l_we:20,qs_we:10};
+    const def=ZA_DEFAULTS[i]||{name:'Zähleranlage '+(i+1),nwe:4,n_we_zaehler:4,n_wandler:0,wandler_ct:100,l_hak:20,qs:70,l_we:20,qs_we:16};
     const prev=existing[i]||{};
     const v=k=>(prev[k]!==undefined&&prev[k]!==''&&prev[k]!==0)?prev[k]:def[k];
     const vz=k=>(prev[k]!==undefined&&prev[k]!=='')?prev[k]:def[k]; // allow 0
