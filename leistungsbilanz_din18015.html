@@ -426,40 +426,42 @@ footer{margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--border);fon
 
 <!-- ═══ ZÄHLERANLAGEN MIT LEITUNGSLÄNGEN ═══════════════════════════════════ -->
 <div class="panel full-panel" style="margin-top:1rem;">
-  <div class="panel-header"><div class="panel-icon pi-amber">ZA</div><span class="panel-title">Zähleranlagen – Leitungslängen & Spannungsabfall ΔU (DIN VDE 0100-520)</span></div>
+  <div class="panel-header"><div class="panel-icon pi-amber">ZA</div><span class="panel-title">Zähleranlagen – Anzahl · Leitungslängen · Spannungsabfall ΔU (DIN VDE 0100-520)</span></div>
   <div class="panel-body">
 
-    <div class="za-grid" style="margin-bottom:1rem;">
-
-      <!-- ZA1 -->
-      <div class="za-card" style="border-color:rgba(74,158,255,.3);">
-        <div class="za-card-title" style="color:var(--accent);">Zähleranlage 1</div>
-        <div class="za-irow"><label>Bezeichnung / Lage</label><input type="text" id="za1_name" value="EG / Treppenhaus" style="background:var(--bg);border:1px solid var(--border2);border-radius:4px;color:var(--text);font-size:11px;padding:3px 6px;grid-column:span 2;width:100%;font-family:var(--sans);"></div>
-        <div class="za-irow"><label>Anzahl WE an ZA1</label><input class="num-input" type="number" id="za1_nwe" value="6" min="0" style="width:100%;"><span class="unit-label">WE</span></div>
-        <div class="za-irow"><label>Länge HAK → ZA1<small style="display:block;font-size:9px;color:var(--text3);">Einfachlänge</small></label><input class="num-input" type="number" id="za1_l_hak" value="15" min="0" step="0.5" style="width:100%;"><span class="unit-label">m</span></div>
-        <div class="za-irow"><label>Kabelquerschnitt HAK→ZA1<small style="display:block;font-size:9px;color:var(--text3);">oder auto aus Empfehlung</small></label><input class="num-input" type="number" id="za1_qs" value="70" min="1" step="1" style="width:100%;"><span class="unit-label">mm²</span></div>
-        <div class="za-irow"><label>Länge ZA1 → WE (mittl.)<small style="display:block;font-size:9px;color:var(--text3);">Einfachlänge je WE</small></label><input class="num-input" type="number" id="za1_l_we" value="20" min="0" step="0.5" style="width:100%;"><span class="unit-label">m</span></div>
-        <div class="za-irow"><label>Querschnitt ZA1 → WE</label><input class="num-input" type="number" id="za1_qs_we" value="10" min="1" step="1" style="width:100%;"><span class="unit-label">mm²</span></div>
-        <div id="za1_result" style="margin-top:.6rem;"></div>
+    <!-- ANZAHL ZÄHLERANLAGEN -->
+    <div style="display:flex;align-items:center;gap:16px;padding:.6rem 0 .9rem;border-bottom:1px solid var(--border);margin-bottom:1rem;flex-wrap:wrap;">
+      <div style="display:flex;align-items:center;gap:8px;">
+        <span style="font-family:var(--mono);font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;">Anzahl Zähleranlagen</span>
+        <input class="num-input" type="number" id="n_za" value="2" min="1" max="6" style="width:60px;">
+        <span style="font-family:var(--mono);font-size:11px;color:var(--text3);">Stk. (max. 6)</span>
       </div>
-
-      <!-- ZA2 -->
-      <div class="za-card" style="border-color:rgba(62,207,142,.3);">
-        <div class="za-card-title" style="color:var(--green);">Zähleranlage 2</div>
-        <div class="za-irow"><label>Bezeichnung / Lage</label><input type="text" id="za2_name" value="OG / Dachgeschoss" style="background:var(--bg);border:1px solid var(--border2);border-radius:4px;color:var(--text);font-size:11px;padding:3px 6px;grid-column:span 2;width:100%;font-family:var(--sans);"></div>
-        <div class="za-irow"><label>Anzahl WE an ZA2</label><input class="num-input" type="number" id="za2_nwe" value="6" min="0" style="width:100%;"><span class="unit-label">WE</span></div>
-        <div class="za-irow"><label>Länge HAK → ZA2<small style="display:block;font-size:9px;color:var(--text3);">Einfachlänge</small></label><input class="num-input" type="number" id="za2_l_hak" value="30" min="0" step="0.5" style="width:100%;"><span class="unit-label">m</span></div>
-        <div class="za-irow"><label>Kabelquerschnitt HAK→ZA2</label><input class="num-input" type="number" id="za2_qs" value="70" min="1" step="1" style="width:100%;"><span class="unit-label">mm²</span></div>
-        <div class="za-irow"><label>Länge ZA2 → WE (mittl.)</label><input class="num-input" type="number" id="za2_l_we" value="25" min="0" step="0.5" style="width:100%;"><span class="unit-label">m</span></div>
-        <div class="za-irow"><label>Querschnitt ZA2 → WE</label><input class="num-input" type="number" id="za2_qs_we" value="10" min="1" step="1" style="width:100%;"><span class="unit-label">mm²</span></div>
-        <div id="za2_result" style="margin-top:.6rem;"></div>
+      <div class="note note-blue" style="margin:0;flex:1;min-width:200px;">
+        Jede ZA erhält eine eigene Zuleitung vom HAK. Anzahl Zähler (Messeinrichtungen) pro ZA separat einstellbar.
       </div>
     </div>
 
-    <!-- ΔU ERGEBNIS -->
-    <div class="du-grid" id="du_results"></div>
-    <div class="note note-blue" style="margin-top:.75rem;">
-      ΔU = (√3 × I × L × 2 × ρ) / A · Grenzwert gesamt: <strong>max. 3%</strong> (DIN VDE 0100-520) · HAK→ZA: max. 1,5% · ZA→WE: max. 1,5%
+    <!-- DYNAMISCHE ZA-KARTEN -->
+    <div id="za_cards_grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem;margin-bottom:1rem;"></div>
+
+    <!-- ΔU ERGEBNIS TABELLE -->
+    <div class="din-table-wrap" style="margin-bottom:.75rem;">
+      <table class="din" id="du_table">
+        <thead>
+          <tr>
+            <th>ZA</th><th>Bezeichnung</th><th>Zähler</th><th>WE</th><th>GZ</th>
+            <th>I HAK→ZA</th><th>Länge</th><th>Qs</th>
+            <th>ΔU HAK→ZA</th><th>Min-Qs</th>
+            <th>ΔU ZA→WE</th><th>ΔU gesamt</th><th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="du_tbody"></tbody>
+        <tfoot id="du_tfoot"></tfoot>
+      </table>
+    </div>
+
+    <div class="note note-blue">
+      ΔU = √3 × I × 2L × ρ / A &nbsp;·&nbsp; Grenzwert gesamt <strong>max. 3 %</strong> (DIN VDE 0100-520) &nbsp;·&nbsp; HAK→ZA max. 1,5 % &nbsp;·&nbsp; ZA→WE max. 1,5 %
     </div>
   </div>
 </div>
@@ -601,11 +603,8 @@ function calc(){
   const cosPhi =+document.getElementById('cos_phi').value||0.9;
   const rho    =+document.getElementById('mat_sel').value||0.0178;
 
-  // ZA-Parameter
-  const za=[
-    {id:1, nwe:+document.getElementById('za1_nwe').value||0, l_hak:+document.getElementById('za1_l_hak').value||0, qs:+document.getElementById('za1_qs').value||70, l_we:+document.getElementById('za1_l_we').value||0, qs_we:+document.getElementById('za1_qs_we').value||10, name:document.getElementById('za1_name').value||'ZA 1'},
-    {id:2, nwe:+document.getElementById('za2_nwe').value||0, l_hak:+document.getElementById('za2_l_hak').value||0, qs:+document.getElementById('za2_qs').value||70, l_we:+document.getElementById('za2_l_we').value||0, qs_we:+document.getElementById('za2_qs_we').value||10, name:document.getElementById('za2_name').value||'ZA 2'},
-  ];
+  // ZA-Parameter – dynamisch aus gerenderten Karten lesen
+  const za=readZACards();
 
   // Allgemeinzähler
   const azRows=document.querySelectorAll('.allgz-row-item');
@@ -701,83 +700,70 @@ function calc(){
     return`<tr><td>${i+1}</td><td>${az.name}</td><td>${az.p.toFixed(1)} kW</td><td>${az.gz.toFixed(2)}</td><td>${az.pbez.toFixed(1)} kW</td><td>${r0(I_az)} A</td><td>${c?c.cu:'–'}</td><td>${c?c.hak+' A':'–'}</td></tr>`;
   }).join('');
 
-  // ── SPANNUNGSABFALL PRO ZÄHLERANLAGE ───────────────────────────────────
-  const duCards=za.map(z=>{
-    if(z.nwe===0) return null;
-    const gz_za=getGZ(z.nwe);
-    const P_za =z.nwe*p_we*gz_za; // Bemessungsleistung dieser ZA
-    const I_hak=P_za/(sqrt3*(volt/1000)*cosPhi); // Strom HAK→ZA
-    const du_hak=calcDU(I_hak,z.l_hak,rho,z.qs,volt);
-    const qs_min_hak=minQS(I_hak,z.l_hak,rho,volt,1.5);
-
-    const I_we_za=p_we/(sqrt3*(volt/1000)*cosPhi);
-    const du_we=calcDU(I_we_za,z.l_we,rho,z.qs_we,volt);
-    const qs_min_we=minQS(I_we_za,z.l_we,rho,volt,1.5);
-
-    const du_total=du_hak+du_we;
-
-    // auto update QS fields with recommendation if field still at default
-    return{z,gz_za,P_za,I_hak,du_hak,qs_min_hak,I_we_za,du_we,qs_min_we,du_total};
-  }).filter(Boolean);
-
-  // Show ZA results inline
-  za.forEach((z,idx)=>{
-    const d=duCards[idx];
-    const el=document.getElementById(`za${z.id}_result`);
-    if(!d||!el){if(el)el.innerHTML='';return;}
-    const bc=duClass(d.du_hak), wc=duClass(d.du_we), tc=duClass(d.du_total);
-    el.innerHTML=`
-      <div style="font-size:10px;color:var(--text3);font-family:var(--mono);margin-bottom:4px;">Berechnungsergebnis</div>
-      <div style="display:flex;flex-direction:column;gap:3px;">
-        <div style="display:flex;justify-content:space-between;font-size:11px;"><span style="color:var(--text2);">Strom HAK→ZA${z.id}</span><span style="font-family:var(--mono);">${r0(d.I_hak)} A</span></div>
-        <div style="display:flex;justify-content:space-between;font-size:11px;"><span style="color:var(--text2);">ΔU HAK→ZA${z.id}</span><span class="${bc}" style="font-family:var(--mono);font-weight:600;">${r2(d.du_hak)} % ${duLabel(d.du_hak)}</span></div>
-        <div style="display:flex;justify-content:space-between;font-size:11px;"><span style="color:var(--text2);">Min. Querschnitt (≤1,5%)</span><span style="font-family:var(--mono);color:var(--accent);">${r2(d.qs_min_hak)} mm²</span></div>
-        <div style="display:flex;justify-content:space-between;font-size:11px;"><span style="color:var(--text2);">ΔU ZA${z.id}→WE</span><span class="${wc}" style="font-family:var(--mono);font-weight:600;">${r2(d.du_we)} % ${duLabel(d.du_we)}</span></div>
-        <div style="display:flex;justify-content:space-between;font-size:11px;"><span style="color:var(--text2);">Min. Querschnitt WE (≤1,5%)</span><span style="font-family:var(--mono);color:var(--accent);">${r2(d.qs_min_we)} mm²</span></div>
-        <div style="display:flex;justify-content:space-between;font-size:11.5px;margin-top:4px;padding-top:4px;border-top:1px solid var(--border);"><span style="color:var(--text);font-weight:500;">ΔU gesamt</span><span class="${tc}" style="font-family:var(--mono);font-weight:700;">${r2(d.du_total)} % ${duLabel(d.du_total)}</span></div>
-      </div>
-      <div style="background:var(--bg);border-radius:3px;height:7px;overflow:hidden;margin-top:5px;position:relative;">
-        <div style="position:absolute;left:0;top:0;height:100%;width:${Math.min(100,d.du_total/3*100)}%;background:${d.du_total<=1.5?'#3ecf8e':d.du_total<=3?'#f5a623':'#e05252'};border-radius:3px;"></div>
-        <div style="position:absolute;left:50%;top:0;height:100%;width:1px;background:#555;"></div>
-      </div>`;
-  });
-
-  // DU SUMMARY CARDS
-  document.getElementById('du_results').innerHTML=duCards.map(d=>`
-    <div class="du-card">
-      <div class="du-card-title">${d.z.name} — Spannungsabfall-Übersicht</div>
-      <div class="du-row"><span class="du-row-label">WE an dieser ZA</span><span class="du-row-val">${d.z.nwe} WE (GZ ${d.gz_za.toFixed(2)})</span></div>
-      <div class="du-row"><span class="du-row-label">Bemessungsleistung ZA</span><span class="du-row-val">${r0(d.P_za)} kW</span></div>
-      <div class="du-row"><span class="du-row-label">Strom HAK → ZA</span><span class="du-row-val">${r0(d.I_hak)} A</span></div>
-      <div class="du-row"><span class="du-row-label">Länge HAK → ZA</span><span class="du-row-val">${d.z.l_hak} m · ${d.z.qs} mm² Cu</span></div>
-      <div class="du-row"><span class="du-row-label">ΔU HAK → ZA</span><span class="du-row-val ${duClass(d.du_hak)}">${r2(d.du_hak)} % ${duLabel(d.du_hak)}</span></div>
-      <div class="du-row"><span class="du-row-label">Empf. Mindestquerschnitt</span><span class="du-row-val" style="color:var(--accent);">${r2(d.qs_min_hak)} mm²</span></div>
-      <div class="du-row"><span class="du-row-label">Länge ZA → WE (mittl.)</span><span class="du-row-val">${d.z.l_we} m · ${d.z.qs_we} mm² Cu</span></div>
-      <div class="du-row"><span class="du-row-label">ΔU ZA → WE</span><span class="du-row-val ${duClass(d.du_we)}">${r2(d.du_we)} % ${duLabel(d.du_we)}</span></div>
-      <div class="du-row"><span class="du-row-label">Empf. Mindestquerschnitt WE</span><span class="du-row-val" style="color:var(--accent);">${r2(d.qs_min_we)} mm²</span></div>
-      <div class="du-row" style="border-top:1px solid var(--border2);margin-top:2px;padding-top:4px;"><span class="du-row-label" style="font-weight:600;color:var(--text);">ΔU gesamt</span><span class="du-row-val ${duClass(d.du_total)}" style="font-size:13px;font-weight:700;">${r2(d.du_total)} %</span></div>
-      <div class="du-bar-wrap"><div class="du-bar" style="width:${Math.min(100,d.du_total/3*100).toFixed(1)}%;background:${d.du_total<=1.5?'#3ecf8e':d.du_total<=3?'#f5a623':'#e05252'};"></div></div>
-    </div>`).join('');
-
   // ZÄHLERSCHRANK DETAIL
+  const totalZaehler=za.reduce((s,z)=>s+z.n_zaehler,0);
   document.getElementById('zaehler_detail').innerHTML=[
     {l:'Messeinrichtungen WE',  v:n_we+' Stk.'},
     {l:'Allgemeinzähler',       v:azData.length+' Stk.'},
-    {l:'Gesamt Zählerstellen',  v:(n_we+azData.length)+' Stk.'},
+    {l:'Zähleranlagen',         v:za.length+' Stk.'},
+    {l:'Zähler in ZA gesamt',   v:totalZaehler+' Stk.'},
+    {l:'Gesamt Zählerstellen',  v:(n_we+azData.length)+' Stk. (inkl. Allgem.)'},
     {l:'HAK Nennstrom',         v:recRow?recRow.hak+' A':'> 400 A'},
     {l:'NH-Sicherung',          v:'gG · NH Gr. 00 oder 0'},
     {l:'Zählerschrank Norm',    v:'DIN VDE 0603-1:2017'},
     {l:'Zählerplatz Typ',       v:'Typ II (3-reihig)'},
     {l:'Schutzmaßnahme',        v:'TN-C-S · RCD Typ A je WE'},
     {l:'Bemessungsspannung',    v:volt+' V (3L+N+PE)'},
-    {l:'Zähleranlagen',         v:'2 Stk. (ZA1 + ZA2)'},
     {l:'WP §14a',               v:'Steuerbox / SG-Ready nötig'},
-    {l:'eMob Anmeldung',        v:'Lastmanagement VNB'},
   ].map(i=>`<div class="detail-cell"><div class="detail-label">${i.l}</div><div class="detail-val">${i.v}</div></div>`).join('');
 
+  // ── ΔU TABELLE ──────────────────────────────────────────────────────────────
+  const duCards=za.map(z=>{
+    if(z.nwe===0) return null;
+    const gz_za=getGZ(z.nwe);
+    const P_za=z.nwe*p_we*gz_za;
+    const I_hak=P_za/(sqrt3*(volt/1000)*cosPhi);
+    const du_hak=calcDU(I_hak,z.l_hak,rho,z.qs,volt);
+    const qs_min_hak=minQS(I_hak,z.l_hak,rho,volt,1.5);
+    const I_we_za=p_we/(sqrt3*(volt/1000)*cosPhi);
+    const du_we=calcDU(I_we_za,z.l_we,rho,z.qs_we,volt);
+    const qs_min_we=minQS(I_we_za,z.l_we,rho,volt,1.5);
+    const du_total=du_hak+du_we;
+    return{z,gz_za,P_za,I_hak,du_hak,qs_min_hak,I_we_za,du_we,qs_min_we,du_total};
+  });
+
+  const duColor=p=>p<=1.5?'#3ecf8e':p<=3?'#f5a623':'#e05252';
+  document.getElementById('du_tbody').innerHTML=duCards.map((d,i)=>{
+    if(!d) return`<tr><td>${i+1}</td><td style="color:var(--text3);">${za[i].name}</td><td colspan="11" style="color:var(--text3);">0 WE – nicht berücksichtigt</td></tr>`;
+    const tc=duColor(d.du_total);
+    return`<tr>
+      <td style="font-weight:600;color:var(--accent);">ZA ${d.z.id}</td>
+      <td>${d.z.name}</td>
+      <td style="color:var(--teal);">${d.z.n_zaehler}</td>
+      <td>${d.z.nwe}</td>
+      <td>${d.gz_za.toFixed(2)}</td>
+      <td>${r0(d.I_hak)} A</td>
+      <td>${d.z.l_hak} m</td>
+      <td>${d.z.qs} mm²</td>
+      <td style="color:${duColor(d.du_hak)};font-weight:600;">${r2(d.du_hak)} %</td>
+      <td style="color:var(--accent);">${r2(d.qs_min_hak)} mm²</td>
+      <td style="color:${duColor(d.du_we)};font-weight:600;">${r2(d.du_we)} %</td>
+      <td style="color:${tc};font-weight:700;font-size:12px;">${r2(d.du_total)} %</td>
+      <td style="color:${tc};">${duLabel(d.du_total)}</td>
+    </tr>`;
+  }).join('');
+
+  // Summenzeile
+  const totalZaehlerRow=za.reduce((s,z)=>s+z.n_zaehler,0);
+  document.getElementById('du_tfoot').innerHTML=`<tr style="border-top:1px solid var(--border2);">
+    <td colspan="2" style="font-weight:600;color:var(--text);font-family:var(--mono);font-size:11px;">SUMME / GESAMT</td>
+    <td style="color:var(--teal);font-weight:600;">${totalZaehlerRow} Zähler</td>
+    <td style="font-weight:600;">${za.reduce((s,z)=>s+z.nwe,0)} WE</td>
+    <td colspan="9"></td>
+  </tr>`;
+
   // LEITUNGSSCHEMA
-  renderSchema({n_we,p_we,gz_we,p_wp,gz_wp,n_em,p_em,gz_em,p_aufz,gz_aufz,
-    allg_sum,allg_gz_sum,total_gz,I_bem,recRow,azData,volt,cosPhi,za,duCards,sqrt3});
+  renderSchema({n_we,p_we,p_wp,n_em,p_em,p_aufz,total_gz,I_bem,recRow,volt,cosPhi,za,duCards,sqrt3});
 
   window._calcState={n_we,p_we,gz_we,p_wp,gz_wp,n_em,p_em,gz_em,p_aufz,gz_aufz,p_sonst,volt,cosPhi,rho,
     we_sum,we_gz,wp_gz,em_sum,em_gz,aufz_gz,allg_sum,allg_gz:allg_gz_sum,sonst_gz,total_sum,total_gz,I_bem,
@@ -785,117 +771,154 @@ function calc(){
 }
 
 function renderSchema(s){
-  const {n_we,p_we,gz_we,p_wp,gz_wp,n_em,p_em,gz_em,p_aufz,gz_aufz,
-    allg_sum,total_gz,I_bem,recRow,azData,volt,cosPhi,za,duCards,sqrt3}=s;
+  const {n_we,p_we,p_wp,n_em,p_em,p_aufz,total_gz,I_bem,recRow,volt,cosPhi,za,duCards,sqrt3}=s;
   const cHA=recRow||{hak:0,cu:'–',al:'–',iz_cu:0};
-  const COL={
-    netz:'#4a9eff',netzF:'#1e3a5f',hak:'#f5a623',hakF:'#3d2800',
-    zs:'#3ecf8e',zsF:'#0d3324',za1:'#4a9eff',za1F:'#0d2540',
-    za2:'#3ecf8e',za2F:'#0d3324',we:'#9b72e6',weF:'#271a40',
-    wp:'#3ecf8e',wpF:'#0d3324',em:'#f5a623',emF:'#3d2800',
-    au:'#e05252',auF:'#3a0d0d',az:'#2ec4b6',azF:'#0d2e2c',
-    line:'#444466',bg:'#0f0f11',
-  };
-  const W=960,H=400;
+  const ZCOLS=['#4a9eff','#3ecf8e','#f5a623','#9b72e6','#2ec4b6','#e05252'];
+  const ZFILLS=['#0d2540','#0d3324','#3d2800','#271a40','#0d2e2c','#3a0d0d'];
+  const W=960, hakY=80, zaY=175, conY=290;
+  const zaCount=za.length;
+  const ZAW=Math.min(175, Math.floor((W-80)/zaCount)-16);
+  const zaSpacing=ZAW+16;
+  const zaStartX=(W-(zaCount*zaSpacing-16))/2;
+  const H=conY+60;
+  const CX=W/2;
+
   const box=(x,y,w,h,fill,stroke,rx=5)=>`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${rx}" fill="${fill}" stroke="${stroke}" stroke-width="1.5"/>`;
-  const t=(x,y,txt,sz,fill,w=400,anc='middle')=>`<text x="${x}" y="${y}" font-size="${sz}" fill="${fill}" font-weight="${w}" text-anchor="${anc}" font-family="IBM Plex Mono,monospace">${txt}</text>`;
+  const t=(x,y,txt,sz,fill,fw=400,anc='middle')=>`<text x="${x}" y="${y}" font-size="${sz}" fill="${fill}" font-weight="${fw}" text-anchor="${anc}" font-family="IBM Plex Mono,monospace">${txt}</text>`;
   const ln=(x1,y1,x2,y2,col,sw=1.5,da='')=>`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${col}" stroke-width="${sw}" stroke-dasharray="${da}"/>`;
-  const pill=(x,y,lbl,bg,tc)=>`<rect x="${x-26}" y="${y-8}" width="52" height="16" rx="8" fill="${bg}"/>${t(x,y+4,lbl,8,tc)}`;
-  const duPill=(x,y,pct,bg)=>{
-    const cl=pct<=1.5?'#3ecf8e':pct<=3?'#f5a623':'#e05252';
-    return`<rect x="${x-32}" y="${y-8}" width="64" height="16" rx="8" fill="${bg}"/>${t(x,y+4,'ΔU '+pct.toFixed(2)+'%',8,cl)}`;
-  };
+  const pill=(x,y,lbl,bg,tc,w=52)=>`<rect x="${x-w/2}" y="${y-8}" width="${w}" height="16" rx="8" fill="${bg}"/>${t(x,y+4,lbl,8,tc)}`;
 
   let svg=`<svg viewBox="0 0 ${W} ${H}" width="100%" xmlns="http://www.w3.org/2000/svg" style="max-width:${W}px;display:block;margin:0 auto;">
-  <rect width="${W}" height="${H}" fill="${COL.bg}" rx="8"/>`;
+  <rect width="${W}" height="${H}" fill="#0f0f11" rx="8"/>`;
 
   // NETZ
-  const CX=W/2;
-  svg+=box(CX-70,10,140,38,COL.netzF,COL.netz);
-  svg+=t(CX,25,'NETZ / VNB',10,COL.netz,600);
-  svg+=t(CX,40,'400 V TN-C-S',8,'#9898b0');
+  svg+=box(CX-70,8,140,36,'#1e3a5f','#4a9eff');
+  svg+=t(CX,22,'NETZ / VNB',10,'#4a9eff',600);
+  svg+=t(CX,35,'400 V TN-C-S',8,'#9898b0');
 
   // HAK
-  svg+=ln(CX,48,CX,80,COL.hak,2.5);
-  svg+=pill(CX,65,r0(I_bem)+' A',COL.hakF,COL.hak);
-  svg+=box(CX-110,80,220,42,COL.hakF,COL.hak);
-  svg+=t(CX,94,'HAUSANSCHLUSSKASTEN (HAK)',9,COL.hak,600);
-  svg+=t(CX,106,`NH ${cHA.hak} A  ·  ${cHA.cu}  ·  I_z ${cHA.iz_cu} A`,8,'#e8e8f0');
-  svg+=t(CX,116,`Verlegeart A2`,7,'#9898b0');
+  svg+=ln(CX,44,CX,hakY,'#f5a623',2.5);
+  svg+=pill(CX,62,r0(I_bem)+' A','#3d2800','#f5a623');
+  svg+=box(CX-115,hakY,230,40,'#3d2800','#f5a623');
+  svg+=t(CX,hakY+13,'HAUSANSCHLUSSKASTEN (HAK)',9,'#f5a623',600);
+  svg+=t(CX,hakY+25,`NH ${cHA.hak} A  ·  ${cHA.cu}`,8,'#e8e8f0');
+  svg+=t(CX,hakY+35,`I_z ${cHA.iz_cu} A  ·  Verlegeart A2`,7,'#9898b0');
 
-  // zwei Leitungen zu ZA1 und ZA2
-  const ZA1X=W*0.28, ZA2X=W*0.72;
-  const ZAY=170, ZAW=190, ZAH=48;
-
-  // Linie zu ZA1
-  svg+=ln(CX,122,ZA1X+ZAW/2,ZAY,COL.za1,2);
-  if(duCards[0]){
-    const d=duCards[0];
-    const mx=(CX+(ZA1X+ZAW/2))/2, my=(122+ZAY)/2;
-    svg+=pill(mx,my,r0(d.I_hak)+' A',COL.za1F,COL.za1);
-    svg+=duPill(mx,my+20,d.du_hak,COL.za1F);
+  // horizontale Busschiene unter HAK
+  const busY=hakY+40+18;
+  if(zaCount>1){
+    const lx=zaStartX+ZAW/2, rx=zaStartX+(zaCount-1)*zaSpacing+ZAW/2;
+    svg+=ln(lx,busY,rx,busY,'#444466',1);
   }
-  // Linie zu ZA2
-  svg+=ln(CX,122,ZA2X+ZAW/2,ZAY,COL.za2,2);
-  if(duCards[1]){
-    const d=duCards[1];
-    const mx=(CX+(ZA2X+ZAW/2))/2, my=(122+ZAY)/2;
-    svg+=pill(mx,my,r0(d.I_hak)+' A',COL.za2F,COL.za2);
-    svg+=duPill(mx,my+20,d.du_hak,COL.za2F);
-  }
+  svg+=ln(CX,hakY+40,CX,busY,'#444466',1);
 
-  // ZA1
-  svg+=box(ZA1X,ZAY,ZAW,ZAH,COL.za1F,COL.za1);
-  const za1name=(za[0].name||'ZA 1').slice(0,20);
-  const za1du=duCards[0]?` · ΔU ${r2(duCards[0].du_total)}%`:'';
-  svg+=t(ZA1X+ZAW/2,ZAY+13,'ZÄHLERANLAGE 1',9,COL.za1,600);
-  svg+=t(ZA1X+ZAW/2,ZAY+25,za1name,8,'#e8e8f0');
-  svg+=t(ZA1X+ZAW/2,ZAY+37,`${za[0].nwe} WE · ${za[0].qs} mm²${za1du}`,7.5,'#9898b0');
+  // ZA Karten + Leitungen
+  za.forEach((z,i)=>{
+    const col=ZCOLS[i%ZCOLS.length], fill=ZFILLS[i%ZFILLS.length];
+    const zx=zaStartX+i*zaSpacing, zcx=zx+ZAW/2;
+    const d=duCards[i];
 
-  // ZA2
-  svg+=box(ZA2X,ZAY,ZAW,ZAH,COL.za2F,COL.za2);
-  const za2name=(za[1].name||'ZA 2').slice(0,20);
-  const za2du=duCards[1]?` · ΔU ${r2(duCards[1].du_total)}%`:'';
-  svg+=t(ZA2X+ZAW/2,ZAY+13,'ZÄHLERANLAGE 2',9,COL.za2,600);
-  svg+=t(ZA2X+ZAW/2,ZAY+25,za2name,8,'#e8e8f0');
-  svg+=t(ZA2X+ZAW/2,ZAY+37,`${za[1].nwe} WE · ${za[1].qs} mm²${za2du}`,7.5,'#9898b0');
+    // vertikale Linie Bus → ZA
+    svg+=ln(zcx,busY,zcx,zaY,col,2);
+    // Strom + ΔU Pills
+    if(d){
+      svg+=pill(zcx,busY+10,r0(d.I_hak)+' A',fill,col,54);
+      const duc=d.du_hak<=1.5?'#3ecf8e':d.du_hak<=3?'#f5a623':'#e05252';
+      svg+=pill(zcx,busY+26,'ΔU '+r2(d.du_hak)+'%',fill,duc,60);
+    }
 
-  // Consumer row from ZA1 (WE, WP, EM, AU)
-  const conDefs=[
-    {label:'WE (ZA1)',sub:`${za[0].nwe}×${p_we}kW`,col:'#9b72e6',fill:'#271a40'},
-    {label:'Wärmepumpe',sub:`${p_wp}kW el.`,col:'#3ecf8e',fill:'#0d3324'},
-    {label:'E-Mobilität',sub:`${n_em}×${p_em}kW`,col:'#f5a623',fill:'#3d2800'},
-    {label:'Aufzug',sub:`${p_aufz}kW`,col:'#e05252',fill:'#3a0d0d'},
-  ];
-  const CON_Y=285,CON_H=44,CON_W=110;
-  const totalW=conDefs.length*(CON_W+12)-12;
-  const conStartX=(W/2-totalW/2);
-  conDefs.forEach((c,i)=>{
-    const cx=conStartX+i*(CON_W+12), ccx=cx+CON_W/2;
-    const srcX=i<2?ZA1X+ZAW/2:ZA2X+ZAW/2;
-    const srcY=ZAY+ZAH;
-    svg+=ln(srcX,srcY,ccx,CON_Y,c.col,1.2,'4 3');
-    svg+=box(cx,CON_Y,CON_W,CON_H,c.fill,c.col,4);
-    svg+=t(ccx,CON_Y+14,c.label,8.5,c.col,600);
-    svg+=t(ccx,CON_Y+26,c.sub,7.5,'#e8e8f0');
+    // ZA Box
+    svg+=box(zx,zaY,ZAW,48,fill,col);
+    svg+=t(zcx,zaY+12,`ZÄHLERANLAGE ${z.id}`,8.5,col,600);
+    svg+=t(zcx,zaY+23,(z.name||'ZA '+z.id).slice(0,Math.floor(ZAW/6)),7.5,'#e8e8f0');
+    svg+=t(zcx,zaY+33,`${z.n_zaehler} Zähler  ·  ${z.nwe} WE`,7,'#9898b0');
+    if(d) svg+=t(zcx,zaY+43,`ΔU ges. ${r2(d.du_total)}%`,7,d.du_total<=1.5?'#3ecf8e':d.du_total<=3?'#f5a623':'#e05252');
+
+    // Verbraucher-Linie nach unten (WE)
+    if(z.nwe>0){
+      svg+=ln(zcx,zaY+48,zcx,conY,'#9b72e6',1.2,'3 3');
+      svg+=box(zx,conY,ZAW,36,'#271a40','#9b72e6',4);
+      svg+=t(zcx,conY+13,`WE (${z.nwe}× ${p_we} kW)`,8,'#9b72e6',600);
+      if(d) svg+=t(zcx,conY+25,`ΔU→WE ${r2(d.du_we)}%`,7,d.du_we<=1.5?'#3ecf8e':d.du_we<=3?'#f5a623':'#e05252');
+    }
   });
-
-  // WE ZA2
-  const we2x=W-160,we2cx=we2x+CON_W/2;
-  svg+=ln(ZA2X+ZAW/2,ZAY+ZAH,we2cx,CON_Y,'#9b72e6',1.2,'4 3');
-  svg+=box(we2x,CON_Y,CON_W,CON_H,'#271a40','#9b72e6',4);
-  svg+=t(we2cx,CON_Y+14,'WE (ZA2)',8.5,'#9b72e6',600);
-  svg+=t(we2cx,CON_Y+26,`${za[1].nwe}×${p_we}kW`,7.5,'#e8e8f0');
-
-  // ΔU WE labels
-  if(duCards[0]) svg+=t(conStartX+CON_W/2,CON_Y+38,`ΔU WE ${r2(duCards[0].du_we)}%`,7,duCards[0].du_we<=1.5?'#3ecf8e':duCards[0].du_we<=3?'#f5a623':'#e05252');
-  if(duCards[1]) svg+=t(we2cx,CON_Y+38,`ΔU WE ${r2(duCards[1].du_we)}%`,7,duCards[1].du_we<=1.5?'#3ecf8e':duCards[1].du_we<=3?'#f5a623':'#e05252');
 
   svg+='</svg>';
   document.getElementById('leitungsschema_svg').innerHTML=svg;
 }
 
-// ── PDF ──────────────────────────────────────────────────────────────────────
+// ── ZA KARTEN DYNAMISCH RENDERN ───────────────────────────────────────────────
+const ZA_DEFAULTS=[
+  {name:'EG / Treppenhaus',   nwe:6, n_zaehler:7, l_hak:10, qs:70, l_we:15, qs_we:10},
+  {name:'OG / Dachgeschoss',  nwe:6, n_zaehler:7, l_hak:25, qs:70, l_we:20, qs_we:10},
+  {name:'Seitentrakt A',      nwe:4, n_zaehler:5, l_hak:35, qs:50, l_we:18, qs_we:10},
+  {name:'Seitentrakt B',      nwe:4, n_zaehler:5, l_hak:40, qs:50, l_we:18, qs_we:10},
+  {name:'Anbau West',         nwe:3, n_zaehler:4, l_hak:50, qs:35, l_we:22, qs_we:10},
+  {name:'Anbau Ost',          nwe:3, n_zaehler:4, l_hak:55, qs:35, l_we:22, qs_we:10},
+];
+const ZCOLS_CSS=['rgba(74,158,255,.3)','rgba(62,207,142,.3)','rgba(245,166,35,.3)','rgba(155,114,230,.3)','rgba(46,196,182,.3)','rgba(224,82,82,.3)'];
+const ZCOLS_TXT=['var(--accent)','var(--green)','var(--amber)','var(--purple)','var(--teal)','var(--red)'];
+
+function readZACards(){
+  const cards=document.querySelectorAll('.za-dyn-card');
+  return Array.from(cards).map((card,i)=>{
+    const g=id=>+card.querySelector('[data-f="'+id+'"]')?.value||0;
+    const gs=id=>card.querySelector('[data-f="'+id+'"]')?.value||'ZA '+(i+1);
+    return{
+      id:i+1,
+      name:gs('name'),
+      nwe:g('nwe'),
+      n_zaehler:g('n_zaehler'),
+      l_hak:g('l_hak'),
+      qs:g('qs')||70,
+      l_we:g('l_we'),
+      qs_we:g('qs_we')||10,
+    };
+  });
+}
+
+function renderZACards(){
+  const n=Math.min(6,Math.max(1,+document.getElementById('n_za').value||2));
+  const grid=document.getElementById('za_cards_grid');
+  // preserve existing values
+  const existing=readZACards();
+  grid.innerHTML='';
+  for(let i=0;i<n;i++){
+    const def=ZA_DEFAULTS[i]||{name:'Zähleranlage '+(i+1),nwe:4,n_zaehler:5,l_hak:20,qs:70,l_we:20,qs_we:10};
+    const prev=existing[i]||{};
+    const v=k=>prev[k]!==undefined&&prev[k]!==0?prev[k]:def[k];
+    const card=document.createElement('div');
+    card.className='za-card za-dyn-card';
+    card.style.cssText=`border-color:${ZCOLS_CSS[i%ZCOLS_CSS.length]};`;
+    card.innerHTML=`
+      <div class="za-card-title" style="color:${ZCOLS_TXT[i%ZCOLS_TXT.length]};">Zähleranlage ${i+1}</div>
+      <div class="za-irow"><label>Bezeichnung / Lage</label>
+        <input type="text" data-f="name" value="${v('name')}" style="background:var(--bg);border:1px solid var(--border2);border-radius:4px;color:var(--text);font-size:11px;padding:3px 6px;grid-column:span 2;width:100%;font-family:var(--sans);">
+      </div>
+      <div class="za-irow"><label>Anzahl Zähler in ZA ${i+1}<small style="display:block;font-size:9px;color:var(--text3);">Messeinrichtungen</small></label>
+        <input class="num-input" type="number" data-f="n_zaehler" value="${v('n_zaehler')}" min="1" max="50" style="width:100%;"><span class="unit-label">Stk.</span>
+      </div>
+      <div class="za-irow"><label>Anzahl WE an ZA ${i+1}</label>
+        <input class="num-input" type="number" data-f="nwe" value="${v('nwe')}" min="0" style="width:100%;"><span class="unit-label">WE</span>
+      </div>
+      <div class="za-irow"><label>Länge HAK → ZA ${i+1}<small style="display:block;font-size:9px;color:var(--text3);">Einfachlänge</small></label>
+        <input class="num-input" type="number" data-f="l_hak" value="${v('l_hak')}" min="0" step="0.5" style="width:100%;"><span class="unit-label">m</span>
+      </div>
+      <div class="za-irow"><label>Querschnitt HAK → ZA<small style="display:block;font-size:9px;color:var(--text3);">Cu, DIN VDE 0298-4</small></label>
+        <input class="num-input" type="number" data-f="qs" value="${v('qs')}" min="1" step="1" style="width:100%;"><span class="unit-label">mm²</span>
+      </div>
+      <div class="za-irow"><label>Länge ZA → WE (mittl.)<small style="display:block;font-size:9px;color:var(--text3);">Einfachlänge je WE</small></label>
+        <input class="num-input" type="number" data-f="l_we" value="${v('l_we')}" min="0" step="0.5" style="width:100%;"><span class="unit-label">m</span>
+      </div>
+      <div class="za-irow"><label>Querschnitt ZA → WE</label>
+        <input class="num-input" type="number" data-f="qs_we" value="${v('qs_we')}" min="1" step="1" style="width:100%;"><span class="unit-label">mm²</span>
+      </div>`;
+    grid.appendChild(card);
+  }
+  grid.querySelectorAll('input').forEach(el=>el.addEventListener('input',calc));
+}
+
+// ── PDF ───────────────────────────────────────────────────────────────────────
 function doPrint(){
   document.getElementById('pdf_datum').textContent=new Date().toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit',year:'numeric'});
   document.getElementById('pdf_projekt').textContent=document.getElementById('inp_projekt').value||'–';
@@ -903,12 +926,13 @@ function doPrint(){
   window.print();
 }
 
-// ── EXCEL ────────────────────────────────────────────────────────────────────
+// ── EXCEL ─────────────────────────────────────────────────────────────────────
 function doExcel(){
   const s=window._calcState;
   if(!s){alert('Bitte zuerst Werte eingeben.');return;}
   const WB=XLSX.utils.book_new();
-  const bilanz=[
+  // Sheet 1: Leistungsbilanz
+  const ws1=XLSX.utils.aoa_to_sheet([
     ['LEISTUNGSBILANZ HAUSANSCHLUSS','','','',''],
     ['DIN 18015-1:2020 / VDE-AR-N 4100:2019 / §14a EnWG / DIN VDE 0100-520','','','',''],
     ['Projekt:',document.getElementById('inp_projekt').value||'–','','Datum:',new Date().toLocaleDateString('de-DE')],
@@ -916,20 +940,14 @@ function doExcel(){
     ['','','','',''],
     ['EINGABEN','','','',''],
     ['Parameter','Wert','Einheit','Bemerkung',''],
-    ['Anzahl WE',s.n_we,'WE','',''],
-    ['Grundbedarf je WE',s.p_we,'kW/WE','DIN 18015-1 Tab.1',''],
-    ['GZ WE',s.gz_we,'–','VDE-AR-N 4100 auto',''],
-    ['WP P_el',s.p_wp,'kW','§14a: GZ '+s.gz_wp,''],
-    ['Ladepunkte eMob',s.n_em,'LP','je '+s.p_em+' kW',''],
-    ['GZ eMob',s.gz_em,'–','',''],
-    ['Aufzug',s.p_aufz,'kW','GZ '+s.gz_aufz,''],
-    ['Sonstige',s.p_sonst,'kW','GZ 0,80',''],
-    ['Nennspannung',s.volt,'V','TN-C-S',''],
-    ['cos φ',s.cosPhi,'–','',''],
-    ['Leitermaterial ρ',s.rho,'Ω·mm²/m','',''],
+    ['Anzahl WE',s.n_we,'WE','',''],['Grundbedarf je WE',s.p_we,'kW/WE','DIN 18015-1 Tab.1',''],
+    ['GZ WE',s.gz_we,'–','VDE-AR-N 4100 auto',''],['WP P_el',s.p_wp,'kW','§14a: GZ '+s.gz_wp,''],
+    ['Ladepunkte eMob',s.n_em,'LP','je '+s.p_em+' kW',''],['GZ eMob',s.gz_em,'–','',''],
+    ['Aufzug',s.p_aufz,'kW','GZ '+s.gz_aufz,''],['Nennspannung',s.volt,'V','TN-C-S',''],
+    ['cos φ',s.cosPhi,'–','',''],['Leitermaterial ρ',s.rho,'Ω·mm²/m','',''],
     ['','','','',''],
     ['LEISTUNGSBILANZ','','','',''],
-    ['Verbrauchergruppe','Summenlast (kW)','GZ','Bemess.-leist. (kW)','Anteil (%)'],
+    ['Verbrauchergruppe','Summenlast (kW)','GZ','Bemess. (kW)','Anteil (%)'],
     ['Wohnungsanlagen',s.we_sum,s.gz_we,s.we_gz,(s.we_gz/s.total_gz*100).toFixed(1)+'%'],
     ['Wärmepumpe',s.p_wp,s.gz_wp,s.wp_gz,(s.wp_gz/s.total_gz*100).toFixed(1)+'%'],
     ['E-Mobilität',s.em_sum,s.gz_em,s.em_gz,(s.em_gz/s.total_gz*100).toFixed(1)+'%'],
@@ -942,69 +960,53 @@ function doExcel(){
     ['Bemessungsstrom',s.I_bem.toFixed(1),'A','',''],
     ['HAK Nennstrom',s.recRow?s.recRow.hak:'> 400','A','',''],
     ['Kabel Cu',s.recRow?s.recRow.cu:'–','','Verlegeart A2',''],
-    ['Kabel Al',s.recRow?s.recRow.al:'–','','',''],
-  ];
-  const ws1=XLSX.utils.aoa_to_sheet(bilanz);
+  ]);
   ws1['!cols']=[{wch:30},{wch:16},{wch:12},{wch:22},{wch:12}];
   XLSX.utils.book_append_sheet(WB,ws1,'Leistungsbilanz');
 
   // Sheet 2: Zähleranlagen + ΔU
-  const zaSheet=[
-    ['ZÄHLERANLAGEN & SPANNUNGSABFALL ΔU','','','','','','',''],
-    ['DIN VDE 0100-520 · Grenzwert gesamt max. 3% · je Abschnitt max. 1,5%','','','','','','',''],
-    ['','','','','','','',''],
-    ['Kenngröße','ZA 1','ZA 2','','','','',''],
+  const zaHead=['ZA','Bezeichnung','Zähler (Stk.)','WE','GZ','Bemess. (kW)','I HAK→ZA (A)','Länge HAK→ZA (m)','Qs HAK→ZA (mm²)','ΔU HAK→ZA (%)','Min-Qs (mm²)','Länge ZA→WE (m)','Qs ZA→WE (mm²)','ΔU ZA→WE (%)','Min-Qs WE (mm²)','ΔU gesamt (%)','Status'];
+  const zaRows=[
+    ['ZÄHLERANLAGEN & SPANNUNGSABFALL ΔU'],
+    ['DIN VDE 0100-520 · max. 3% gesamt · max. 1,5% je Abschnitt'],
+    [''],
+    zaHead,
+    ...s.za.map((z,i)=>{
+      const d=s.duCards[i];
+      if(!d) return[z.id,z.name,z.n_zaehler,z.nwe,'–','–','–',z.l_hak,z.qs,'–','–',z.l_we,z.qs_we,'–','–','–','keine WE'];
+      return[z.id,z.name,z.n_zaehler,z.nwe,d.gz_za.toFixed(2),r0(d.P_za),r0(d.I_hak),z.l_hak,z.qs,d.du_hak.toFixed(2),d.qs_min_hak.toFixed(2),z.l_we,z.qs_we,d.du_we.toFixed(2),d.qs_min_we.toFixed(2),d.du_total.toFixed(2),duLabel(d.du_total)];
+    }),
   ];
-  const zaLabels=['Bezeichnung','Anzahl WE','GZ','Bemessungsleistung (kW)','Strom HAK→ZA (A)','Länge HAK→ZA (m)','Querschnitt HAK→ZA (mm²)','ΔU HAK→ZA (%)', 'Empf. Min-Qs HAK→ZA (mm²)','Länge ZA→WE (m)','Querschnitt ZA→WE (mm²)','ΔU ZA→WE (%)','Empf. Min-Qs ZA→WE (mm²)','ΔU gesamt (%)','Status'];
-  const zaVals=[
-    [s.za[0].name,s.za[1].name],
-    [s.za[0].nwe,s.za[1].nwe],
-    [s.duCards[0]?.gz_za.toFixed(2)||'–',s.duCards[1]?.gz_za.toFixed(2)||'–'],
-    [s.duCards[0]?r0(s.duCards[0].P_za):'–',s.duCards[1]?r0(s.duCards[1].P_za):'–'],
-    [s.duCards[0]?r0(s.duCards[0].I_hak):'–',s.duCards[1]?r0(s.duCards[1].I_hak):'–'],
-    [s.za[0].l_hak,s.za[1].l_hak],
-    [s.za[0].qs,s.za[1].qs],
-    [s.duCards[0]?s.duCards[0].du_hak.toFixed(2):'–',s.duCards[1]?s.duCards[1].du_hak.toFixed(2):'–'],
-    [s.duCards[0]?s.duCards[0].qs_min_hak.toFixed(2):'–',s.duCards[1]?s.duCards[1].qs_min_hak.toFixed(2):'–'],
-    [s.za[0].l_we,s.za[1].l_we],
-    [s.za[0].qs_we,s.za[1].qs_we],
-    [s.duCards[0]?s.duCards[0].du_we.toFixed(2):'–',s.duCards[1]?s.duCards[1].du_we.toFixed(2):'–'],
-    [s.duCards[0]?s.duCards[0].qs_min_we.toFixed(2):'–',s.duCards[1]?s.duCards[1].qs_min_we.toFixed(2):'–'],
-    [s.duCards[0]?s.duCards[0].du_total.toFixed(2):'–',s.duCards[1]?s.duCards[1].du_total.toFixed(2):'–'],
-    [s.duCards[0]?duLabel(s.duCards[0].du_total):'–',s.duCards[1]?duLabel(s.duCards[1].du_total):'–'],
-  ];
-  zaLabels.forEach((lbl,i)=>zaSheet.push([lbl,...zaVals[i]]));
-  const ws2=XLSX.utils.aoa_to_sheet(zaSheet);
-  ws2['!cols']=[{wch:30},{wch:18},{wch:18},{wch:6},{wch:6},{wch:6},{wch:6},{wch:6}];
+  const ws2=XLSX.utils.aoa_to_sheet(zaRows);
+  ws2['!cols']=[{wch:4},{wch:22},{wch:12},{wch:6},{wch:6},{wch:14},{wch:14},{wch:16},{wch:14},{wch:14},{wch:14},{wch:14},{wch:14},{wch:14},{wch:14},{wch:14},{wch:16}];
   XLSX.utils.book_append_sheet(WB,ws2,'Zähleranlagen & ΔU');
 
   // Sheet 3: Allgemeinzähler
-  const azH=[['ALLGEMEINZÄHLER','','','','','','',''],['','','','','','','',''],
-    ['#','Bezeichnung','Summenlast (kW)','GZ','Bemess. (kW)','Strom (A)','Kabel Cu','Sicherung (A)']];
+  const azH=[['ALLGEMEINZÄHLER'],[''],['#','Bezeichnung','Summenlast (kW)','GZ','Bemess. (kW)','Strom (A)','Kabel Cu','Sicherung (A)']];
   const azR=s.azData.map((az,i)=>{const I=az.pbez/(Math.sqrt(3)*(s.volt/1000)*s.cosPhi);const c=getCable(I);return[i+1,az.name,az.p.toFixed(1),az.gz.toFixed(2),az.pbez.toFixed(1),r0(I),c?c.cu:'–',c?c.hak:'–'];});
   const ws3=XLSX.utils.aoa_to_sheet([...azH,...azR]);
   ws3['!cols']=[{wch:5},{wch:28},{wch:16},{wch:8},{wch:16},{wch:12},{wch:16},{wch:14}];
   XLSX.utils.book_append_sheet(WB,ws3,'Allgemeinzähler');
 
-  // Sheet 4: GZ + Kabel
-  const gzK=[['GZ-REFERENZ VDE-AR-N 4100',''],['n WE','GZ'],...GZ_TABLE.map(r=>[r.n,r.gz])];
-  const ws4=XLSX.utils.aoa_to_sheet(gzK);
+  const ws4=XLSX.utils.aoa_to_sheet([['GZ-REFERENZ VDE-AR-N 4100',''],['n WE','GZ'],...GZ_TABLE.map(r=>[r.n,r.gz])]);
   ws4['!cols']=[{wch:10},{wch:12}];
   XLSX.utils.book_append_sheet(WB,ws4,'GZ-Tabelle');
 
-  const fname=`Leistungsbilanz_${(document.getElementById('inp_projekt').value||'Projekt').replace(/[^a-zA-Z0-9äöüÄÖÜ_-]/g,'_')}_${new Date().toISOString().slice(0,10)}.xlsx`;
-  XLSX.writeFile(WB,fname);
+  XLSX.writeFile(WB,`Leistungsbilanz_${(document.getElementById('inp_projekt').value||'Projekt').replace(/[^a-zA-Z0-9äöüÄÖÜ_-]/g,'_')}_${new Date().toISOString().slice(0,10)}.xlsx`);
 }
 
 function duLabel(pct){if(pct<=1.5)return'✓ OK';if(pct<=3.0)return'⚠ Grenzwert';return'✗ Überschritten';}
 
+// ── EVENT LISTENERS ───────────────────────────────────────────────────────────
+document.getElementById('n_za').addEventListener('input',()=>{renderZACards();calc();});
 document.getElementById('n_allgz').addEventListener('input',()=>{renderAllgzRows();calc();});
 document.getElementById('n_we').addEventListener('input',function(){
   document.getElementById('gz_we').value=getGZ(+this.value||1).toFixed(2);calc();
 });
-document.querySelectorAll('input[type=number]:not(#n_allgz):not(#n_we),select').forEach(el=>el.addEventListener('input',calc));
+document.querySelectorAll('input[type=number]:not(#n_za):not(#n_allgz):not(#n_we),select').forEach(el=>el.addEventListener('input',calc));
 document.querySelectorAll('input[type=text]').forEach(el=>el.addEventListener('input',calc));
 
+renderZACards();
 renderAllgzRows();
 calc();
 </script>
