@@ -898,133 +898,130 @@ function calc(){
 
 function renderSchema(s){
   const {p_we,I_bem,recRow,za,duCards}=s;
-  const isPrint=!!(window._isPrint);
+  const ip=!!(window._isPrint);
   const cHA=recRow||{hak:0,cu:'–',al:'–',iz_cu:0};
 
-  const P={
-    bg:     isPrint?'#fff':'#0f0f11',
-    bgNetz: isPrint?'#e8f0fb':'#1e3a5f',
-    bgHAK:  isPrint?'#fff8e8':'#3d2800',
-    bgWE:   isPrint?'#ede8ff':'#271a40',
-    cNetz:  isPrint?'#1a5fb4':'#4a9eff',
-    cHAK:   isPrint?'#7a5000':'#f5a623',
-    cBus:   isPrint?'#aaa':'#555577',
-    cWE:    isPrint?'#5a3a9a':'#9b72e6',
-    txMain: isPrint?'#111':'#e8e8f0',
-    txSub:  isPrint?'#555':'#9898b0',
-    txMute: isPrint?'#888':'#6a6a88',
-    ZCOL:  isPrint?['#1a5fb4','#2d7a4f','#7a5000','#5a3a9a','#1a6a65','#a00']:['#4a9eff','#3ecf8e','#f5a623','#9b72e6','#2ec4b6','#e05252'],
-    ZFILL: isPrint?['#e8f0fb','#e6f4ed','#fdf3e0','#ede8ff','#e0f4f2','#fde8e8']:['#0d2540','#0d3324','#3d2800','#271a40','#0d2e2c','#3a0d0d'],
+  const C={
+    bg:    ip?'#fff':'#0d0d10',
+    bgN:   ip?'#ddeeff':'#0d2540',
+    bgH:   ip?'#fff3d6':'#2d1e00',
+    bgWE:  ip?'#ede8ff':'#1a1030',
+    cN:    ip?'#1a5fb4':'#4a9eff',
+    cH:    ip?'#7a5000':'#e8a020',
+    cBus:  ip?'#bbb':'#444466',
+    cWE:   ip?'#5a3a9a':'#9b72e6',
+    tx:    ip?'#111':'#e8e8f0',
+    tx2:   ip?'#444':'#9898b0',
+    tx3:   ip?'#888':'#606070',
+    ZC:    ip?['#1a5fb4','#2d7a4f','#7a5000','#5a3a9a','#1a6a65','#900']:['#4a9eff','#3ecf8e','#f5a623','#9b72e6','#2ec4b6','#e05252'],
+    ZF:    ip?['#ddeeff','#ddf3e8','#fff3d6','#ede8ff','#d8f4f0','#ffe8e8']:['#0d2540','#0d2a1c','#2d1e00','#1a1030','#0d2428','#2d0d0d'],
   };
-  const duOk  =isPrint?'#2d7a4f':'#3ecf8e';
-  const duWarn=isPrint?'#7a5000':'#f5a623';
-  const duCrit=isPrint?'#a00':'#e05252';
-  const duC=p=>p<0.5?duOk:p<=0.5?duWarn:duCrit;
-  const duCwe=p=>p<1.0?duOk:p<=1.0?duWarn:duCrit;
+  const dOk=ip?'#2d7a4f':'#3ecf8e';
+  const dW =ip?'#7a5000':'#f5a623';
+  const dR =ip?'#900':'#e05252';
+  const dc =p=>p<0.5?dOk:p<=0.5?dW:dR;
 
   const zaCount=za.length;
-  // Adaptive width: wider for few ZA, narrower for many
-  const ZAW=Math.min(170,Math.max(120,Math.floor(880/zaCount)-20));
-  const ZAG=ZAW+20;
-  const W=Math.max(860, zaCount*ZAG+40);
-  const ZX0=Math.round((W-zaCount*ZAG+20)/2);
+  const PAD=28;
+  const NW=160,NH=44;
+  const HW=270,HH=52;
+  const ZW=Math.min(190,Math.max(140,Math.floor((880-2*PAD)/zaCount)-20));
+  const ZG=ZW+22;
+  const WH2=42;
+  const W=Math.max(900,zaCount*ZG+2*PAD+60);
   const CX=Math.round(W/2);
+  const ZX0=Math.round((W-zaCount*ZG+22)/2);
 
-  // Row Y positions — generous spacing so labels don't overlap
-  const NY=14, NH=40;          // NETZ box
-  const VN=NY+NH;              // netz bottom
-  const LH=VN+14;              // strom-label center on NETZ→HAK line
-  const HY=LH+20, HH=46;      // HAK box
-  const BY=HY+HH+18;          // bus Y
-  // Bus→ZA line: enough room for 2 labels (strom + ΔU) stacked
-  const LABEL_H=44;            // height needed for 2 labels
-  const ZY=BY+LABEL_H+12;     // ZA box top
-  const ZH=54;
-  // ZA→WE line: room for 1 label
-  const WY=ZY+ZH+36;
-  const WH=38;
-  const H=WY+WH+16;
+  // Generous vertical spacing — each section clearly separated
+  const Y_N  =PAD;
+  const Y_H  =Y_N+NH+52;   // 52px gap NETZ→HAK (room for strom pill)
+  const Y_BUS=Y_H+HH+28;   // 28px gap HAK→bus
+  const Y_Z  =Y_BUS+64;    // 64px gap bus→ZA (room for 2 pills)
+  const ZH   =64;           // ZA box height
+  const Y_W  =Y_Z+ZH+52;   // 52px gap ZA→WE (room for 1 pill)
+  const H    =Y_W+WH2+PAD;
 
-  const bx=(x,y,w,h,f,s2,rx=5,sw=1.5)=>
-    `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${rx}" fill="${f}" stroke="${s2}" stroke-width="${sw}"/>`;
-  const tx=(x,y,str,sz,f,fw=400,a='middle')=>
-    `<text x="${x}" y="${y}" font-size="${sz}" fill="${f}" font-weight="${fw}" text-anchor="${a}" font-family="IBM Plex Mono,monospace">${str}</text>`;
-  const vl=(x,y1,y2,c,sw=1.5)=>
-    `<line x1="${x}" y1="${y1}" x2="${x}" y2="${y2}" stroke="${c}" stroke-width="${sw}"/>`;
-  const hl=(x1,x2,y,c,sw=1.5)=>
-    `<line x1="${x1}" y1="${y}" x2="${x2}" y2="${y}" stroke="${c}" stroke-width="${sw}"/>`;
-  // Pill label: centered at (x,y)
-  const pill=(x,y,str,bg,tc,pw=60)=>
-    `<rect x="${x-pw/2}" y="${y-10}" width="${pw}" height="20" rx="10" fill="${bg}" stroke="${tc}" stroke-width="1"/>` +
-    tx(x,y+4,str,8.5,tc,700);
+  const R=n=>Math.round(n);
+  const rect=(x,y,w,h,f,s,rx=6,sw=1.5)=>
+    `<rect x="${R(x)}" y="${R(y)}" width="${R(w)}" height="${R(h)}" rx="${rx}" fill="${f}" stroke="${s}" stroke-width="${sw}"/>`;
+  const tx=(x,y,t,sz,f,fw=400,a='middle')=>
+    `<text x="${R(x)}" y="${R(y)}" font-size="${sz}" fill="${f}" font-weight="${fw}" text-anchor="${a}" font-family="IBM Plex Mono,monospace">${t}</text>`;
+  const vl=(x,y1,y2,c,sw=2)=>
+    `<line x1="${R(x)}" y1="${R(y1)}" x2="${R(x)}" y2="${R(y2)}" stroke="${c}" stroke-width="${sw}"/>`;
+  const hl=(x1,x2,y,c,sw=2)=>
+    `<line x1="${R(x1)}" y1="${R(y)}" x2="${R(x2)}" y2="${R(y)}" stroke="${c}" stroke-width="${sw}"/>`;
+  const pill=(x,y,t,bg,tc,pw=72,ph=24)=>{
+    const xp=R(x-pw/2),yp=R(y-ph/2);
+    return `<rect x="${xp}" y="${yp}" width="${pw}" height="${ph}" rx="${ph/2}" fill="${bg}" stroke="${tc}" stroke-width="1.2"/>` +
+           tx(x,y+5,t,9,tc,700);
+  };
 
-  let svg=`<svg viewBox="0 0 ${W} ${H}" width="100%" xmlns="http://www.w3.org/2000/svg" `+
-    `style="max-width:${W}px;display:block;margin:0 auto;border-radius:8px;">` +
-    `<rect width="${W}" height="${H}" fill="${P.bg}" rx="8"/>`;
+  let svg=`<svg viewBox="0 0 ${W} ${H}" width="100%" xmlns="http://www.w3.org/2000/svg" style="max-width:${W}px;display:block;margin:0 auto;">` +
+    `<rect width="${W}" height="${H}" fill="${C.bg}"/>`;
 
-  // ── NETZ ──
-  svg+=bx(CX-75,NY,150,NH,P.bgNetz,P.cNetz,6);
-  svg+=tx(CX,NY+16,'NETZ / VNB',11,P.cNetz,700);
-  svg+=tx(CX,NY+30,'400 V · TN-C-S',8.5,P.txSub);
+  // ── EBENE 1: NETZ ──────────────────────────────────
+  svg+=rect(CX-NW/2,Y_N,NW,NH,C.bgN,C.cN,8);
+  svg+=tx(CX,Y_N+17,'NETZ / VNB',11,C.cN,700);
+  svg+=tx(CX,Y_N+32,'400 V · TN-C-S',8.5,C.tx2);
 
-  // NETZ→HAK vertical line
-  svg+=vl(CX,VN,HY,P.cHAK,2);
-  // Strom-pill centered on the line
-  svg+=pill(CX,LH+7,r0(I_bem)+' A',P.bgHAK,P.cHAK,62);
+  // NETZ → HAK  (Linie + Strom-Pill mittig)
+  const nhMid=Math.round((Y_N+NH+Y_H)/2);
+  svg+=vl(CX,Y_N+NH,Y_H,C.cH,2.5);
+  svg+=pill(CX,nhMid,r0(I_bem)+' A',C.bgH,C.cH,76,26);
 
-  // ── HAK ──
-  svg+=bx(CX-130,HY,260,HH,P.bgHAK,P.cHAK,6);
-  svg+=tx(CX,HY+16,'HAUSANSCHLUSSKASTEN (HAK)',9.5,P.cHAK,700);
-  svg+=tx(CX,HY+29,`NH ${cHA.hak} A  ·  ${cHA.cu}`,8.5,P.txMain);
-  svg+=tx(CX,HY+41,`I_z ${cHA.iz_cu} A  ·  Verlegeart A2`,7.5,P.txMute);
+  // ── EBENE 2: HAK ───────────────────────────────────
+  svg+=rect(CX-HW/2,Y_H,HW,HH,C.bgH,C.cH,8);
+  svg+=tx(CX,Y_H+17,'HAUSANSCHLUSSKASTEN (HAK)',10,C.cH,700);
+  svg+=tx(CX,Y_H+31,`NH ${cHA.hak} A  ·  ${cHA.cu}`,9,C.tx);
+  svg+=tx(CX,Y_H+44,`I_z ${cHA.iz_cu} A  ·  Verlegeart A2`,7.5,C.tx3);
 
-  // HAK→Busschiene
-  svg+=vl(CX,HY+HH,BY,P.cBus,1.5);
+  // HAK → Busschiene
+  svg+=vl(CX,Y_H+HH,Y_BUS,C.cBus,2);
   if(zaCount>1){
-    svg+=hl(ZX0+ZAW/2,ZX0+(zaCount-1)*ZAG+ZAW/2,BY,P.cBus,2);
+    const bL=ZX0+ZW/2, bR=ZX0+(zaCount-1)*ZG+ZW/2;
+    svg+=hl(bL,bR,Y_BUS,C.cBus,2);
   }
 
-  // ── ZA Boxen ──
+  // ── EBENE 3: ZÄHLERANLAGEN ─────────────────────────
   za.forEach((z,i)=>{
-    const col=P.ZCOL[i%6], fill=P.ZFILL[i%6];
-    const zx=ZX0+i*ZAG, zcx=zx+ZAW/2;
+    const col=C.ZC[i%6], fill=C.ZF[i%6];
+    const zx=ZX0+i*ZG, zcx=zx+ZW/2;
     const d=duCards[i];
 
-    // Bus → ZA: vertical line, then 2 labels stacked with enough gap
-    svg+=vl(zcx,BY,ZY,col,2);
+    // Bus → ZA: vertikale Linie, 2 Pills klar getrennt
+    svg+=vl(zcx,Y_BUS,Y_Z,col,2);
     if(d){
-      // Strom-label at 1/3 of the line
-      const l1y=BY+Math.round(LABEL_H*0.28);
-      // ΔU HAK→ZA label at 2/3
-      const l2y=BY+Math.round(LABEL_H*0.72);
-      svg+=pill(zcx,l1y,r0(d.I_hak)+' A',fill,col,60);
-      svg+=pill(zcx,l2y,'ΔU '+r2(d.du_hak)+'%',fill,duC(d.du_hak),66);
+      const p1y=Y_BUS+Math.round((Y_Z-Y_BUS)*0.30);
+      const p2y=Y_BUS+Math.round((Y_Z-Y_BUS)*0.72);
+      svg+=pill(zcx,p1y,r0(d.I_hak)+' A',fill,col,68,24);
+      const duC2=dc(d.du_hak);
+      svg+=pill(zcx,p2y,'ΔU '+r2(d.du_hak)+' %',fill,duC2,74,24);
     }
 
     // ZA Box
-    svg+=bx(zx,ZY,ZAW,ZH,fill,col,6);
-    svg+=tx(zcx,ZY+15,`ZÄHLERANLAGE ${z.id}`,9,col,700);
-    const nameStr=(z.name||'ZA '+z.id).slice(0,Math.floor(ZAW/6));
-    svg+=tx(zcx,ZY+27,nameStr,8,P.txMain);
+    svg+=rect(zx,Y_Z,ZW,ZH,fill,col,7,1.5);
+    svg+=tx(zcx,Y_Z+16,`ZÄHLERANLAGE ${z.id}`,9.5,col,700);
+    const nm=(z.name||'ZA '+z.id).slice(0,Math.floor(ZW/6));
+    svg+=tx(zcx,Y_Z+30,nm,8.5,C.tx);
     const zStr=z.n_wandler>0
       ?`${z.n_we_zaehler} WE-Zähler + ${z.n_wandler}× CT`
-      :`${z.n_we_zaehler||z.n_zaehler||'–'} Zähler  ·  ${z.nwe} WE`;
-    svg+=tx(zcx,ZY+38,zStr,7.5,P.txSub);
+      :`${z.n_we_zaehler||0} Zähler  ·  ${z.nwe} WE`;
+    svg+=tx(zcx,Y_Z+43,zStr,7.5,C.tx2);
     if(d){
-      const tc2=d.du_total<=1.5?duOk:d.du_total<=3?duWarn:duCrit;
-      svg+=tx(zcx,ZY+50,`ΔU gesamt ${r2(d.du_total)} %`,7.5,tc2,600);
+      const hakCol=dc(d.du_hak);
+      svg+=tx(zcx,Y_Z+56,'ΔU HAK→ZA: '+r2(d.du_hak)+' %',8,hakCol,700);
     }
 
-    // ZA → WE
+    // ── EBENE 4: WE ────────────────────────────────
     if(z.nwe>0){
-      svg+=vl(zcx,ZY+ZH,WY,P.cWE,1.5);
+      svg+=vl(zcx,Y_Z+ZH,Y_W,C.cWE,1.5);
       if(d){
-        const wedc=duCwe(d.du_we);
-        svg+=pill(zcx,ZY+ZH+18,'ΔU '+r2(d.du_we)+'%',P.bgWE,wedc,62);
+        const weLY=Y_Z+ZH+Math.round((Y_W-Y_Z-ZH)/2);
+        svg+=pill(zcx,weLY,'ΔU '+r2(d.du_we)+' %',C.bgWE,C.cWE,68,24);
       }
-      svg+=bx(zx,WY,ZAW,WH,P.bgWE,P.cWE,5,1.5);
-      svg+=tx(zcx,WY+15,`WE (${z.nwe}× ${p_we} kW)`,8.5,P.cWE,700);
-      svg+=tx(zcx,WY+27,`${z.l_we} m · ${z.qs_we} mm²`,7.5,P.txSub);
+      svg+=rect(zx,Y_W,ZW,WH2,C.bgWE,C.cWE,6,1.5);
+      svg+=tx(zcx,Y_W+15,`WE (${z.nwe}× ${p_we} kW)`,9,C.cWE,700);
+      svg+=tx(zcx,Y_W+28,`${z.l_we} m · ${z.qs_we} mm² Cu`,7.5,C.tx2);
     }
   });
 
