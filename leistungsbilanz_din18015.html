@@ -5,10 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Leistungsbilanz Hausanschluss – DIN 18015</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-<!-- SheetJS for Excel export -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
-:root {
+:root{
   --bg:#0f0f11;--bg2:#16161a;--bg3:#1e1e24;--bg4:#26262e;
   --border:#2e2e38;--border2:#3d3d4d;
   --text:#e8e8f0;--text2:#9898b0;--text3:#5a5a72;
@@ -19,12 +18,9 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:14px;line-height:1.6;min-height:100vh;}
 body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(circle,#2a2a38 1px,transparent 1px);background-size:28px 28px;opacity:.35;pointer-events:none;z-index:0;}
-.wrapper{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:2rem 1.5rem 4rem;}
-
-/* HEADER */
+.wrapper{position:relative;z-index:1;max-width:1260px;margin:0 auto;padding:2rem 1.5rem 4rem;}
 header{border-bottom:1px solid var(--border);padding-bottom:1.5rem;margin-bottom:2rem;}
-.header-top{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;flex-wrap:wrap;}
-.logo-tag{font-family:var(--mono);font-size:10px;font-weight:500;letter-spacing:.15em;color:var(--accent);text-transform:uppercase;background:rgba(74,158,255,.1);border:1px solid rgba(74,158,255,.25);border-radius:3px;padding:3px 8px;display:inline-block;width:fit-content;}
+.logo-tag{font-family:var(--mono);font-size:10px;font-weight:500;letter-spacing:.15em;color:var(--accent);text-transform:uppercase;background:rgba(74,158,255,.1);border:1px solid rgba(74,158,255,.25);border-radius:3px;padding:3px 8px;display:inline-block;}
 h1{font-family:var(--mono);font-size:clamp(18px,2.5vw,26px);font-weight:600;color:var(--text);letter-spacing:-.02em;margin-top:6px;}
 h1 span{color:var(--accent);}
 .norm-badges{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;}
@@ -33,225 +29,186 @@ h1 span{color:var(--accent);}
 .badge-green{color:var(--green);border-color:rgba(62,207,142,.3);background:rgba(62,207,142,.07);}
 .badge-amber{color:var(--amber);border-color:rgba(245,166,35,.3);background:rgba(245,166,35,.07);}
 .badge-purple{color:var(--purple);border-color:rgba(155,114,230,.3);background:rgba(155,114,230,.07);}
-
-/* ACTION BUTTONS */
 .action-bar{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;}
-.btn{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.05em;padding:7px 14px;border-radius:5px;border:1px solid;cursor:pointer;transition:all .15s;text-transform:uppercase;}
+.btn{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.05em;padding:7px 14px;border-radius:5px;border:1px solid;cursor:pointer;transition:all .15s;text-transform:uppercase;background:transparent;}
 .btn-pdf{color:var(--red);border-color:rgba(224,82,82,.4);background:rgba(224,82,82,.08);}
-.btn-pdf:hover{background:rgba(224,82,82,.18);border-color:rgba(224,82,82,.7);}
+.btn-pdf:hover{background:rgba(224,82,82,.18);}
 .btn-xls{color:var(--green);border-color:rgba(62,207,142,.4);background:rgba(62,207,142,.08);}
-.btn-xls:hover{background:rgba(62,207,142,.18);border-color:rgba(62,207,142,.7);}
-.btn-icon{font-size:15px;line-height:1;}
-
-/* MAIN LAYOUT */
-.main-grid{display:grid;grid-template-columns:1fr 420px;gap:1.5rem;align-items:start;}
-@media(max-width:900px){.main-grid{grid-template-columns:1fr;}}
-
-/* PANELS */
+.btn-xls:hover{background:rgba(62,207,142,.18);}
+.main-grid{display:grid;grid-template-columns:1fr 440px;gap:1.5rem;align-items:start;}
+@media(max-width:960px){.main-grid{grid-template-columns:1fr;}}
 .panel{background:var(--bg2);border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:1rem;}
 .panel:last-child{margin-bottom:0;}
-.panel-header{background:var(--bg3);border-bottom:1px solid var(--border);padding:.6rem 1rem;display:flex;align-items:center;gap:8px;}
-.panel-icon{width:22px;height:22px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;font-family:var(--mono);}
+.panel-header{background:var(--bg3);border-bottom:1px solid var(--border);padding:.55rem 1rem;display:flex;align-items:center;gap:8px;}
+.panel-icon{width:22px;height:22px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;font-family:var(--mono);flex-shrink:0;}
 .pi-blue{background:rgba(74,158,255,.15);color:var(--accent);}
 .pi-green{background:rgba(62,207,142,.15);color:var(--green);}
 .pi-amber{background:rgba(245,166,35,.15);color:var(--amber);}
 .pi-red{background:rgba(224,82,82,.15);color:var(--red);}
 .pi-purple{background:rgba(155,114,230,.15);color:var(--purple);}
 .pi-teal{background:rgba(46,196,182,.15);color:var(--teal);}
-.panel-title{font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--text2);}
+.panel-title{font-family:var(--mono);font-size:10.5px;font-weight:500;letter-spacing:.07em;text-transform:uppercase;color:var(--text2);}
 .panel-body{padding:.75rem 1rem;}
-
-/* INPUTS */
 .input-row{display:grid;grid-template-columns:1fr auto auto;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--border);}
 .input-row:last-child{border-bottom:none;}
-.input-label{font-size:12.5px;color:var(--text2);line-height:1.4;}
-.input-label small{display:block;font-family:var(--mono);font-size:10px;color:var(--text3);margin-top:1px;}
-.num-input{width:80px;background:var(--bg3);border:1px solid var(--border2);border-radius:4px;color:var(--text);font-family:var(--mono);font-size:13px;font-weight:500;text-align:right;padding:5px 8px;transition:border-color .15s;-moz-appearance:textfield;}
+.input-label{font-size:12px;color:var(--text2);line-height:1.4;}
+.input-label small{display:block;font-family:var(--mono);font-size:9.5px;color:var(--text3);margin-top:1px;}
+.num-input{width:78px;background:var(--bg3);border:1px solid var(--border2);border-radius:4px;color:var(--text);font-family:var(--mono);font-size:13px;font-weight:500;text-align:right;padding:4px 7px;transition:border-color .15s;-moz-appearance:textfield;}
 .num-input::-webkit-inner-spin-button,.num-input::-webkit-outer-spin-button{-webkit-appearance:none;}
 .num-input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 2px rgba(74,158,255,.15);}
-.sel-input{background:var(--bg3);border:1px solid var(--border2);border-radius:4px;color:var(--text);font-family:var(--mono);font-size:11px;padding:5px 6px;transition:border-color .15s;width:170px;}
+.sel-input{background:var(--bg3);border:1px solid var(--border2);border-radius:4px;color:var(--text);font-family:var(--mono);font-size:11px;padding:5px 6px;width:170px;}
 .sel-input:focus{outline:none;border-color:var(--accent);}
-.unit-label{font-family:var(--mono);font-size:11px;color:var(--text3);min-width:28px;}
-
-/* KPIS */
+.unit-label{font-family:var(--mono);font-size:11px;color:var(--text3);min-width:26px;}
 .kpi-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
-.kpi{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:.75rem;text-align:center;}
-.kpi-label{font-family:var(--mono);font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);margin-bottom:4px;}
-.kpi-val{font-family:var(--mono);font-size:22px;font-weight:600;line-height:1.1;}
-.kpi-unit{font-family:var(--mono);font-size:10px;color:var(--text3);margin-top:2px;}
+.kpi{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:.65rem;text-align:center;}
+.kpi-label{font-family:var(--mono);font-size:8.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--text3);margin-bottom:3px;}
+.kpi-val{font-family:var(--mono);font-size:20px;font-weight:600;line-height:1.1;}
+.kpi-unit{font-family:var(--mono);font-size:9px;color:var(--text3);margin-top:2px;}
 .kv-blue{color:var(--accent);}.kv-green{color:var(--green);}.kv-amber{color:var(--amber);}.kv-red{color:var(--red);}
-
-/* BARS */
-.br-row{display:grid;grid-template-columns:110px 1fr 55px;align-items:center;gap:8px;margin-bottom:6px;}
+.br-row{display:grid;grid-template-columns:110px 1fr 55px;align-items:center;gap:8px;margin-bottom:5px;}
 .br-label{font-size:11px;color:var(--text2);font-family:var(--mono);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.br-track{background:var(--bg3);border-radius:3px;height:14px;overflow:hidden;}
+.br-track{background:var(--bg3);border-radius:3px;height:13px;overflow:hidden;}
 .br-fill{height:100%;border-radius:3px;transition:width .4s cubic-bezier(.4,0,.2,1);}
 .br-val{font-family:var(--mono);font-size:11px;font-weight:500;text-align:right;}
-
-/* TABLES */
 .din-table-wrap{overflow-x:auto;}
 table.din{width:100%;border-collapse:collapse;font-size:12px;}
-table.din thead th{font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);padding:6px 8px;border-bottom:1px solid var(--border2);text-align:left;white-space:nowrap;}
+table.din thead th{font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text3);padding:5px 7px;border-bottom:1px solid var(--border2);text-align:left;white-space:nowrap;}
 table.din tbody tr{border-bottom:1px solid var(--border);transition:background .1s;}
 table.din tbody tr:hover{background:var(--bg3);}
-table.din tbody tr.highlighted{background:rgba(74,158,255,.08);border-color:rgba(74,158,255,.25);}
-table.din tbody tr.highlighted td{color:var(--text);}
-table.din tbody tr.highlighted td:first-child::before{content:'▶ ';color:var(--accent);font-size:10px;}
-table.din td{padding:5px 8px;color:var(--text2);font-family:var(--mono);font-size:11px;white-space:nowrap;}
-
+table.din tbody tr.highlighted{background:rgba(74,158,255,.08);}
+table.din tbody tr.highlighted td:first-child::before{content:'▶ ';color:var(--accent);font-size:9px;}
+table.din td{padding:4px 7px;color:var(--text2);font-family:var(--mono);font-size:11px;white-space:nowrap;}
 table.cable{width:100%;border-collapse:collapse;}
-table.cable th{font-family:var(--mono);font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);padding:5px 8px;border-bottom:1px solid var(--border2);text-align:left;}
-table.cable td{font-family:var(--mono);font-size:11px;padding:4px 8px;border-bottom:1px solid var(--border);color:var(--text2);}
+table.cable th{font-family:var(--mono);font-size:9px;letter-spacing:.07em;text-transform:uppercase;color:var(--text3);padding:5px 7px;border-bottom:1px solid var(--border2);text-align:left;}
+table.cable td{font-family:var(--mono);font-size:11px;padding:4px 7px;border-bottom:1px solid var(--border);color:var(--text2);}
 table.cable tr.active td{background:rgba(74,158,255,.08);color:var(--text);}
 table.cable tr.active td.hl{color:var(--green);font-weight:600;}
-
-/* ANSCHLUSS BOX */
-.anschluss-box{border:1px solid;border-radius:8px;padding:1rem;}
+.anschluss-box{border:1px solid;border-radius:8px;padding:.85rem;}
 .ab-ok{border-color:rgba(62,207,142,.4);background:rgba(62,207,142,.05);}
 .ab-warn{border-color:rgba(245,166,35,.4);background:rgba(245,166,35,.05);}
 .ab-crit{border-color:rgba(224,82,82,.4);background:rgba(224,82,82,.05);}
-.ab-header{display:flex;align-items:center;gap:8px;margin-bottom:.75rem;}
-.ab-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
-.dot-ok{background:var(--green);box-shadow:0 0 8px var(--green);}
-.dot-warn{background:var(--amber);box-shadow:0 0 8px var(--amber);}
-.dot-crit{background:var(--red);box-shadow:0 0 8px var(--red);}
-.ab-title{font-family:var(--mono);font-size:13px;font-weight:600;}
-.ab-rows{display:flex;flex-direction:column;gap:5px;}
+.ab-header{display:flex;align-items:center;gap:8px;margin-bottom:.6rem;}
+.ab-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
+.dot-ok{background:var(--green);box-shadow:0 0 7px var(--green);}
+.dot-warn{background:var(--amber);box-shadow:0 0 7px var(--amber);}
+.dot-crit{background:var(--red);box-shadow:0 0 7px var(--red);}
+.ab-title{font-family:var(--mono);font-size:12px;font-weight:600;}
+.ab-rows{display:flex;flex-direction:column;gap:4px;}
 .ab-row{display:flex;justify-content:space-between;align-items:baseline;gap:8px;}
-.ab-row-label{font-size:12px;color:var(--text2);}
-.ab-row-val{font-family:var(--mono);font-size:12px;font-weight:500;color:var(--text);}
+.ab-row-label{font-size:11.5px;color:var(--text2);}
+.ab-row-val{font-family:var(--mono);font-size:11.5px;font-weight:500;color:var(--text);}
 .ab-row-val.highlight{color:var(--accent);}
-
-/* NOTES */
-.note{border-left:2px solid;padding:6px 10px;border-radius:0 4px 4px 0;font-size:11.5px;line-height:1.5;margin-top:6px;}
+.note{border-left:2px solid;padding:5px 9px;border-radius:0 4px 4px 0;font-size:11px;line-height:1.5;margin-top:6px;}
 .note-blue{border-color:var(--accent);background:rgba(74,158,255,.06);color:var(--text2);}
 .note-amber{border-color:var(--amber);background:rgba(245,166,35,.06);color:var(--text2);}
 .note-green{border-color:var(--green);background:rgba(62,207,142,.06);color:var(--text2);}
+.note-red{border-color:var(--red);background:rgba(224,82,82,.06);color:var(--text2);}
+.gz-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(72px,1fr));gap:4px;margin-top:.4rem;}
+.gz-cell{background:var(--bg3);border:1px solid var(--border);border-radius:5px;padding:4px 6px;font-family:var(--mono);font-size:11px;}
+.gz-n{color:var(--text3);font-size:9px;margin-bottom:1px;}
+.gz-v{color:var(--accent);font-size:12px;font-weight:600;}
+.detail-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:.85rem;}
+.detail-cell{border-left:2px solid var(--border2);padding:3px 9px;}
+.detail-label{font-family:var(--mono);font-size:8.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--text3);margin-bottom:1px;}
+.detail-val{font-family:var(--mono);font-size:11.5px;color:var(--text2);}
 
-/* GZ CELLS */
-.gz-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(75px,1fr));gap:5px;margin-top:.5rem;}
-.gz-cell{background:var(--bg3);border:1px solid var(--border);border-radius:5px;padding:5px 7px;font-family:var(--mono);font-size:11px;}
-.gz-n{color:var(--text3);font-size:10px;margin-bottom:2px;}
-.gz-v{color:var(--accent);font-size:13px;font-weight:600;}
+/* ── SPANNUNGSABFALL ── */
+.du-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:.5rem;}
+.du-card{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:.75rem;}
+.du-card-title{font-family:var(--mono);font-size:10px;letter-spacing:.07em;text-transform:uppercase;color:var(--text3);margin-bottom:.5rem;}
+.du-row{display:flex;justify-content:space-between;align-items:center;padding:3px 0;border-bottom:1px solid var(--border);font-size:11.5px;gap:6px;}
+.du-row:last-child{border-bottom:none;}
+.du-row-label{color:var(--text2);font-size:11px;}
+.du-row-val{font-family:var(--mono);font-weight:500;}
+.du-ok{color:var(--green);}
+.du-warn{color:var(--amber);}
+.du-crit{color:var(--red);}
+.du-bar-wrap{margin-top:6px;background:var(--bg);border-radius:3px;height:8px;overflow:hidden;}
+.du-bar{height:100%;border-radius:3px;transition:width .4s;}
 
-/* ZAEHLER DETAIL */
-.detail-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1rem;}
-.detail-cell{border-left:2px solid var(--border2);padding:4px 10px;}
-.detail-label{font-family:var(--mono);font-size:9px;letter-spacing:.06em;text-transform:uppercase;color:var(--text3);margin-bottom:2px;}
-.detail-val{font-family:var(--mono);font-size:12px;color:var(--text2);}
+/* ── ZÄHLERANLAGEN PANEL ── */
+.za-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+@media(max-width:700px){.za-grid{grid-template-columns:1fr;}}
+.za-card{background:var(--bg3);border:1px solid var(--border);border-radius:7px;padding:.75rem;}
+.za-card-title{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:.5rem;font-weight:600;}
+.za-irow{display:grid;grid-template-columns:1fr 75px 32px;align-items:center;gap:6px;padding:4px 0;border-bottom:1px solid var(--border);font-size:11.5px;}
+.za-irow:last-child{border-bottom:none;}
+.za-irow label{color:var(--text2);font-size:11px;}
 
-/* FOOTER */
-footer{margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--border);font-size:11px;color:var(--text3);font-family:var(--mono);line-height:1.8;}
+footer{margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--border);font-size:10.5px;color:var(--text3);font-family:var(--mono);line-height:1.8;}
 
-/* SCHEMA */
-.schema-wrap{width:100%;overflow-x:auto;}
-.schema-svg text{font-family:'IBM Plex Mono',monospace;}
-
-/* =====================
-   PRINT / PDF STYLES
-   ===================== */
-@media print {
-  @page{size:A4 portrait;margin:15mm 12mm 15mm 12mm;}
-  body{background:#fff !important;color:#111 !important;font-size:11px;}
-  body::before{display:none !important;}
-  .wrapper{max-width:100%;padding:0;z-index:auto;}
-  .action-bar,.btn{display:none !important;}
-  :root{
-    --bg:#fff;--bg2:#f8f8f8;--bg3:#f0f0f0;--bg4:#e8e8e8;
-    --border:#ccc;--border2:#bbb;
-    --text:#111;--text2:#444;--text3:#777;
-    --accent:#1a5fb4;--green:#2d7a4f;--amber:#8a5a00;--red:#a00;
-    --teal:#1a6a65;--purple:#5a3a9a;
-  }
-  .main-grid{display:block !important;}
-  .panel{break-inside:avoid;border:1px solid #ccc;margin-bottom:8px;page-break-inside:avoid;}
-  .panel-header{background:#e8e8e8 !important;border-bottom:1px solid #ccc;}
-  .kpi-val{font-size:16px !important;}
-  .result-stack{margin-top:0;}
-  .gz-grid{grid-template-columns:repeat(8,1fr) !important;}
-  /* PDF print header */
-  .pdf-header{display:block !important;}
-  h1{font-size:18px !important;}
-  .norm-badges .badge{border:1px solid #999;background:#f0f0f0;color:#333;}
-  table.cable td, table.cable th, table.din td, table.din thead th{font-size:9px;padding:3px 5px;}
-  .br-row{margin-bottom:4px;}
+/* ══ PRINT ══════════════════════════════════════════════ */
+@media print{
+  @page{size:A4 portrait;margin:12mm 10mm 12mm 10mm;}
+  body{background:#fff!important;color:#111!important;font-size:10px;}
+  body::before{display:none!important;}
+  .wrapper{max-width:100%;padding:0;}
+  .action-bar,.btn{display:none!important;}
+  :root{--bg:#fff;--bg2:#f8f8f8;--bg3:#f0f0f0;--bg4:#e8e8e8;--border:#ccc;--border2:#bbb;--text:#111;--text2:#444;--text3:#777;--accent:#1a5fb4;--green:#2d7a4f;--amber:#8a5a00;--red:#a00;--teal:#1a6a65;--purple:#5a3a9a;}
+  .main-grid{display:block!important;}
+  .panel{break-inside:avoid;border:1px solid #ccc!important;margin-bottom:6px!important;page-break-inside:avoid;}
+  .panel-header{background:#e8e8e8!important;border-bottom:1px solid #ccc!important;}
+  .kpi-val{font-size:15px!important;}
+  .gz-grid{grid-template-columns:repeat(8,1fr)!important;}
+  .detail-grid{grid-template-columns:repeat(3,1fr)!important;}
+  .za-grid{grid-template-columns:1fr 1fr!important;}
+  .du-grid{grid-template-columns:1fr 1fr!important;}
+  .pdf-only{display:block!important;}
+  .du-bar-wrap{display:none;}
+  #leitungsschema_svg svg rect[fill="#0f0f11"]{fill:#f8f8f8!important;}
+  #leitungsschema_svg svg rect[fill="#16161a"]{fill:#f4f4f4!important;}
+  #leitungsschema_svg svg rect[fill="#1e1e24"]{fill:#ececec!important;}
+  #leitungsschema_svg svg text{fill:#111!important;}
   footer{font-size:9px;margin-top:1rem;}
-  .full-panel{page-break-before:auto;}
-  .detail-grid{grid-template-columns:repeat(3,1fr) !important;}
-  /* schema in print: lighter bg */
-  #leitungsschema_svg svg{background:#f8f8f8 !important;}
-  #leitungsschema_svg svg rect[fill="#16161a"]{fill:#f8f8f8 !important;}
-  #leitungsschema_svg svg rect[fill="#1e1e24"]{fill:#f0f4f8 !important;}
-  #leitungsschema_svg svg rect[fill="#1e3a5f"]{fill:#dce8f8 !important;}
-  #leitungsschema_svg svg rect[fill="#3d2a00"]{fill:#fff3d0 !important;}
-  #leitungsschema_svg svg rect[fill="#1a3a22"]{fill:#d6f0dc !important;}
-  #leitungsschema_svg svg rect[fill="#0d2540"]{fill:#d0e8ff !important;}
-  #leitungsschema_svg svg rect[fill="#0d3324"]{fill:#c8f0e0 !important;}
-  #leitungsschema_svg svg rect[fill="#3d2800"]{fill:#fde8c0 !important;}
-  #leitungsschema_svg svg rect[fill="#271a40"]{fill:#e8dcff !important;}
-  #leitungsschema_svg svg rect[fill="#0d2e2c"]{fill:#c8f0ee !important;}
-  #leitungsschema_svg svg text{fill:#111 !important;}
 }
-/* hide pdf-only header on screen */
 .pdf-only{display:none;}
 </style>
 </head>
 <body>
 <div class="wrapper">
 
-<!-- PDF-only date/project header -->
-<div class="pdf-only" id="pdf_header" style="border-bottom:2px solid #1a5fb4;padding-bottom:8px;margin-bottom:12px;">
+<div class="pdf-only" style="border-bottom:2px solid #1a5fb4;padding-bottom:8px;margin-bottom:10px;">
   <div style="display:flex;justify-content:space-between;align-items:flex-end;">
     <div>
-      <div style="font-size:10px;color:#555;letter-spacing:.1em;text-transform:uppercase;">Elektroplanung · Mehrfamilienhaus</div>
-      <div style="font-size:16px;font-weight:700;margin:2px 0;">Leistungsbilanz Hausanschluss</div>
-      <div style="font-size:9px;color:#777;">DIN 18015-1:2020 · VDE-AR-N 4100:2019 · §14a EnWG · DIN VDE 0298-4</div>
+      <div style="font-size:9px;color:#555;letter-spacing:.1em;text-transform:uppercase;">Elektroplanung · Mehrfamilienhaus</div>
+      <div style="font-size:15px;font-weight:700;">Leistungsbilanz Hausanschluss</div>
+      <div style="font-size:8px;color:#777;">DIN 18015-1:2020 · VDE-AR-N 4100:2019 · §14a EnWG · DIN VDE 0298-4 · DIN VDE 0100-520</div>
     </div>
     <div style="text-align:right;font-size:9px;color:#555;">
       <div>Projekt: <span id="pdf_projekt">–</span></div>
-      <div>Erstellt: <span id="pdf_datum"></span></div>
+      <div>Datum: <span id="pdf_datum"></span></div>
       <div>Bearbeiter: <span id="pdf_bearb">–</span></div>
     </div>
   </div>
 </div>
 
 <header>
-  <div class="header-top">
-    <div>
-      <span class="logo-tag">Elektroplanung · Mehrfamilienhaus</span>
-      <h1>Leistungsbilanz <span>Hausanschluss</span></h1>
-      <div class="norm-badges">
-        <span class="badge badge-blue">DIN 18015-1:2020</span>
-        <span class="badge badge-green">VDE-AR-N 4100:2019</span>
-        <span class="badge badge-amber">§14a EnWG</span>
-        <span class="badge badge-purple">DIN VDE 0298-4</span>
-      </div>
-    </div>
+  <span class="logo-tag">Elektroplanung · Mehrfamilienhaus</span>
+  <h1>Leistungsbilanz <span>Hausanschluss</span></h1>
+  <div class="norm-badges">
+    <span class="badge badge-blue">DIN 18015-1:2020</span>
+    <span class="badge badge-green">VDE-AR-N 4100:2019</span>
+    <span class="badge badge-amber">§14a EnWG</span>
+    <span class="badge badge-purple">DIN VDE 0298-4</span>
+    <span class="badge badge-blue">DIN VDE 0100-520</span>
   </div>
   <div class="action-bar">
-    <button class="btn btn-pdf" onclick="doPrint()">
-      <span class="btn-icon">⎙</span> PDF drucken
-    </button>
-    <button class="btn btn-xls" onclick="doExcel()">
-      <span class="btn-icon">⬇</span> Excel exportieren
-    </button>
+    <button class="btn btn-pdf" onclick="doPrint()">⎙ PDF drucken</button>
+    <button class="btn btn-xls" onclick="doExcel()">⬇ Excel exportieren</button>
   </div>
-  <!-- Projektinfo für PDF -->
-  <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:12px;" id="project_fields">
+  <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;">
     <div style="display:flex;align-items:center;gap:6px;">
-      <label style="font-family:var(--mono);font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;">Projekt</label>
-      <input type="text" id="inp_projekt" placeholder="Projektname / Adresse" style="background:var(--bg3);border:1px solid var(--border2);border-radius:4px;color:var(--text);font-family:var(--sans);font-size:12px;padding:4px 8px;width:200px;">
+      <label style="font-family:var(--mono);font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;">Projekt</label>
+      <input type="text" id="inp_projekt" placeholder="Projektname / Adresse" style="background:var(--bg3);border:1px solid var(--border2);border-radius:4px;color:var(--text);font-family:var(--sans);font-size:12px;padding:3px 8px;width:200px;">
     </div>
     <div style="display:flex;align-items:center;gap:6px;">
-      <label style="font-family:var(--mono);font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;">Bearbeiter</label>
-      <input type="text" id="inp_bearb" placeholder="Name / Büro" style="background:var(--bg3);border:1px solid var(--border2);border-radius:4px;color:var(--text);font-family:var(--sans);font-size:12px;padding:4px 8px;width:160px;">
+      <label style="font-family:var(--mono);font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;">Bearbeiter</label>
+      <input type="text" id="inp_bearb" placeholder="Name / Büro" style="background:var(--bg3);border:1px solid var(--border2);border-radius:4px;color:var(--text);font-family:var(--sans);font-size:12px;padding:3px 8px;width:160px;">
     </div>
   </div>
 </header>
 
 <div class="main-grid">
-
-<!-- LEFT: INPUTS -->
 <div>
 
   <!-- WOHNUNGEN -->
@@ -264,17 +221,16 @@ footer{margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--border);fon
         <span class="unit-label">WE</span>
       </div>
       <div class="input-row">
-        <div class="input-label">Grundbedarf je WE<small>Tab.1 DIN 18015-1 — Standard: 14,5 kW</small></div>
+        <div class="input-label">Grundbedarf je WE<small>DIN 18015-1 Tab.1 – Standard 14,5 kW</small></div>
         <input class="num-input" type="number" id="p_we" value="14.5" min="1" step="0.5">
         <span class="unit-label">kW</span>
       </div>
       <div class="input-row">
-        <div class="input-label">Gleichzeitigkeitsfaktor WE<small>VDE-AR-N 4100 Anhang A (auto)</small></div>
+        <div class="input-label">Gleichzeitigkeitsfaktor WE<small>VDE-AR-N 4100 – wird auto. berechnet</small></div>
         <input class="num-input" type="number" id="gz_we" value="0.37" min="0.1" max="1" step="0.01">
         <span class="unit-label">—</span>
       </div>
-      <div style="margin-top:8px;display:grid;grid-template-columns:repeat(6,1fr);gap:4px;" id="gz_table_mini"></div>
-      <div class="note note-blue" style="margin-top:8px;">GZ nach VDE-AR-N 4100 Tab.A.1 – wird bei Änderung n_WE automatisch aktualisiert.</div>
+      <div style="margin-top:7px;display:grid;grid-template-columns:repeat(6,1fr);gap:4px;" id="gz_table_mini"></div>
     </div>
   </div>
 
@@ -283,12 +239,11 @@ footer{margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--border);fon
     <div class="panel-header"><div class="panel-icon pi-teal">AZ</div><span class="panel-title">Allgemeinzähler & Allgemeinstromkreise</span></div>
     <div class="panel-body">
       <div class="input-row">
-        <div class="input-label">Anzahl Allgemeinzähler<small>z.B. Hausflur, Keller, TG, Außen</small></div>
+        <div class="input-label">Anzahl Allgemeinzähler</div>
         <input class="num-input" type="number" id="n_allgz" value="2" min="1" max="20">
         <span class="unit-label">Stk.</span>
       </div>
       <div id="allgz_rows"></div>
-      <div class="note note-blue" style="margin-top:8px;">Jeder Allgemeinzähler erscheint separat im Zählerschrank-Konzept und im Excel-Export.</div>
     </div>
   </div>
 
@@ -297,12 +252,12 @@ footer{margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--border);fon
     <div class="panel-header"><div class="panel-icon pi-green">WP</div><span class="panel-title">Wärmepumpe (zentral)</span></div>
     <div class="panel-body">
       <div class="input-row">
-        <div class="input-label">Elektrische Leistungsaufnahme WP<small>P_el — nicht COP-Heizleistung</small></div>
+        <div class="input-label">Elektrische Leistungsaufnahme P_el<small>nicht Heizleistung / COP</small></div>
         <input class="num-input" type="number" id="p_wp" value="26" min="0" step="0.5">
         <span class="unit-label">kW</span>
       </div>
       <div class="input-row">
-        <div class="input-label">Steuerung / §14a-Konzept</div>
+        <div class="input-label">§14a-Steuerkonzept</div>
         <select class="sel-input" id="gz_wp_sel">
           <option value="1.0">Kein Eingriff (worst case)</option>
           <option value="0.85" selected>SG-Ready / Smart Meter</option>
@@ -310,7 +265,7 @@ footer{margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--border);fon
         </select>
         <span class="unit-label"></span>
       </div>
-      <div class="note note-green">§14a EnWG: Pflicht zur steuerbaren Einrichtung bei Netzanschluss-Neuinstallation ab 4,2 kW.</div>
+      <div class="note note-green">§14a EnWG: Pflicht zur steuerbaren Einrichtung bei Neuinstallation ab 4,2 kW.</div>
     </div>
   </div>
 
@@ -319,26 +274,26 @@ footer{margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--border);fon
     <div class="panel-header"><div class="panel-icon pi-amber">EM</div><span class="panel-title">E-Mobilität / Ladeinfrastruktur</span></div>
     <div class="panel-body">
       <div class="input-row">
-        <div class="input-label">Anzahl Ladepunkte<small>LP gesamt</small></div>
+        <div class="input-label">Anzahl Ladepunkte</div>
         <input class="num-input" type="number" id="n_emob" value="6" min="0" max="100">
         <span class="unit-label">LP</span>
       </div>
       <div class="input-row">
-        <div class="input-label">Leistung je Ladepunkt<small>typ. 11 kW / 22 kW AC</small></div>
+        <div class="input-label">Leistung je Ladepunkt<small>typ. 11 / 22 kW AC</small></div>
         <input class="num-input" type="number" id="p_emob" value="11" min="0" step="0.5">
         <span class="unit-label">kW</span>
       </div>
       <div class="input-row">
         <div class="input-label">Lademanagementsystem</div>
         <select class="sel-input" id="gz_emob_sel">
-          <option value="1.0">Keines (alle gleichzeitig)</option>
+          <option value="1.0">Keines</option>
           <option value="0.5" selected>Lastmanagement IEC 61851</option>
           <option value="0.3">Dynamisch §14a EnWG</option>
           <option value="0.25">Intelligentes EMS</option>
         </select>
         <span class="unit-label"></span>
       </div>
-      <div class="note note-amber">Ab 6 Ladepunkten ist Lastmanagement gesetzlich vorgeschrieben (§14a EnWG 2024).</div>
+      <div class="note note-amber">Ab 6 LP gesetzlich Pflicht: §14a EnWG 2024.</div>
     </div>
   </div>
 
@@ -347,7 +302,7 @@ footer{margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--border);fon
     <div class="panel-header"><div class="panel-icon pi-purple">AU</div><span class="panel-title">Aufzug & Sonderanlagen</span></div>
     <div class="panel-body">
       <div class="input-row">
-        <div class="input-label">Aufzug – Nennleistung Motor<small>typ. 5–15 kW</small></div>
+        <div class="input-label">Aufzug – Nennleistung Motor</div>
         <input class="num-input" type="number" id="p_aufzug" value="7.5" min="0" step="0.5">
         <span class="unit-label">kW</span>
       </div>
@@ -391,19 +346,25 @@ footer{margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--border);fon
         </select>
         <span class="unit-label"></span>
       </div>
+      <div class="input-row">
+        <div class="input-label">Leitermaterial HAK → ZA<small>spez. Widerstand ρ</small></div>
+        <select class="sel-input" id="mat_sel" style="width:100px;">
+          <option value="0.0178" selected>Cu (0,0178)</option>
+          <option value="0.0286">Al (0,0286)</option>
+        </select>
+        <span class="unit-label"></span>
+      </div>
     </div>
   </div>
 
 </div><!-- end left -->
 
-<!-- RIGHT: RESULTS -->
 <div>
-
-  <!-- KPIs + BARS -->
+  <!-- KPIs -->
   <div class="panel">
-    <div class="panel-header"><div class="panel-icon pi-blue">∑</div><span class="panel-title">Ergebnis</span></div>
+    <div class="panel-header"><div class="panel-icon pi-blue">∑</div><span class="panel-title">Ergebnis Leistungsbilanz</span></div>
     <div class="panel-body">
-      <div class="kpi-grid" style="margin-bottom:.75rem;">
+      <div class="kpi-grid" style="margin-bottom:.7rem;">
         <div class="kpi"><div class="kpi-label">Summenlast</div><div class="kpi-val kv-amber" id="k_sum">–</div><div class="kpi-unit">kW</div></div>
         <div class="kpi"><div class="kpi-label">Bemessungslast</div><div class="kpi-val kv-blue" id="k_bez">–</div><div class="kpi-unit">kW</div></div>
         <div class="kpi"><div class="kpi-label">Bemessungsstrom</div><div class="kpi-val kv-green" id="k_strom">–</div><div class="kpi-unit">A</div></div>
@@ -412,7 +373,7 @@ footer{margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--border);fon
     </div>
   </div>
 
-  <!-- ANSCHLUSS EMPFEHLUNG -->
+  <!-- HAUSANSCHLUSS -->
   <div class="panel">
     <div class="panel-header"><div class="panel-icon pi-green">HA</div><span class="panel-title">Hausanschluss-Empfehlung</span></div>
     <div class="panel-body"><div id="ab_inner"></div></div>
@@ -433,7 +394,7 @@ footer{margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--border);fon
           </tbody>
         </table>
       </div>
-      <div class="note note-blue" style="margin-top:8px;">Aktuell gewählt: <strong id="cur_pwe_note">–</strong> kW/WE</div>
+      <div class="note note-blue" style="margin-top:7px;">Aktuell gewählt: <strong id="cur_pwe_note">–</strong> kW/WE</div>
     </div>
   </div>
 
@@ -447,7 +408,7 @@ footer{margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--border);fon
           <tbody id="cable_tbody"></tbody>
         </table>
       </div>
-      <div class="note note-blue" style="margin-top:8px;" id="cable_note">–</div>
+      <div class="note note-blue" style="margin-top:7px;" id="cable_note">–</div>
     </div>
   </div>
 
@@ -456,28 +417,66 @@ footer{margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--border);fon
     <div class="panel-header"><div class="panel-icon pi-purple">GZ</div><span class="panel-title">GZ-Referenz VDE-AR-N 4100</span></div>
     <div class="panel-body">
       <div class="gz-grid" id="gz_ref"></div>
-      <div class="note note-blue" style="margin-top:8px;">Interpolation zulässig. n &gt; 50 WE: GZ ≈ 0,20–0,24</div>
+      <div class="note note-blue" style="margin-top:7px;">n &gt; 50 WE: GZ ≈ 0,20–0,24</div>
     </div>
   </div>
 
 </div><!-- end right -->
 </div><!-- end main-grid -->
 
-<!-- FULL WIDTH: ZÄHLERSCHRANK -->
-<div class="panel full-panel">
-  <div class="panel-header"><div class="panel-icon pi-teal">∼</div><span class="panel-title">Zählerschrank & Anschluss – Dimensionierungsübersicht</span></div>
+<!-- ═══ ZÄHLERANLAGEN MIT LEITUNGSLÄNGEN ═══════════════════════════════════ -->
+<div class="panel full-panel" style="margin-top:1rem;">
+  <div class="panel-header"><div class="panel-icon pi-amber">ZA</div><span class="panel-title">Zähleranlagen – Leitungslängen & Spannungsabfall ΔU (DIN VDE 0100-520)</span></div>
   <div class="panel-body">
-    <div class="detail-grid" id="zaehler_detail"></div>
+
+    <div class="za-grid" style="margin-bottom:1rem;">
+
+      <!-- ZA1 -->
+      <div class="za-card" style="border-color:rgba(74,158,255,.3);">
+        <div class="za-card-title" style="color:var(--accent);">Zähleranlage 1</div>
+        <div class="za-irow"><label>Bezeichnung / Lage</label><input type="text" id="za1_name" value="EG / Treppenhaus" style="background:var(--bg);border:1px solid var(--border2);border-radius:4px;color:var(--text);font-size:11px;padding:3px 6px;grid-column:span 2;width:100%;font-family:var(--sans);"></div>
+        <div class="za-irow"><label>Anzahl WE an ZA1</label><input class="num-input" type="number" id="za1_nwe" value="6" min="0" style="width:100%;"><span class="unit-label">WE</span></div>
+        <div class="za-irow"><label>Länge HAK → ZA1<small style="display:block;font-size:9px;color:var(--text3);">Einfachlänge</small></label><input class="num-input" type="number" id="za1_l_hak" value="15" min="0" step="0.5" style="width:100%;"><span class="unit-label">m</span></div>
+        <div class="za-irow"><label>Kabelquerschnitt HAK→ZA1<small style="display:block;font-size:9px;color:var(--text3);">oder auto aus Empfehlung</small></label><input class="num-input" type="number" id="za1_qs" value="70" min="1" step="1" style="width:100%;"><span class="unit-label">mm²</span></div>
+        <div class="za-irow"><label>Länge ZA1 → WE (mittl.)<small style="display:block;font-size:9px;color:var(--text3);">Einfachlänge je WE</small></label><input class="num-input" type="number" id="za1_l_we" value="20" min="0" step="0.5" style="width:100%;"><span class="unit-label">m</span></div>
+        <div class="za-irow"><label>Querschnitt ZA1 → WE</label><input class="num-input" type="number" id="za1_qs_we" value="10" min="1" step="1" style="width:100%;"><span class="unit-label">mm²</span></div>
+        <div id="za1_result" style="margin-top:.6rem;"></div>
+      </div>
+
+      <!-- ZA2 -->
+      <div class="za-card" style="border-color:rgba(62,207,142,.3);">
+        <div class="za-card-title" style="color:var(--green);">Zähleranlage 2</div>
+        <div class="za-irow"><label>Bezeichnung / Lage</label><input type="text" id="za2_name" value="OG / Dachgeschoss" style="background:var(--bg);border:1px solid var(--border2);border-radius:4px;color:var(--text);font-size:11px;padding:3px 6px;grid-column:span 2;width:100%;font-family:var(--sans);"></div>
+        <div class="za-irow"><label>Anzahl WE an ZA2</label><input class="num-input" type="number" id="za2_nwe" value="6" min="0" style="width:100%;"><span class="unit-label">WE</span></div>
+        <div class="za-irow"><label>Länge HAK → ZA2<small style="display:block;font-size:9px;color:var(--text3);">Einfachlänge</small></label><input class="num-input" type="number" id="za2_l_hak" value="30" min="0" step="0.5" style="width:100%;"><span class="unit-label">m</span></div>
+        <div class="za-irow"><label>Kabelquerschnitt HAK→ZA2</label><input class="num-input" type="number" id="za2_qs" value="70" min="1" step="1" style="width:100%;"><span class="unit-label">mm²</span></div>
+        <div class="za-irow"><label>Länge ZA2 → WE (mittl.)</label><input class="num-input" type="number" id="za2_l_we" value="25" min="0" step="0.5" style="width:100%;"><span class="unit-label">m</span></div>
+        <div class="za-irow"><label>Querschnitt ZA2 → WE</label><input class="num-input" type="number" id="za2_qs_we" value="10" min="1" step="1" style="width:100%;"><span class="unit-label">mm²</span></div>
+        <div id="za2_result" style="margin-top:.6rem;"></div>
+      </div>
+    </div>
+
+    <!-- ΔU ERGEBNIS -->
+    <div class="du-grid" id="du_results"></div>
+    <div class="note note-blue" style="margin-top:.75rem;">
+      ΔU = (√3 × I × L × 2 × ρ) / A · Grenzwert gesamt: <strong>max. 3%</strong> (DIN VDE 0100-520) · HAK→ZA: max. 1,5% · ZA→WE: max. 1,5%
+    </div>
   </div>
 </div>
 
-<!-- FULL WIDTH: ALLGEMEINZÄHLER ÜBERSICHT -->
+<!-- ZÄHLERSCHRANK ÜBERSICHT -->
 <div class="panel full-panel">
-  <div class="panel-header"><div class="panel-icon pi-teal">AZ</div><span class="panel-title">Allgemeinzähler – Übersicht Zählerschrank</span></div>
+  <div class="panel-header"><div class="panel-icon pi-teal">∼</div><span class="panel-title">Zählerschrank – Dimensionierungsübersicht</span></div>
+  <div class="panel-body"><div class="detail-grid" id="zaehler_detail"></div></div>
+</div>
+
+<!-- ALLGEMEINZÄHLER TABELLE -->
+<div class="panel full-panel">
+  <div class="panel-header"><div class="panel-icon pi-teal">AZ</div><span class="panel-title">Allgemeinzähler – Übersicht</span></div>
   <div class="panel-body">
     <div class="din-table-wrap">
-      <table class="din" id="allgz_table">
-        <thead><tr><th>#</th><th>Bezeichnung</th><th>Summenlast</th><th>GZ</th><th>Bemessungsleistung</th><th>Strom (A)</th><th>Kabel (Cu)</th><th>Sicherung</th></tr></thead>
+      <table class="din">
+        <thead><tr><th>#</th><th>Bezeichnung</th><th>Summenlast</th><th>GZ</th><th>Bemess.-leistung</th><th>Strom (A)</th><th>Kabel (Cu)</th><th>Sicherung</th></tr></thead>
         <tbody id="allgz_tbody"></tbody>
       </table>
     </div>
@@ -485,47 +484,40 @@ footer{margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--border);fon
 </div>
 
 <!-- LEITUNGSSCHEMA -->
-<div class="panel full-panel" id="leitungsschema_panel">
-  <div class="panel-header"><div class="panel-icon pi-blue">LS</div><span class="panel-title">Leitungsschema – Netz → HAK → Zählerschrank → Verbraucher</span></div>
-  <div class="panel-body">
-    <div id="leitungsschema_svg" style="width:100%;overflow-x:auto;"></div>
-  </div>
+<div class="panel full-panel">
+  <div class="panel-header"><div class="panel-icon pi-blue">LS</div><span class="panel-title">Leitungsschema – Netz → HAK → Zähleranlagen → Verbraucher</span></div>
+  <div class="panel-body"><div id="leitungsschema_svg" style="width:100%;overflow-x:auto;"></div></div>
 </div>
 
 <footer>
-  Berechnung nach DIN 18015-1:2020 · VDE-AR-N 4100:2019 · DIN VDE 0298-4:2013 · §14a EnWG 2024<br>
-  Alle Angaben ohne Gewähr. Verbindliche Auslegung durch zugelassenen Elektrofachplaner / VNB-Abstimmung erforderlich.
+  Berechnung nach DIN 18015-1:2020 · VDE-AR-N 4100:2019 · DIN VDE 0298-4:2013 · DIN VDE 0100-520:2013 · §14a EnWG 2024<br>
+  Alle Angaben ohne Gewähr – verbindliche Auslegung durch zugelassenen Elektrofachplaner / VNB-Abstimmung erforderlich.
 </footer>
-
-</div><!-- /wrapper -->
+</div>
 
 <script>
-// ─── DATA ───────────────────────────────────────────────────────────────────
-const GZ_TABLE = [
+const GZ_TABLE=[
   {n:1,gz:1.0},{n:2,gz:0.8},{n:3,gz:0.65},{n:4,gz:0.55},{n:5,gz:0.49},
   {n:6,gz:0.44},{n:8,gz:0.40},{n:10,gz:0.38},{n:12,gz:0.37},{n:15,gz:0.35},
   {n:20,gz:0.32},{n:25,gz:0.30},{n:30,gz:0.28},{n:40,gz:0.26},{n:50,gz:0.24}
 ];
-
-const CABLE_DATA = [
-  {hak:63,  cu:'4×16 mm²',  al:'4×25 mm²',  iz_cu:80,   iz_al:68},
-  {hak:100, cu:'4×25 mm²',  al:'4×35 mm²',  iz_cu:105,  iz_al:90},
-  {hak:125, cu:'4×50 mm²',  al:'4×70 mm²',  iz_cu:133,  iz_al:115},
-  {hak:160, cu:'4×70 mm²',  al:'4×95 mm²',  iz_cu:169,  iz_al:145},
-  {hak:200, cu:'4×120 mm²', al:'4×150 mm²', iz_cu:218,  iz_al:190},
-  {hak:250, cu:'4×150 mm²', al:'4×185 mm²', iz_cu:250,  iz_al:220},
-  {hak:315, cu:'4×185 mm²', al:'4×240 mm²', iz_cu:290,  iz_al:258},
-  {hak:400, cu:'4×240 mm²', al:'2×(4×150)', iz_cu:340,  iz_al:300},
+const CABLE_DATA=[
+  {hak:63,  cu:'4×16 mm²', al:'4×25 mm²', iz_cu:80,  iz_al:68,  qs_cu:16},
+  {hak:100, cu:'4×25 mm²', al:'4×35 mm²', iz_cu:105, iz_al:90,  qs_cu:25},
+  {hak:125, cu:'4×50 mm²', al:'4×70 mm²', iz_cu:133, iz_al:115, qs_cu:50},
+  {hak:160, cu:'4×70 mm²', al:'4×95 mm²', iz_cu:169, iz_al:145, qs_cu:70},
+  {hak:200, cu:'4×120 mm²',al:'4×150 mm²',iz_cu:218, iz_al:190, qs_cu:120},
+  {hak:250, cu:'4×150 mm²',al:'4×185 mm²',iz_cu:250, iz_al:220, qs_cu:150},
+  {hak:315, cu:'4×185 mm²',al:'4×240 mm²',iz_cu:290, iz_al:258, qs_cu:185},
+  {hak:400, cu:'4×240 mm²',al:'2×(4×150)',iz_cu:340, iz_al:300, qs_cu:240},
 ];
-
-// Default Allgemeinzähler configs
-const AZ_DEFAULTS = [
-  {name:'Hausflur / Beleuchtung', p:3, gz:0.8},
-  {name:'Tiefgarage / Lüftung',   p:4, gz:0.8},
-  {name:'Außenanlage / Garten',   p:1, gz:1.0},
-  {name:'Aufzug (separat)',       p:7.5,gz:0.5},
-  {name:'Heizungszentrale',       p:5, gz:0.8},
-  {name:'Keller / Nebenräume',    p:2, gz:0.8},
+const AZ_DEFAULTS=[
+  {name:'Hausflur / Beleuchtung',p:3,gz:0.8},
+  {name:'Tiefgarage / Lüftung',  p:4,gz:0.8},
+  {name:'Außenanlage / Garten',  p:1,gz:1.0},
+  {name:'Aufzug (separat)',      p:7.5,gz:0.5},
+  {name:'Heizungszentrale',      p:5,gz:0.8},
+  {name:'Keller / Nebenräume',   p:2,gz:0.8},
 ];
 
 function getGZ(n){
@@ -540,25 +532,37 @@ function getGZ(n){
   return 0.22;
 }
 function r0(v){return Math.round(v);}
-function r1(v){return(Math.round(v*10)/10).toFixed(1);}
+function r2(v){return(Math.round(v*100)/100).toFixed(2);}
 function getCable(I){return CABLE_DATA.find(r=>r.hak>=I)||null;}
-function cableForKW(kw,volt,cosPhi){
-  const I=kw/(Math.sqrt(3)*(volt/1000)*cosPhi);
-  return{I:I,cable:getCable(I)};
+
+// ── Spannungsabfall ΔU% (Drehstrom) ──────────────────────────────────────
+// ΔU = √3 × I × 2L × ρ / A   →  ΔU% = ΔU / U_n × 100
+function calcDU(I_A, L_m, rho, qs_mm2, volt){
+  const dU_V = Math.sqrt(3) * I_A * 2 * L_m * rho / qs_mm2;
+  return (dU_V / volt) * 100;
+}
+// Empfohlener Mindestquerschnitt für ΔU ≤ limit%
+function minQS(I_A, L_m, rho, volt, limit_pct){
+  // A_min = √3 × I × 2L × ρ / (limit/100 × U_n)
+  return Math.sqrt(3) * I_A * 2 * L_m * rho / (limit_pct/100 * volt);
+}
+function duClass(pct){
+  if(pct<=1.5)return'du-ok';
+  if(pct<=3.0)return'du-warn';
+  return'du-crit';
+}
+function duLabel(pct){
+  if(pct<=1.5)return'✓ OK';
+  if(pct<=3.0)return'⚠ Grenzwert';
+  return'✗ Überschritten';
 }
 
-// ─── ALLGEMEINZÄHLER ROWS ───────────────────────────────────────────────────
 function renderAllgzRows(){
   const n=+document.getElementById('n_allgz').value||1;
   const container=document.getElementById('allgz_rows');
-  // preserve existing values
   const existing=[];
   container.querySelectorAll('.allgz-row-item').forEach(el=>{
-    existing.push({
-      name:el.querySelector('.az-name').value,
-      p:el.querySelector('.az-p').value,
-      gz:el.querySelector('.az-gz').value
-    });
+    existing.push({name:el.querySelector('.az-name').value,p:el.querySelector('.az-p').value,gz:el.querySelector('.az-gz').value});
   });
   container.innerHTML='';
   for(let i=0;i<n;i++){
@@ -566,15 +570,13 @@ function renderAllgzRows(){
     const prev=existing[i]||{};
     const row=document.createElement('div');
     row.className='allgz-row-item';
-    row.style.cssText='display:grid;grid-template-columns:1fr 70px 70px;gap:6px;align-items:center;padding:5px 0;border-bottom:1px solid var(--border);';
-    row.innerHTML=`
-      <input type="text" class="az-name" value="${prev.name||def.name}" style="background:var(--bg3);border:1px solid var(--border2);border-radius:4px;color:var(--text);font-size:12px;padding:4px 7px;">
-      <input type="number" class="az-p num-input" value="${prev.p||def.p}" min="0" step="0.5" placeholder="kW" style="width:100%">
-      <input type="number" class="az-gz num-input" value="${prev.gz||def.gz}" min="0.1" max="1" step="0.05" style="width:100%">
-    `;
+    row.style.cssText='display:grid;grid-template-columns:1fr 70px 65px;gap:5px;align-items:center;padding:4px 0;border-bottom:1px solid var(--border);';
+    row.innerHTML=`<input type="text" class="az-name" value="${prev.name||def.name}" style="background:var(--bg3);border:1px solid var(--border2);border-radius:4px;color:var(--text);font-size:11px;padding:3px 6px;">
+      <input type="number" class="az-p num-input" value="${prev.p||def.p}" min="0" step="0.5" style="width:100%">
+      <input type="number" class="az-gz num-input" value="${prev.gz||def.gz}" min="0.1" max="1" step="0.05" style="width:100%">`;
     if(i===0){
       const hdr=document.createElement('div');
-      hdr.style.cssText='display:grid;grid-template-columns:1fr 70px 70px;gap:6px;margin-bottom:2px;';
+      hdr.style.cssText='display:grid;grid-template-columns:1fr 70px 65px;gap:5px;margin-bottom:1px;';
       hdr.innerHTML='<span style="font-family:var(--mono);font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;">Bezeichnung</span><span style="font-family:var(--mono);font-size:9px;color:var(--text3);text-align:right;">kW</span><span style="font-family:var(--mono);font-size:9px;color:var(--text3);text-align:right;">GZ</span>';
       container.appendChild(hdr);
     }
@@ -583,7 +585,6 @@ function renderAllgzRows(){
   container.querySelectorAll('input').forEach(el=>el.addEventListener('input',calc));
 }
 
-// ─── MAIN CALC ──────────────────────────────────────────────────────────────
 function calc(){
   const n_we   =+document.getElementById('n_we').value||0;
   const p_we   =+document.getElementById('p_we').value||0;
@@ -598,31 +599,36 @@ function calc(){
   const p_sonst=+document.getElementById('p_sonst').value||0;
   const volt   =+document.getElementById('sys_v').value||400;
   const cosPhi =+document.getElementById('cos_phi').value||0.9;
+  const rho    =+document.getElementById('mat_sel').value||0.0178;
+
+  // ZA-Parameter
+  const za=[
+    {id:1, nwe:+document.getElementById('za1_nwe').value||0, l_hak:+document.getElementById('za1_l_hak').value||0, qs:+document.getElementById('za1_qs').value||70, l_we:+document.getElementById('za1_l_we').value||0, qs_we:+document.getElementById('za1_qs_we').value||10, name:document.getElementById('za1_name').value||'ZA 1'},
+    {id:2, nwe:+document.getElementById('za2_nwe').value||0, l_hak:+document.getElementById('za2_l_hak').value||0, qs:+document.getElementById('za2_qs').value||70, l_we:+document.getElementById('za2_l_we').value||0, qs_we:+document.getElementById('za2_qs_we').value||10, name:document.getElementById('za2_name').value||'ZA 2'},
+  ];
 
   // Allgemeinzähler
   const azRows=document.querySelectorAll('.allgz-row-item');
-  let allg_sum=0, allg_gz=0;
+  let allg_sum=0,allg_gz_sum=0;
   const azData=[];
   azRows.forEach(row=>{
     const pv=+row.querySelector('.az-p').value||0;
     const gv=+row.querySelector('.az-gz').value||0.8;
     const name=row.querySelector('.az-name').value||'–';
-    allg_sum+=pv;
-    allg_gz+=pv*gv;
+    allg_sum+=pv; allg_gz_sum+=pv*gv;
     azData.push({name,p:pv,gz:gv,pbez:pv*gv});
   });
 
-  const we_sum =n_we*p_we;
-  const we_gz  =we_sum*gz_we;
+  const we_sum =n_we*p_we, we_gz=we_sum*gz_we;
   const wp_gz  =p_wp*gz_wp;
-  const em_sum =n_em*p_em;
-  const em_gz  =em_sum*gz_em;
+  const em_sum =n_em*p_em, em_gz=em_sum*gz_em;
   const aufz_gz=p_aufz*gz_aufz;
   const sonst_gz=p_sonst*0.8;
-
   const total_sum=we_sum+p_wp+em_sum+p_aufz+allg_sum+p_sonst;
-  const total_gz =we_gz+wp_gz+em_gz+aufz_gz+allg_gz+sonst_gz;
-  const I_bem    =total_gz/(Math.sqrt(3)*(volt/1000)*cosPhi);
+  const total_gz =we_gz+wp_gz+em_gz+aufz_gz+allg_gz_sum+sonst_gz;
+  const sqrt3=Math.sqrt(3);
+  const I_bem=total_gz/(sqrt3*(volt/1000)*cosPhi);
+  const recRow=getCable(I_bem);
 
   // KPIs
   document.getElementById('k_sum').textContent=r0(total_sum);
@@ -634,137 +640,262 @@ function calc(){
 
   // BARS
   const parts=[
-    {label:'WE-Anlagen', val:we_gz,       color:'#4a9eff'},
-    {label:'Wärmepumpe', val:wp_gz,       color:'#3ecf8e'},
-    {label:'E-Mobilität',val:em_gz,       color:'#f5a623'},
-    {label:'Allgemein',  val:allg_gz,     color:'#9b72e6'},
+    {label:'WE-Anlagen',val:we_gz,color:'#4a9eff'},
+    {label:'Wärmepumpe',val:wp_gz,color:'#3ecf8e'},
+    {label:'E-Mobilität',val:em_gz,color:'#f5a623'},
+    {label:'Allgemein',  val:allg_gz_sum,color:'#9b72e6'},
     {label:'Aufzug/Sonst',val:aufz_gz+sonst_gz,color:'#2ec4b6'},
   ];
   const maxP=Math.max(...parts.map(p=>p.val),1);
-  document.getElementById('breakdown_bars').innerHTML=parts.map(p=>`
-    <div class="br-row">
-      <span class="br-label">${p.label}</span>
-      <div class="br-track"><div class="br-fill" style="width:${Math.max(2,Math.round(p.val/maxP*100))}%;background:${p.color}"></div></div>
-      <span class="br-val" style="color:${p.color}">${r0(p.val)} kW</span>
-    </div>`).join('');
+  document.getElementById('breakdown_bars').innerHTML=parts.map(p=>`<div class="br-row"><span class="br-label">${p.label}</span><div class="br-track"><div class="br-fill" style="width:${Math.max(2,r0(p.val/maxP*100))}%;background:${p.color}"></div></div><span class="br-val" style="color:${p.color}">${r0(p.val)} kW</span></div>`).join('');
 
   // CABLE TABLE
-  const tbody=document.getElementById('cable_tbody');
-  const recRow=CABLE_DATA.find(r=>r.hak>=I_bem);
-  tbody.innerHTML=CABLE_DATA.map(row=>{
+  document.getElementById('cable_tbody').innerHTML=CABLE_DATA.map(row=>{
     const isRec=recRow&&row.hak===recRow.hak;
-    const status=row.hak>=I_bem
-      ?(isRec?'<span style="color:var(--green);font-size:10px;">▶ EMPFOHLEN</span>':'<span style="color:var(--text3);font-size:10px;">✓ ausreichend</span>')
-      :'<span style="color:var(--text3);font-size:10px;">zu klein</span>';
+    const status=row.hak>=I_bem?(isRec?'<span style="color:var(--green);font-size:10px;">▶ EMPFOHLEN</span>':'<span style="color:var(--text3);font-size:10px;">✓ ausreichend</span>'):'<span style="color:var(--text3);font-size:10px;">zu klein</span>';
     return`<tr class="${isRec?'active':''}"><td class="${isRec?'hl':''}">${row.hak} A</td><td class="${isRec?'hl':''}">${row.cu}</td><td>${row.al}</td><td>${row.iz_cu} A</td><td>${row.iz_al} A</td><td>${status}</td></tr>`;
   }).join('');
-
   const cNote=document.getElementById('cable_note');
-  if(recRow) cNote.textContent=`Empfehlung: NH ${recRow.hak} A · Kabel ${recRow.cu} Cu (I_z ${recRow.iz_cu} A) Verlegeart A2. Al-Alternative: ${recRow.al}`;
-  else cNote.textContent='> 400 A: Parallele Einspeisepunkte oder MS-Übergabe erforderlich.';
+  if(recRow) cNote.textContent=`Empfehlung: NH ${recRow.hak} A · ${recRow.cu} Cu (I_z ${recRow.iz_cu} A) · Al-Alternative: ${recRow.al}`;
+  else cNote.textContent='> 400 A: Parallele Einspeisepunkte / MS-Übergabe prüfen.';
 
   // ANSCHLUSS BOX
-  let abClass='ab-ok', dotClass='dot-ok', title='Hausanschluss dimensionierbar';
+  let abClass='ab-ok',dotClass='dot-ok',title='Hausanschluss dimensionierbar';
   if(I_bem>250){abClass='ab-crit';dotClass='dot-crit';title='Kritisch – Mittelspannung prüfen';}
   else if(I_bem>160){abClass='ab-warn';dotClass='dot-warn';title='Verstärkter Hausanschluss';}
-
-  const az_total=azData.reduce((a,b)=>a+b.p,0);
-  const az_total_gz=azData.reduce((a,b)=>a+b.pbez,0);
   const rows=recRow?[
-    {l:'HAK Nennstrom',          v:recRow.hak+' A',       hl:true},
-    {l:'Kabel Cu (Verlegeart A2)',v:recRow.cu,             hl:false},
-    {l:'Kabel Al (Alternative)', v:recRow.al,             hl:false},
-    {l:'Bemessungsstrom I_B',    v:r0(I_bem)+' A',        hl:false},
-    {l:'Summenlast (ohne GZ)',   v:r0(total_sum)+' kW',   hl:false},
-    {l:'Bemessungsleistung',     v:r0(total_gz)+' kW',    hl:false},
-    {l:'Allgemeinzähler (Anz.)', v:azData.length+' Stk. ('+r1(az_total_gz)+' kW bez.)', hl:false},
-    {l:'WE-Zähler',              v:n_we+' Stk.',          hl:false},
-    {l:'Zählerschrank',          v:'DIN VDE 0603-1 Typ II',hl:false},
+    {l:'HAK Nennstrom',         v:recRow.hak+' A',hl:true},
+    {l:'Kabel Cu (Verl. A2)',   v:recRow.cu,hl:false},
+    {l:'Kabel Al (Alternative)',v:recRow.al,hl:false},
+    {l:'Bemessungsstrom I_B',   v:r0(I_bem)+' A',hl:false},
+    {l:'Summenlast',            v:r0(total_sum)+' kW',hl:false},
+    {l:'Bemessungsleistung',    v:r0(total_gz)+' kW',hl:false},
+    {l:'WE-Zähler',             v:n_we+' Stk.',hl:false},
+    {l:'Allgemeinzähler',       v:azData.length+' Stk.',hl:false},
+    {l:'Zählerschrank',         v:'DIN VDE 0603-1 Typ II',hl:false},
   ]:[];
-  document.getElementById('ab_inner').innerHTML=`
-    <div class="anschluss-box ${abClass}">
-      <div class="ab-header"><div class="ab-dot ${dotClass}"></div><div class="ab-title">${title}</div></div>
-      <div class="ab-rows">${rows.map(r=>`<div class="ab-row"><span class="ab-row-label">${r.l}</span><span class="ab-row-val${r.hl?' highlight':''}">${r.v}</span></div>`).join('')}</div>
-    </div>`;
+  document.getElementById('ab_inner').innerHTML=`<div class="anschluss-box ${abClass}"><div class="ab-header"><div class="ab-dot ${dotClass}"></div><div class="ab-title">${title}</div></div><div class="ab-rows">${rows.map(r=>`<div class="ab-row"><span class="ab-row-label">${r.l}</span><span class="ab-row-val${r.hl?' highlight':''}">${r.v}</span></div>`).join('')}</div></div>`;
 
   // DIN highlight
   ['dt_1','dt_2','dt_3','dt_4'].forEach(id=>document.getElementById(id)?.classList.remove('highlighted'));
-  if(p_we<=6) document.getElementById('dt_1')?.classList.add('highlighted');
-  else if(p_we<=15) document.getElementById('dt_2')?.classList.add('highlighted');
-  else if(p_we<=18) document.getElementById('dt_3')?.classList.add('highlighted');
+  if(p_we<=6)document.getElementById('dt_1')?.classList.add('highlighted');
+  else if(p_we<=15)document.getElementById('dt_2')?.classList.add('highlighted');
+  else if(p_we<=18)document.getElementById('dt_3')?.classList.add('highlighted');
   else document.getElementById('dt_4')?.classList.add('highlighted');
 
   // GZ MINI
   const samples=[1,2,3,4,5,6,8,10,12,15,20,25];
   document.getElementById('gz_table_mini').innerHTML=samples.map(n=>{
-    const gz=getGZ(n);
-    const active=n===n_we||(n<=n_we&&n===samples.filter(s=>s<=n_we).pop());
-    return`<div class="gz-cell" style="${active?'border-color:var(--accent);background:rgba(74,158,255,.1);':''}"><div class="gz-n">${n} WE</div><div class="gz-v">${gz.toFixed(2)}</div></div>`;
+    const gz=getGZ(n);const act=n===n_we||(n<=n_we&&n===samples.filter(s=>s<=n_we).pop());
+    return`<div class="gz-cell" style="${act?'border-color:var(--accent);background:rgba(74,158,255,.1);':''}"><div class="gz-n">${n} WE</div><div class="gz-v">${gz.toFixed(2)}</div></div>`;
   }).join('');
-
-  // GZ REF
   document.getElementById('gz_ref').innerHTML=GZ_TABLE.map(row=>{
     const act=row.n===n_we;
     return`<div class="gz-cell" style="${act?'border-color:var(--accent);background:rgba(74,158,255,.12);':''}"><div class="gz-n">${row.n} WE</div><div class="gz-v" style="${act?'color:var(--accent);':''}">${row.gz.toFixed(2)}</div></div>`;
   }).join('');
 
   // ALLGZ TABLE
-  const azTbody=document.getElementById('allgz_tbody');
-  azTbody.innerHTML=azData.map((az,i)=>{
-    const I_az=az.pbez/(Math.sqrt(3)*(volt/1000)*cosPhi);
+  document.getElementById('allgz_tbody').innerHTML=azData.map((az,i)=>{
+    const I_az=az.pbez/(sqrt3*(volt/1000)*cosPhi);
     const c=getCable(I_az);
-    return`<tr>
-      <td>${i+1}</td>
-      <td>${az.name}</td>
-      <td>${r1(az.p)} kW</td>
-      <td>${az.gz.toFixed(2)}</td>
-      <td>${r1(az.pbez)} kW</td>
-      <td>${r0(I_az)} A</td>
-      <td>${c?c.cu:'–'}</td>
-      <td>${c?c.hak+' A':'–'}</td>
-    </tr>`;
+    return`<tr><td>${i+1}</td><td>${az.name}</td><td>${az.p.toFixed(1)} kW</td><td>${az.gz.toFixed(2)}</td><td>${az.pbez.toFixed(1)} kW</td><td>${r0(I_az)} A</td><td>${c?c.cu:'–'}</td><td>${c?c.hak+' A':'–'}</td></tr>`;
   }).join('');
 
-  // ZÄHLERSCHRANK DETAIL
-  const items=[
-    {l:'Messeinrichtungen WE',   v:n_we+' Stk.'},
-    {l:'Allgemeinzähler',        v:azData.length+' Stk.'},
-    {l:'Gesamt Zählerstellen',   v:(n_we+azData.length)+' Stk.'},
-    {l:'HAK Nennstrom',          v:recRow?recRow.hak+' A':'> 400 A'},
-    {l:'NH-Sicherung Typ',       v:'gG · NH Gr. 00 oder 0'},
-    {l:'Zählerschrank Norm',     v:'DIN VDE 0603-1:2017'},
-    {l:'Zählerplatz Typ',        v:'Typ II (3-reihig)'},
-    {l:'Schutzmaßnahme',         v:'TN-C-S · RCD Typ A je WE'},
-    {l:'Bemessungsspannung',     v:volt+' V (3L+N+PE)'},
-    {l:'WP §14a-Anmeldung',      v:'Steuerbox / Schaltrelais nötig'},
-    {l:'eMob Anmeldung',         v:'Lastmanagement-Protokoll VNB'},
-    {l:'Kurzschlussleistung',    v:'VNB-Angabe erforderlich'},
-  ];
-  document.getElementById('zaehler_detail').innerHTML=items.map(i=>`
-    <div class="detail-cell"><div class="detail-label">${i.l}</div><div class="detail-val">${i.v}</div></div>`).join('');
+  // ── SPANNUNGSABFALL PRO ZÄHLERANLAGE ───────────────────────────────────
+  const duCards=za.map(z=>{
+    if(z.nwe===0) return null;
+    const gz_za=getGZ(z.nwe);
+    const P_za =z.nwe*p_we*gz_za; // Bemessungsleistung dieser ZA
+    const I_hak=P_za/(sqrt3*(volt/1000)*cosPhi); // Strom HAK→ZA
+    const du_hak=calcDU(I_hak,z.l_hak,rho,z.qs,volt);
+    const qs_min_hak=minQS(I_hak,z.l_hak,rho,volt,1.5);
 
-  // store for export
-  window._calcState={n_we,p_we,gz_we,p_wp,gz_wp,n_em,p_em,gz_em,p_aufz,gz_aufz,p_sonst,volt,cosPhi,
-    we_sum,we_gz,wp_gz,em_sum,em_gz,aufz_gz,allg_sum,allg_gz,sonst_gz,total_sum,total_gz,I_bem,
-    azData,recRow};
-  renderSchema();
+    const I_we_za=p_we/(sqrt3*(volt/1000)*cosPhi);
+    const du_we=calcDU(I_we_za,z.l_we,rho,z.qs_we,volt);
+    const qs_min_we=minQS(I_we_za,z.l_we,rho,volt,1.5);
+
+    const du_total=du_hak+du_we;
+
+    // auto update QS fields with recommendation if field still at default
+    return{z,gz_za,P_za,I_hak,du_hak,qs_min_hak,I_we_za,du_we,qs_min_we,du_total};
+  }).filter(Boolean);
+
+  // Show ZA results inline
+  za.forEach((z,idx)=>{
+    const d=duCards[idx];
+    const el=document.getElementById(`za${z.id}_result`);
+    if(!d||!el){if(el)el.innerHTML='';return;}
+    const bc=duClass(d.du_hak), wc=duClass(d.du_we), tc=duClass(d.du_total);
+    el.innerHTML=`
+      <div style="font-size:10px;color:var(--text3);font-family:var(--mono);margin-bottom:4px;">Berechnungsergebnis</div>
+      <div style="display:flex;flex-direction:column;gap:3px;">
+        <div style="display:flex;justify-content:space-between;font-size:11px;"><span style="color:var(--text2);">Strom HAK→ZA${z.id}</span><span style="font-family:var(--mono);">${r0(d.I_hak)} A</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:11px;"><span style="color:var(--text2);">ΔU HAK→ZA${z.id}</span><span class="${bc}" style="font-family:var(--mono);font-weight:600;">${r2(d.du_hak)} % ${duLabel(d.du_hak)}</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:11px;"><span style="color:var(--text2);">Min. Querschnitt (≤1,5%)</span><span style="font-family:var(--mono);color:var(--accent);">${r2(d.qs_min_hak)} mm²</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:11px;"><span style="color:var(--text2);">ΔU ZA${z.id}→WE</span><span class="${wc}" style="font-family:var(--mono);font-weight:600;">${r2(d.du_we)} % ${duLabel(d.du_we)}</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:11px;"><span style="color:var(--text2);">Min. Querschnitt WE (≤1,5%)</span><span style="font-family:var(--mono);color:var(--accent);">${r2(d.qs_min_we)} mm²</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:11.5px;margin-top:4px;padding-top:4px;border-top:1px solid var(--border);"><span style="color:var(--text);font-weight:500;">ΔU gesamt</span><span class="${tc}" style="font-family:var(--mono);font-weight:700;">${r2(d.du_total)} % ${duLabel(d.du_total)}</span></div>
+      </div>
+      <div style="background:var(--bg);border-radius:3px;height:7px;overflow:hidden;margin-top:5px;position:relative;">
+        <div style="position:absolute;left:0;top:0;height:100%;width:${Math.min(100,d.du_total/3*100)}%;background:${d.du_total<=1.5?'#3ecf8e':d.du_total<=3?'#f5a623':'#e05252'};border-radius:3px;"></div>
+        <div style="position:absolute;left:50%;top:0;height:100%;width:1px;background:#555;"></div>
+      </div>`;
+  });
+
+  // DU SUMMARY CARDS
+  document.getElementById('du_results').innerHTML=duCards.map(d=>`
+    <div class="du-card">
+      <div class="du-card-title">${d.z.name} — Spannungsabfall-Übersicht</div>
+      <div class="du-row"><span class="du-row-label">WE an dieser ZA</span><span class="du-row-val">${d.z.nwe} WE (GZ ${d.gz_za.toFixed(2)})</span></div>
+      <div class="du-row"><span class="du-row-label">Bemessungsleistung ZA</span><span class="du-row-val">${r0(d.P_za)} kW</span></div>
+      <div class="du-row"><span class="du-row-label">Strom HAK → ZA</span><span class="du-row-val">${r0(d.I_hak)} A</span></div>
+      <div class="du-row"><span class="du-row-label">Länge HAK → ZA</span><span class="du-row-val">${d.z.l_hak} m · ${d.z.qs} mm² Cu</span></div>
+      <div class="du-row"><span class="du-row-label">ΔU HAK → ZA</span><span class="du-row-val ${duClass(d.du_hak)}">${r2(d.du_hak)} % ${duLabel(d.du_hak)}</span></div>
+      <div class="du-row"><span class="du-row-label">Empf. Mindestquerschnitt</span><span class="du-row-val" style="color:var(--accent);">${r2(d.qs_min_hak)} mm²</span></div>
+      <div class="du-row"><span class="du-row-label">Länge ZA → WE (mittl.)</span><span class="du-row-val">${d.z.l_we} m · ${d.z.qs_we} mm² Cu</span></div>
+      <div class="du-row"><span class="du-row-label">ΔU ZA → WE</span><span class="du-row-val ${duClass(d.du_we)}">${r2(d.du_we)} % ${duLabel(d.du_we)}</span></div>
+      <div class="du-row"><span class="du-row-label">Empf. Mindestquerschnitt WE</span><span class="du-row-val" style="color:var(--accent);">${r2(d.qs_min_we)} mm²</span></div>
+      <div class="du-row" style="border-top:1px solid var(--border2);margin-top:2px;padding-top:4px;"><span class="du-row-label" style="font-weight:600;color:var(--text);">ΔU gesamt</span><span class="du-row-val ${duClass(d.du_total)}" style="font-size:13px;font-weight:700;">${r2(d.du_total)} %</span></div>
+      <div class="du-bar-wrap"><div class="du-bar" style="width:${Math.min(100,d.du_total/3*100).toFixed(1)}%;background:${d.du_total<=1.5?'#3ecf8e':d.du_total<=3?'#f5a623':'#e05252'};"></div></div>
+    </div>`).join('');
+
+  // ZÄHLERSCHRANK DETAIL
+  document.getElementById('zaehler_detail').innerHTML=[
+    {l:'Messeinrichtungen WE',  v:n_we+' Stk.'},
+    {l:'Allgemeinzähler',       v:azData.length+' Stk.'},
+    {l:'Gesamt Zählerstellen',  v:(n_we+azData.length)+' Stk.'},
+    {l:'HAK Nennstrom',         v:recRow?recRow.hak+' A':'> 400 A'},
+    {l:'NH-Sicherung',          v:'gG · NH Gr. 00 oder 0'},
+    {l:'Zählerschrank Norm',    v:'DIN VDE 0603-1:2017'},
+    {l:'Zählerplatz Typ',       v:'Typ II (3-reihig)'},
+    {l:'Schutzmaßnahme',        v:'TN-C-S · RCD Typ A je WE'},
+    {l:'Bemessungsspannung',    v:volt+' V (3L+N+PE)'},
+    {l:'Zähleranlagen',         v:'2 Stk. (ZA1 + ZA2)'},
+    {l:'WP §14a',               v:'Steuerbox / SG-Ready nötig'},
+    {l:'eMob Anmeldung',        v:'Lastmanagement VNB'},
+  ].map(i=>`<div class="detail-cell"><div class="detail-label">${i.l}</div><div class="detail-val">${i.v}</div></div>`).join('');
+
+  // LEITUNGSSCHEMA
+  renderSchema({n_we,p_we,gz_we,p_wp,gz_wp,n_em,p_em,gz_em,p_aufz,gz_aufz,
+    allg_sum,allg_gz_sum,total_gz,I_bem,recRow,azData,volt,cosPhi,za,duCards,sqrt3});
+
+  window._calcState={n_we,p_we,gz_we,p_wp,gz_wp,n_em,p_em,gz_em,p_aufz,gz_aufz,p_sonst,volt,cosPhi,rho,
+    we_sum,we_gz,wp_gz,em_sum,em_gz,aufz_gz,allg_sum,allg_gz:allg_gz_sum,sonst_gz,total_sum,total_gz,I_bem,
+    azData,recRow,za,duCards};
 }
 
-// ─── ALLGEMEINZÄHLER ANZAHL ──────────────────────────────────────────────────
-document.getElementById('n_allgz').addEventListener('input',()=>{renderAllgzRows();calc();});
+function renderSchema(s){
+  const {n_we,p_we,gz_we,p_wp,gz_wp,n_em,p_em,gz_em,p_aufz,gz_aufz,
+    allg_sum,total_gz,I_bem,recRow,azData,volt,cosPhi,za,duCards,sqrt3}=s;
+  const cHA=recRow||{hak:0,cu:'–',al:'–',iz_cu:0};
+  const COL={
+    netz:'#4a9eff',netzF:'#1e3a5f',hak:'#f5a623',hakF:'#3d2800',
+    zs:'#3ecf8e',zsF:'#0d3324',za1:'#4a9eff',za1F:'#0d2540',
+    za2:'#3ecf8e',za2F:'#0d3324',we:'#9b72e6',weF:'#271a40',
+    wp:'#3ecf8e',wpF:'#0d3324',em:'#f5a623',emF:'#3d2800',
+    au:'#e05252',auF:'#3a0d0d',az:'#2ec4b6',azF:'#0d2e2c',
+    line:'#444466',bg:'#0f0f11',
+  };
+  const W=960,H=400;
+  const box=(x,y,w,h,fill,stroke,rx=5)=>`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${rx}" fill="${fill}" stroke="${stroke}" stroke-width="1.5"/>`;
+  const t=(x,y,txt,sz,fill,w=400,anc='middle')=>`<text x="${x}" y="${y}" font-size="${sz}" fill="${fill}" font-weight="${w}" text-anchor="${anc}" font-family="IBM Plex Mono,monospace">${txt}</text>`;
+  const ln=(x1,y1,x2,y2,col,sw=1.5,da='')=>`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${col}" stroke-width="${sw}" stroke-dasharray="${da}"/>`;
+  const pill=(x,y,lbl,bg,tc)=>`<rect x="${x-26}" y="${y-8}" width="52" height="16" rx="8" fill="${bg}"/>${t(x,y+4,lbl,8,tc)}`;
+  const duPill=(x,y,pct,bg)=>{
+    const cl=pct<=1.5?'#3ecf8e':pct<=3?'#f5a623':'#e05252';
+    return`<rect x="${x-32}" y="${y-8}" width="64" height="16" rx="8" fill="${bg}"/>${t(x,y+4,'ΔU '+pct.toFixed(2)+'%',8,cl)}`;
+  };
 
-// ─── AUTO GZ ────────────────────────────────────────────────────────────────
-document.getElementById('n_we').addEventListener('input',function(){
-  document.getElementById('gz_we').value=getGZ(+this.value||1).toFixed(2);
-  calc();
-});
+  let svg=`<svg viewBox="0 0 ${W} ${H}" width="100%" xmlns="http://www.w3.org/2000/svg" style="max-width:${W}px;display:block;margin:0 auto;">
+  <rect width="${W}" height="${H}" fill="${COL.bg}" rx="8"/>`;
 
-// ─── ALL INPUTS ──────────────────────────────────────────────────────────────
-document.querySelectorAll('input[type=number],select').forEach(el=>{
-  if(el.id!=='n_allgz'&&el.id!=='n_we') el.addEventListener('input',calc);
-});
+  // NETZ
+  const CX=W/2;
+  svg+=box(CX-70,10,140,38,COL.netzF,COL.netz);
+  svg+=t(CX,25,'NETZ / VNB',10,COL.netz,600);
+  svg+=t(CX,40,'400 V TN-C-S',8,'#9898b0');
 
-// ─── PDF PRINT ───────────────────────────────────────────────────────────────
+  // HAK
+  svg+=ln(CX,48,CX,80,COL.hak,2.5);
+  svg+=pill(CX,65,r0(I_bem)+' A',COL.hakF,COL.hak);
+  svg+=box(CX-110,80,220,42,COL.hakF,COL.hak);
+  svg+=t(CX,94,'HAUSANSCHLUSSKASTEN (HAK)',9,COL.hak,600);
+  svg+=t(CX,106,`NH ${cHA.hak} A  ·  ${cHA.cu}  ·  I_z ${cHA.iz_cu} A`,8,'#e8e8f0');
+  svg+=t(CX,116,`Verlegeart A2`,7,'#9898b0');
+
+  // zwei Leitungen zu ZA1 und ZA2
+  const ZA1X=W*0.28, ZA2X=W*0.72;
+  const ZAY=170, ZAW=190, ZAH=48;
+
+  // Linie zu ZA1
+  svg+=ln(CX,122,ZA1X+ZAW/2,ZAY,COL.za1,2);
+  if(duCards[0]){
+    const d=duCards[0];
+    const mx=(CX+(ZA1X+ZAW/2))/2, my=(122+ZAY)/2;
+    svg+=pill(mx,my,r0(d.I_hak)+' A',COL.za1F,COL.za1);
+    svg+=duPill(mx,my+20,d.du_hak,COL.za1F);
+  }
+  // Linie zu ZA2
+  svg+=ln(CX,122,ZA2X+ZAW/2,ZAY,COL.za2,2);
+  if(duCards[1]){
+    const d=duCards[1];
+    const mx=(CX+(ZA2X+ZAW/2))/2, my=(122+ZAY)/2;
+    svg+=pill(mx,my,r0(d.I_hak)+' A',COL.za2F,COL.za2);
+    svg+=duPill(mx,my+20,d.du_hak,COL.za2F);
+  }
+
+  // ZA1
+  svg+=box(ZA1X,ZAY,ZAW,ZAH,COL.za1F,COL.za1);
+  const za1name=(za[0].name||'ZA 1').slice(0,20);
+  const za1du=duCards[0]?` · ΔU ${r2(duCards[0].du_total)}%`:'';
+  svg+=t(ZA1X+ZAW/2,ZAY+13,'ZÄHLERANLAGE 1',9,COL.za1,600);
+  svg+=t(ZA1X+ZAW/2,ZAY+25,za1name,8,'#e8e8f0');
+  svg+=t(ZA1X+ZAW/2,ZAY+37,`${za[0].nwe} WE · ${za[0].qs} mm²${za1du}`,7.5,'#9898b0');
+
+  // ZA2
+  svg+=box(ZA2X,ZAY,ZAW,ZAH,COL.za2F,COL.za2);
+  const za2name=(za[1].name||'ZA 2').slice(0,20);
+  const za2du=duCards[1]?` · ΔU ${r2(duCards[1].du_total)}%`:'';
+  svg+=t(ZA2X+ZAW/2,ZAY+13,'ZÄHLERANLAGE 2',9,COL.za2,600);
+  svg+=t(ZA2X+ZAW/2,ZAY+25,za2name,8,'#e8e8f0');
+  svg+=t(ZA2X+ZAW/2,ZAY+37,`${za[1].nwe} WE · ${za[1].qs} mm²${za2du}`,7.5,'#9898b0');
+
+  // Consumer row from ZA1 (WE, WP, EM, AU)
+  const conDefs=[
+    {label:'WE (ZA1)',sub:`${za[0].nwe}×${p_we}kW`,col:'#9b72e6',fill:'#271a40'},
+    {label:'Wärmepumpe',sub:`${p_wp}kW el.`,col:'#3ecf8e',fill:'#0d3324'},
+    {label:'E-Mobilität',sub:`${n_em}×${p_em}kW`,col:'#f5a623',fill:'#3d2800'},
+    {label:'Aufzug',sub:`${p_aufz}kW`,col:'#e05252',fill:'#3a0d0d'},
+  ];
+  const CON_Y=285,CON_H=44,CON_W=110;
+  const totalW=conDefs.length*(CON_W+12)-12;
+  const conStartX=(W/2-totalW/2);
+  conDefs.forEach((c,i)=>{
+    const cx=conStartX+i*(CON_W+12), ccx=cx+CON_W/2;
+    const srcX=i<2?ZA1X+ZAW/2:ZA2X+ZAW/2;
+    const srcY=ZAY+ZAH;
+    svg+=ln(srcX,srcY,ccx,CON_Y,c.col,1.2,'4 3');
+    svg+=box(cx,CON_Y,CON_W,CON_H,c.fill,c.col,4);
+    svg+=t(ccx,CON_Y+14,c.label,8.5,c.col,600);
+    svg+=t(ccx,CON_Y+26,c.sub,7.5,'#e8e8f0');
+  });
+
+  // WE ZA2
+  const we2x=W-160,we2cx=we2x+CON_W/2;
+  svg+=ln(ZA2X+ZAW/2,ZAY+ZAH,we2cx,CON_Y,'#9b72e6',1.2,'4 3');
+  svg+=box(we2x,CON_Y,CON_W,CON_H,'#271a40','#9b72e6',4);
+  svg+=t(we2cx,CON_Y+14,'WE (ZA2)',8.5,'#9b72e6',600);
+  svg+=t(we2cx,CON_Y+26,`${za[1].nwe}×${p_we}kW`,7.5,'#e8e8f0');
+
+  // ΔU WE labels
+  if(duCards[0]) svg+=t(conStartX+CON_W/2,CON_Y+38,`ΔU WE ${r2(duCards[0].du_we)}%`,7,duCards[0].du_we<=1.5?'#3ecf8e':duCards[0].du_we<=3?'#f5a623':'#e05252');
+  if(duCards[1]) svg+=t(we2cx,CON_Y+38,`ΔU WE ${r2(duCards[1].du_we)}%`,7,duCards[1].du_we<=1.5?'#3ecf8e':duCards[1].du_we<=3?'#f5a623':'#e05252');
+
+  svg+='</svg>';
+  document.getElementById('leitungsschema_svg').innerHTML=svg;
+}
+
+// ── PDF ──────────────────────────────────────────────────────────────────────
 function doPrint(){
   document.getElementById('pdf_datum').textContent=new Date().toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit',year:'numeric'});
   document.getElementById('pdf_projekt').textContent=document.getElementById('inp_projekt').value||'–';
@@ -772,261 +903,108 @@ function doPrint(){
   window.print();
 }
 
-// ─── EXCEL EXPORT ─────────────────────────────────────────────────────────────
+// ── EXCEL ────────────────────────────────────────────────────────────────────
 function doExcel(){
   const s=window._calcState;
   if(!s){alert('Bitte zuerst Werte eingeben.');return;}
   const WB=XLSX.utils.book_new();
-
-  // ── Sheet 1: Leistungsbilanz ──
   const bilanz=[
     ['LEISTUNGSBILANZ HAUSANSCHLUSS','','','',''],
-    ['nach DIN 18015-1:2020 / VDE-AR-N 4100:2019 / §14a EnWG','','','',''],
-    ['Projekt:', document.getElementById('inp_projekt').value||'–','','Datum:', new Date().toLocaleDateString('de-DE')],
-    ['Bearbeiter:', document.getElementById('inp_bearb').value||'–','','',''],
+    ['DIN 18015-1:2020 / VDE-AR-N 4100:2019 / §14a EnWG / DIN VDE 0100-520','','','',''],
+    ['Projekt:',document.getElementById('inp_projekt').value||'–','','Datum:',new Date().toLocaleDateString('de-DE')],
+    ['Bearbeiter:',document.getElementById('inp_bearb').value||'–','','',''],
     ['','','','',''],
     ['EINGABEN','','','',''],
     ['Parameter','Wert','Einheit','Bemerkung',''],
-    ['Anzahl Wohneinheiten (n_WE)', s.n_we, 'WE','',''],
-    ['Grundbedarf je WE (DIN 18015-1 Tab.1)', s.p_we, 'kW/WE','',''],
-    ['Gleichzeitigkeitsfaktor WE (VDE-AR-N 4100)', s.gz_we, '–','auto aus n_WE',''],
-    ['WP Leistungsaufnahme (elektr.)', s.p_wp, 'kW','nicht Heizleistung',''],
-    ['WP Gleichzeitigkeitsfaktor (§14a)', s.gz_wp, '–','',''],
-    ['Anzahl Ladepunkte eMob', s.n_em, 'LP','',''],
-    ['Leistung je Ladepunkt', s.p_em, 'kW','',''],
-    ['GZ eMob / Lademanagement', s.gz_em, '–','',''],
-    ['Aufzug Nennleistung', s.p_aufz, 'kW','',''],
-    ['GZ Aufzug', s.gz_aufz, '–','',''],
-    ['Sonstige Anlagen', s.p_sonst, 'kW','',''],
-    ['Nennspannung', s.volt, 'V','Drehstrom TN-C-S',''],
-    ['cos φ (Leistungsfaktor)', s.cosPhi, '–','',''],
+    ['Anzahl WE',s.n_we,'WE','',''],
+    ['Grundbedarf je WE',s.p_we,'kW/WE','DIN 18015-1 Tab.1',''],
+    ['GZ WE',s.gz_we,'–','VDE-AR-N 4100 auto',''],
+    ['WP P_el',s.p_wp,'kW','§14a: GZ '+s.gz_wp,''],
+    ['Ladepunkte eMob',s.n_em,'LP','je '+s.p_em+' kW',''],
+    ['GZ eMob',s.gz_em,'–','',''],
+    ['Aufzug',s.p_aufz,'kW','GZ '+s.gz_aufz,''],
+    ['Sonstige',s.p_sonst,'kW','GZ 0,80',''],
+    ['Nennspannung',s.volt,'V','TN-C-S',''],
+    ['cos φ',s.cosPhi,'–','',''],
+    ['Leitermaterial ρ',s.rho,'Ω·mm²/m','',''],
     ['','','','',''],
-    ['BERECHNUNG LEISTUNGSBILANZ','','','',''],
-    ['Verbrauchergruppe','Summenlast (kW)','GZ (–)','Bemess.-leistung (kW)','Anteil (%)'],
-    ['Wohnungsanlagen', s.we_sum, s.gz_we, s.we_gz, (s.we_gz/s.total_gz*100).toFixed(1)+'%'],
-    ['Wärmepumpe', s.p_wp, s.gz_wp, s.wp_gz, (s.wp_gz/s.total_gz*100).toFixed(1)+'%'],
-    ['E-Mobilität', s.em_sum, s.gz_em, s.em_gz, (s.em_gz/s.total_gz*100).toFixed(1)+'%'],
-    ['Aufzug', s.p_aufz, s.gz_aufz, s.aufz_gz, (s.aufz_gz/s.total_gz*100).toFixed(1)+'%'],
-    ['Allgemeinzähler (gesamt)', s.allg_sum, '–', s.allg_gz, (s.allg_gz/s.total_gz*100).toFixed(1)+'%'],
-    ['Sonstige', s.p_sonst, 0.8, s.sonst_gz, (s.sonst_gz/s.total_gz*100).toFixed(1)+'%'],
-    ['SUMME', s.total_sum, '–', s.total_gz, '100%'],
+    ['LEISTUNGSBILANZ','','','',''],
+    ['Verbrauchergruppe','Summenlast (kW)','GZ','Bemess.-leist. (kW)','Anteil (%)'],
+    ['Wohnungsanlagen',s.we_sum,s.gz_we,s.we_gz,(s.we_gz/s.total_gz*100).toFixed(1)+'%'],
+    ['Wärmepumpe',s.p_wp,s.gz_wp,s.wp_gz,(s.wp_gz/s.total_gz*100).toFixed(1)+'%'],
+    ['E-Mobilität',s.em_sum,s.gz_em,s.em_gz,(s.em_gz/s.total_gz*100).toFixed(1)+'%'],
+    ['Aufzug',s.p_aufz,s.gz_aufz,s.aufz_gz,(s.aufz_gz/s.total_gz*100).toFixed(1)+'%'],
+    ['Allgemein',s.allg_sum,'–',s.allg_gz,(s.allg_gz/s.total_gz*100).toFixed(1)+'%'],
+    ['SUMME',s.total_sum,'–',s.total_gz,'100%'],
     ['','','','',''],
     ['ERGEBNIS','','','',''],
-    ['Bemessungsleistung P_bez', s.total_gz.toFixed(1), 'kW','',''],
-    ['Bemessungsstrom I_B', s.I_bem.toFixed(1), 'A','',''],
-    ['','','','',''],
-    ['HAUSANSCHLUSS EMPFEHLUNG','','','',''],
-    ['HAK Nennstrom', s.recRow?s.recRow.hak:'> 400', 'A','',''],
-    ['Kabel Cu (Verlegeart A2)', s.recRow?s.recRow.cu:'–','','',''],
-    ['Kabel Al (Alternative)', s.recRow?s.recRow.al:'–','','',''],
-    ['Strombelastbarkeit Cu (I_z)', s.recRow?s.recRow.iz_cu:'–','A','',''],
-    ['Zählerschrank Norm','DIN VDE 0603-1:2017','','',''],
-    ['Anzahl Messeinrichtungen (WE)', s.n_we,'Stk.','',''],
-    ['Anzahl Allgemeinzähler', s.azData.length,'Stk.','',''],
-    ['Gesamt Zählerstellen', s.n_we+s.azData.length,'Stk.','',''],
+    ['Bemessungsleistung',s.total_gz.toFixed(1),'kW','',''],
+    ['Bemessungsstrom',s.I_bem.toFixed(1),'A','',''],
+    ['HAK Nennstrom',s.recRow?s.recRow.hak:'> 400','A','',''],
+    ['Kabel Cu',s.recRow?s.recRow.cu:'–','','Verlegeart A2',''],
+    ['Kabel Al',s.recRow?s.recRow.al:'–','','',''],
   ];
-
   const ws1=XLSX.utils.aoa_to_sheet(bilanz);
-  ws1['!cols']=[{wch:38},{wch:18},{wch:12},{wch:22},{wch:12}];
-  // Bold headers
-  ['A1','A6','A22','A32','A35'].forEach(ref=>{
-    if(ws1[ref]) ws1[ref].s={font:{bold:true,sz:12}};
-  });
-  XLSX.utils.book_append_sheet(WB, ws1, 'Leistungsbilanz');
+  ws1['!cols']=[{wch:30},{wch:16},{wch:12},{wch:22},{wch:12}];
+  XLSX.utils.book_append_sheet(WB,ws1,'Leistungsbilanz');
 
-  // ── Sheet 2: Allgemeinzähler ──
-  const volt=s.volt, cosPhi=s.cosPhi;
-  const azHeader=[
-    ['ALLGEMEINZÄHLER – ÜBERSICHT','','','','','','',''],
-    ['nach DIN VDE 0298-4 / DIN 18015-1','','','','','','',''],
+  // Sheet 2: Zähleranlagen + ΔU
+  const zaSheet=[
+    ['ZÄHLERANLAGEN & SPANNUNGSABFALL ΔU','','','','','','',''],
+    ['DIN VDE 0100-520 · Grenzwert gesamt max. 3% · je Abschnitt max. 1,5%','','','','','','',''],
     ['','','','','','','',''],
-    ['#','Bezeichnung','Summenlast (kW)','GZ (–)','Bemess.-leistung (kW)','Strom I_B (A)','Kabel Cu','Sicherung NH (A)'],
+    ['Kenngröße','ZA 1','ZA 2','','','','',''],
   ];
-  const azRows2=s.azData.map((az,i)=>{
-    const I=az.pbez/(Math.sqrt(3)*(volt/1000)*cosPhi);
-    const c=getCable(I);
-    return[i+1, az.name, az.p.toFixed(1), az.gz.toFixed(2), az.pbez.toFixed(1), Math.round(I), c?c.cu:'–', c?c.hak:'–'];
-  });
-  const azTotal=['SUMME','',s.azData.reduce((a,b)=>a+b.p,0).toFixed(1),'',s.azData.reduce((a,b)=>a+b.pbez,0).toFixed(1),'','',''];
-  const ws2=XLSX.utils.aoa_to_sheet([...azHeader,...azRows2,azTotal]);
-  ws2['!cols']=[{wch:5},{wch:30},{wch:18},{wch:10},{wch:22},{wch:14},{wch:18},{wch:16}];
-  XLSX.utils.book_append_sheet(WB, ws2, 'Allgemeinzähler');
+  const zaLabels=['Bezeichnung','Anzahl WE','GZ','Bemessungsleistung (kW)','Strom HAK→ZA (A)','Länge HAK→ZA (m)','Querschnitt HAK→ZA (mm²)','ΔU HAK→ZA (%)', 'Empf. Min-Qs HAK→ZA (mm²)','Länge ZA→WE (m)','Querschnitt ZA→WE (mm²)','ΔU ZA→WE (%)','Empf. Min-Qs ZA→WE (mm²)','ΔU gesamt (%)','Status'];
+  const zaVals=[
+    [s.za[0].name,s.za[1].name],
+    [s.za[0].nwe,s.za[1].nwe],
+    [s.duCards[0]?.gz_za.toFixed(2)||'–',s.duCards[1]?.gz_za.toFixed(2)||'–'],
+    [s.duCards[0]?r0(s.duCards[0].P_za):'–',s.duCards[1]?r0(s.duCards[1].P_za):'–'],
+    [s.duCards[0]?r0(s.duCards[0].I_hak):'–',s.duCards[1]?r0(s.duCards[1].I_hak):'–'],
+    [s.za[0].l_hak,s.za[1].l_hak],
+    [s.za[0].qs,s.za[1].qs],
+    [s.duCards[0]?s.duCards[0].du_hak.toFixed(2):'–',s.duCards[1]?s.duCards[1].du_hak.toFixed(2):'–'],
+    [s.duCards[0]?s.duCards[0].qs_min_hak.toFixed(2):'–',s.duCards[1]?s.duCards[1].qs_min_hak.toFixed(2):'–'],
+    [s.za[0].l_we,s.za[1].l_we],
+    [s.za[0].qs_we,s.za[1].qs_we],
+    [s.duCards[0]?s.duCards[0].du_we.toFixed(2):'–',s.duCards[1]?s.duCards[1].du_we.toFixed(2):'–'],
+    [s.duCards[0]?s.duCards[0].qs_min_we.toFixed(2):'–',s.duCards[1]?s.duCards[1].qs_min_we.toFixed(2):'–'],
+    [s.duCards[0]?s.duCards[0].du_total.toFixed(2):'–',s.duCards[1]?s.duCards[1].du_total.toFixed(2):'–'],
+    [s.duCards[0]?duLabel(s.duCards[0].du_total):'–',s.duCards[1]?duLabel(s.duCards[1].du_total):'–'],
+  ];
+  zaLabels.forEach((lbl,i)=>zaSheet.push([lbl,...zaVals[i]]));
+  const ws2=XLSX.utils.aoa_to_sheet(zaSheet);
+  ws2['!cols']=[{wch:30},{wch:18},{wch:18},{wch:6},{wch:6},{wch:6},{wch:6},{wch:6}];
+  XLSX.utils.book_append_sheet(WB,ws2,'Zähleranlagen & ΔU');
 
-  // ── Sheet 3: GZ Referenz ──
-  const gzData=[
-    ['GZ-REFERENZTABELLE VDE-AR-N 4100',''],
-    ['Wohnungsanlagen – Anhang A',''],
-    ['',''],
-    ['Anzahl WE (n)','Gleichzeitigkeitsfaktor (gz)'],
-    ...GZ_TABLE.map(r=>[r.n, r.gz]),
-  ];
-  const ws3=XLSX.utils.aoa_to_sheet(gzData);
-  ws3['!cols']=[{wch:18},{wch:25}];
-  XLSX.utils.book_append_sheet(WB, ws3, 'GZ-Tabelle');
+  // Sheet 3: Allgemeinzähler
+  const azH=[['ALLGEMEINZÄHLER','','','','','','',''],['','','','','','','',''],
+    ['#','Bezeichnung','Summenlast (kW)','GZ','Bemess. (kW)','Strom (A)','Kabel Cu','Sicherung (A)']];
+  const azR=s.azData.map((az,i)=>{const I=az.pbez/(Math.sqrt(3)*(s.volt/1000)*s.cosPhi);const c=getCable(I);return[i+1,az.name,az.p.toFixed(1),az.gz.toFixed(2),az.pbez.toFixed(1),r0(I),c?c.cu:'–',c?c.hak:'–'];});
+  const ws3=XLSX.utils.aoa_to_sheet([...azH,...azR]);
+  ws3['!cols']=[{wch:5},{wch:28},{wch:16},{wch:8},{wch:16},{wch:12},{wch:16},{wch:14}];
+  XLSX.utils.book_append_sheet(WB,ws3,'Allgemeinzähler');
 
-  // ── Sheet 4: Kabel & Sicherung ──
-  const kabelData=[
-    ['KABEL & SICHERUNG – DIN VDE 0298-4','','','','',''],
-    ['Hausanschluss Mehrfamilienhaus · Verlegeart A2','','','','',''],
-    ['','','','','',''],
-    ['HAK / NH (A)','Kabel Cu','Kabel Al','I_z Cu (A)','I_z Al (A)','Empfehlung'],
-    ...CABLE_DATA.map(r=>[r.hak, r.cu, r.al, r.iz_cu, r.iz_al, r.hak>=s.I_bem?(getCable(s.I_bem)&&r.hak===getCable(s.I_bem).hak?'▶ EMPFOHLEN':'ausreichend'):'zu klein']),
-  ];
-  const ws4=XLSX.utils.aoa_to_sheet(kabelData);
-  ws4['!cols']=[{wch:14},{wch:16},{wch:16},{wch:12},{wch:12},{wch:16}];
-  XLSX.utils.book_append_sheet(WB, ws4, 'Kabel & Sicherung');
+  // Sheet 4: GZ + Kabel
+  const gzK=[['GZ-REFERENZ VDE-AR-N 4100',''],['n WE','GZ'],...GZ_TABLE.map(r=>[r.n,r.gz])];
+  const ws4=XLSX.utils.aoa_to_sheet(gzK);
+  ws4['!cols']=[{wch:10},{wch:12}];
+  XLSX.utils.book_append_sheet(WB,ws4,'GZ-Tabelle');
 
   const fname=`Leistungsbilanz_${(document.getElementById('inp_projekt').value||'Projekt').replace(/[^a-zA-Z0-9äöüÄÖÜ_-]/g,'_')}_${new Date().toISOString().slice(0,10)}.xlsx`;
-  XLSX.writeFile(WB, fname);
+  XLSX.writeFile(WB,fname);
 }
 
-// ─── LEITUNGSSCHEMA ──────────────────────────────────────────────────────────
-function renderSchema(){
-  const s=window._calcState;
-  if(!s) return;
-  const {n_we,p_we,gz_we,p_wp,gz_wp,n_em,p_em,gz_em,p_aufz,gz_aufz,
-         allg_sum,allg_gz,total_gz,I_bem,recRow,azData,volt,cosPhi}=s;
-  const sqrt3=Math.sqrt(3);
+function duLabel(pct){if(pct<=1.5)return'✓ OK';if(pct<=3.0)return'⚠ Grenzwert';return'✗ Überschritten';}
 
-  // Leitungen pro Abschnitt
-  const I_ha = I_bem; // HAK → Zählerschrank (= Bemessungsstrom)
-  const cHA  = recRow||{hak:0,cu:'–',al:'–',iz_cu:0};
+document.getElementById('n_allgz').addEventListener('input',()=>{renderAllgzRows();calc();});
+document.getElementById('n_we').addEventListener('input',function(){
+  document.getElementById('gz_we').value=getGZ(+this.value||1).toFixed(2);calc();
+});
+document.querySelectorAll('input[type=number]:not(#n_allgz):not(#n_we),select').forEach(el=>el.addEventListener('input',calc));
+document.querySelectorAll('input[type=text]').forEach(el=>el.addEventListener('input',calc));
 
-  // Leitungen je WE (Unterverteiler)
-  const P_we_bez = p_we*gz_we; // Bemessungsleistung je WE
-  const I_we     = p_we/(sqrt3*(volt/1000)*cosPhi);
-  const cWE      = getCable(I_we);
-
-  // WP Leitung
-  const I_wp = p_wp/(sqrt3*(volt/1000)*cosPhi);
-  const cWP  = getCable(I_wp);
-
-  // eMob Leitung (gesamt zur Ladeverteilung)
-  const I_em = (n_em*p_em*gz_em)/(sqrt3*(volt/1000)*cosPhi);
-  const cEM  = getCable(I_em);
-
-  // Aufzug
-  const I_au = (p_aufz*gz_aufz)/(sqrt3*(volt/1000)*cosPhi);
-  const cAU  = getCable(I_au);
-
-  // Farben
-  const COL={
-    netz:'#1a6aaa', netzFill:'#1e3a5f',
-    hak:'#c47d0e',  hakFill:'#3d2a00',
-    zs:'#2e7d3e',   zsFill:'#1a3a22',
-    we:'#4a9eff',   weFill:'#0d2540',
-    wp:'#3ecf8e',   wpFill:'#0d3324',
-    em:'#f5a623',   emFill:'#3d2800',
-    au:'#9b72e6',   auFill:'#271a40',
-    az:'#2ec4b6',   azFill:'#0d2e2c',
-    line:'#555577',
-    lineHA:'#c47d0e',
-    txt:'#e8e8f0',
-    txt2:'#9898b0',
-    bg:'#16161a',
-    bg2:'#1e1e24',
-  };
-
-  // Layout constants
-  const W=900, BOX_H=54, BOX_W=130, GAP=18;
-  // Rows: Netz(top) → HAK → Zählerschrank → [WE, WP, EM, AU, AZ...]
-  const consumers=[
-    {id:'we', label:'Wohnungen',   sub:`${n_we}×WE`,      detail:`${n_we}× ${(p_we).toFixed(1)} kW`, I:I_we, I_bez:p_we*gz_we*n_we, cable:cWE, col:COL.we, fill:COL.weFill},
-    {id:'wp', label:'Wärmepumpe',  sub:`zentral`,          detail:`${p_wp} kW el.`,   I:I_wp, I_bez:p_wp*gz_wp, cable:cWP, col:COL.wp, fill:COL.wpFill},
-    {id:'em', label:'E-Mobilität', sub:`${n_em} LP`,       detail:`${n_em}× ${p_em} kW`, I:I_em, I_bez:n_em*p_em*gz_em, cable:cEM, col:COL.em, fill:COL.emFill},
-    {id:'au', label:'Aufzug',      sub:`Nennleistung`,     detail:`${p_aufz} kW`,     I:I_au, I_bez:p_aufz*gz_aufz, cable:cAU, col:COL.au, fill:COL.auFill},
-    ...azData.map((az,i)=>{
-      const Iaz=az.pbez/(sqrt3*(volt/1000)*cosPhi);
-      const caz=getCable(Iaz);
-      return{id:'az'+i,label:az.name.length>14?az.name.slice(0,13)+'…':az.name,sub:`Allg. ${i+1}`,detail:`${az.p.toFixed(1)} kW`,I:Iaz,I_bez:az.pbez,cable:caz,col:COL.az,fill:COL.azFill};
-    }),
-  ].filter(c=>c.I_bez>0.01);
-
-  const nCon=consumers.length;
-  const conBoxW=Math.min(BOX_W, Math.floor((W-40)/Math.max(nCon,1))-GAP);
-  const totalConW=nCon*(conBoxW+GAP)-GAP;
-  const conStartX=(W-totalConW)/2;
-
-  const SVG_H=320;
-  // Y positions
-  const Y_NETZ=20, Y_HAK=105, Y_ZS=190, Y_CON=265;
-  const CX=W/2; // center x
-
-  // helper: box
-  const box=(x,y,w,h,fill,stroke,rx=6)=>`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${rx}" fill="${fill}" stroke="${stroke}" stroke-width="1.5"/>`;
-  const txt=(x,y,t,size,fill,weight=400,anchor='middle')=>`<text x="${x}" y="${y}" font-size="${size}" fill="${fill}" font-weight="${weight}" text-anchor="${anchor}" font-family="IBM Plex Mono,monospace">${t}</text>`;
-  const line=(x1,y1,x2,y2,col,w=1.5,dash='')=>`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${col}" stroke-width="${w}" stroke-dasharray="${dash}"/>`;
-  const pill=(x,y,label,bg,tc)=>`<rect x="${x-28}" y="${y-8}" width="56" height="16" rx="8" fill="${bg}"/><text x="${x}" y="${y+4}" font-size="9" fill="${tc}" text-anchor="middle" font-family="IBM Plex Mono,monospace">${label}</text>`;
-
-  let svg=`<svg viewBox="0 0 ${W} ${SVG_H}" width="100%" class="schema-svg" style="max-width:${W}px;display:block;margin:0 auto;" xmlns="http://www.w3.org/2000/svg">
-  <rect width="${W}" height="${SVG_H}" fill="${COL.bg}" rx="8"/>`;
-
-  // ── NETZ ──
-  const NW=140, NH=42, NX=CX-NW/2, NY=Y_NETZ;
-  svg+=box(NX,NY,NW,NH,COL.netzFill,COL.netz,6);
-  svg+=txt(CX,NY+14,'NETZ / VNB',10,COL.netz,600);
-  svg+=txt(CX,NY+28,'400 V · TN-C-S',9,COL.txt2);
-
-  // line Netz→HAK
-  svg+=line(CX,NY+NH,CX,Y_HAK,COL.lineHA,2.5);
-  // label on line
-  svg+=pill(CX,(NY+NH+Y_HAK)/2,`${Math.round(I_bem)} A`,COL.hakFill,COL.hak);
-
-  // ── HAK ──
-  const HW=200, HH=46, HX=CX-HW/2, HY=Y_HAK;
-  svg+=box(HX,HY,HW,HH,COL.hakFill,COL.hak,6);
-  svg+=txt(CX,HY+14,'HAUSANSCHLUSSKASTEN (HAK)',9,COL.hak,600);
-  svg+=txt(CX,HY+27,`NH ${cHA.hak} A · ${cHA.cu}`,9,COL.txt);
-  svg+=txt(CX,HY+39,`I_z = ${cHA.iz_cu} A · Verlegeart A2`,8,COL.txt2);
-
-  // line HAK→ZS
-  svg+=line(CX,HY+HH,CX,Y_ZS,COL.lineHA,2.5);
-  svg+=pill(CX,(HY+HH+Y_ZS)/2,`${Math.round(I_bem)} A`,COL.hakFill,COL.hak);
-
-  // ── ZÄHLERSCHRANK ──
-  const ZW=280, ZH=46, ZX=CX-ZW/2, ZY=Y_ZS;
-  svg+=box(ZX,ZY,ZW,ZH,COL.zsFill,COL.zs,6);
-  svg+=txt(CX,ZY+14,'ZÄHLERSCHRANK',10,COL.zs,600);
-  svg+=txt(CX,ZY+27,`DIN VDE 0603-1 Typ II · ${n_we + azData.length} Zählerstellen`,9,COL.txt);
-  svg+=txt(CX,ZY+39,`${n_we} WE + ${azData.length} Allg. · HAK ${cHA.hak} A`,8,COL.txt2);
-
-  // ── CONSUMER BOXES ──
-  consumers.forEach((c,i)=>{
-    const bx=conStartX+i*(conBoxW+GAP);
-    const by=Y_CON;
-    const bcx=bx+conBoxW/2;
-
-    // line from ZS bottom center to consumer top
-    const zsBottom=ZY+ZH;
-    // vertical from ZS to horizontal bus
-    const busY=Y_CON-16;
-    svg+=line(CX,zsBottom,CX,busY,COL.line,1);
-    // horizontal bus
-    if(i===0||i===nCon-1){
-      svg+=line(conStartX+conBoxW/2,busY, conStartX+(nCon-1)*(conBoxW+GAP)+conBoxW/2, busY, COL.line, 1);
-    }
-    // vertical drop to box
-    svg+=line(bcx,busY,bcx,by,c.col,1.5);
-
-    // cable label on drop
-    const cLabel=c.cable?c.cable.cu:'–';
-    const iLabel=`${Math.round(c.I)} A`;
-    svg+=`<rect x="${bcx-22}" y="${busY+8}" width="44" height="12" rx="3" fill="${c.fill}"/>`;
-    svg+=txt(bcx,busY+17,iLabel,8,c.col,500);
-
-    // box
-    svg+=box(bx,by,conBoxW,BOX_H,c.fill,c.col,5);
-    svg+=txt(bcx,by+13,c.label,8.5,c.col,600);
-    svg+=txt(bcx,by+25,c.sub,8,COL.txt2);
-    svg+=txt(bcx,by+36,cLabel,7.5,COL.txt);
-    svg+=txt(bcx,by+46,c.detail,7,COL.txt2);
-  });
-
-  svg+='</svg>';
-  document.getElementById('leitungsschema_svg').innerHTML=svg;
-}
-
-// ─── INIT ─────────────────────────────────────────────────────────────────────
 renderAllgzRows();
 calc();
 </script>
