@@ -899,129 +899,145 @@ function calc(){
 function renderSchema(s){
   const {p_we,I_bem,recRow,za,duCards}=s;
   const ip=!!(window._isPrint);
-  const cHA=recRow||{hak:0,cu:'–',al:'–',iz_cu:0};
+  const cHA=recRow||{hak:0,cu:'–',iz_cu:0};
 
-  const C={
-    bg:    ip?'#fff':'#0d0d10',
-    bgN:   ip?'#ddeeff':'#0d2540',
-    bgH:   ip?'#fff3d6':'#2d1e00',
-    bgWE:  ip?'#ede8ff':'#1a1030',
-    cN:    ip?'#1a5fb4':'#4a9eff',
-    cH:    ip?'#7a5000':'#e8a020',
-    cBus:  ip?'#bbb':'#444466',
-    cWE:   ip?'#5a3a9a':'#9b72e6',
-    tx:    ip?'#111':'#e8e8f0',
-    tx2:   ip?'#444':'#9898b0',
-    tx3:   ip?'#888':'#606070',
-    ZC:    ip?['#1a5fb4','#2d7a4f','#7a5000','#5a3a9a','#1a6a65','#900']:['#4a9eff','#3ecf8e','#f5a623','#9b72e6','#2ec4b6','#e05252'],
-    ZF:    ip?['#ddeeff','#ddf3e8','#fff3d6','#ede8ff','#d8f4f0','#ffe8e8']:['#0d2540','#0d2a1c','#2d1e00','#1a1030','#0d2428','#2d0d0d'],
-  };
+  // Farben
+  const bg   =ip?'#fff':'#0c0c10';
+  const cN   =ip?'#1a5fb4':'#5aabff';
+  const bgN  =ip?'#e8f2ff':'#0a1e35';
+  const cH   =ip?'#8a5c00':'#f0b030';
+  const bgH  =ip?'#fffae8':'#2a1c00';
+  const cBus =ip?'#aaa':'#50506a';
+  const cWE  =ip?'#5a3a9a':'#a080e0';
+  const bgWE =ip?'#f0ecff':'#14102a';
+  const txD  =ip?'#111':'#eeeef8';
+  const txS  =ip?'#555':'#8888a8';
+  const ZC   =ip?['#1a5fb4','#2d7a4f','#8a5c00','#5a3a9a','#1a6a65','#900']
+                 :['#5aabff','#40d898','#f0b030','#a080e0','#30c8c0','#f06060'];
+  const ZF   =ip?['#e8f2ff','#e4f8ee','#fffae8','#f0ecff','#e4f8f6','#ffe8e8']
+                 :['#081a2c','#081f14','#1e1200','#100c20','#081c1c','#200808'];
+
   const dOk=ip?'#2d7a4f':'#3ecf8e';
-  const dW =ip?'#7a5000':'#f5a623';
-  const dR =ip?'#900':'#e05252';
-  const dc =p=>p<0.5?dOk:p<=0.5?dW:dR;
+  const dW =ip?'#8a5c00':'#f0b030';
+  const dR =ip?'#900':'#f06060';
+  const dc =p=>p<0.5?dOk:p===0.5?dW:dR;
 
   const zaCount=za.length;
-  const PAD=28;
-  const NW=160,NH=44;
-  const HW=270,HH=52;
-  const ZW=Math.min(190,Math.max(140,Math.floor((880-2*PAD)/zaCount)-20));
-  const ZG=ZW+22;
-  const WH2=42;
-  const W=Math.max(900,zaCount*ZG+2*PAD+60);
+
+  // ── Dimensionen ──────────────────────────────────────
+  // Boxgrößen
+  const NW=170, NH=50;
+  const HW=290, HH=58;
+  const ZW=Math.min(200,Math.max(150,Math.floor(820/zaCount)-24));
+  const ZH=76, ZG=ZW+28;
+  const WW=ZW, WH=48;
+
+  // Canvas
+  const PAD=32;
+  const W=Math.max(920, zaCount*ZG+2*PAD+40);
   const CX=Math.round(W/2);
-  const ZX0=Math.round((W-zaCount*ZG+22)/2);
+  const ZX0=Math.round((W-zaCount*ZG+28)/2);
 
-  // Generous vertical spacing — each section clearly separated
+  // Y-Abstände — großzügig
   const Y_N  =PAD;
-  const Y_H  =Y_N+NH+52;   // 52px gap NETZ→HAK (room for strom pill)
-  const Y_BUS=Y_H+HH+28;   // 28px gap HAK→bus
-  const Y_Z  =Y_BUS+64;    // 64px gap bus→ZA (room for 2 pills)
-  const ZH   =64;           // ZA box height
-  const Y_W  =Y_Z+ZH+52;   // 52px gap ZA→WE (room for 1 pill)
-  const H    =Y_W+WH2+PAD;
+  const LINE_NH=60;   // Linie NETZ→HAK
+  const Y_H  =Y_N+NH+LINE_NH;
+  const LINE_HB=32;   // HAK→Bus
+  const Y_BUS=Y_H+HH+LINE_HB;
+  const LINE_BZ=80;   // Bus→ZA  (Platz für 2 Pills)
+  const Y_Z  =Y_BUS+LINE_BZ;
+  const LINE_ZW=60;   // ZA→WE   (Platz für 1 Pill)
+  const Y_W  =Y_Z+ZH+LINE_ZW;
+  const H    =Y_W+WH+PAD;
 
+  // ── Helpers ──────────────────────────────────────────
   const R=n=>Math.round(n);
-  const rect=(x,y,w,h,f,s,rx=6,sw=1.5)=>
+  const box=(x,y,w,h,f,s,rx=8,sw=2)=>
     `<rect x="${R(x)}" y="${R(y)}" width="${R(w)}" height="${R(h)}" rx="${rx}" fill="${f}" stroke="${s}" stroke-width="${sw}"/>`;
-  const tx=(x,y,t,sz,f,fw=400,a='middle')=>
-    `<text x="${R(x)}" y="${R(y)}" font-size="${sz}" fill="${f}" font-weight="${fw}" text-anchor="${a}" font-family="IBM Plex Mono,monospace">${t}</text>`;
-  const vl=(x,y1,y2,c,sw=2)=>
-    `<line x1="${R(x)}" y1="${R(y1)}" x2="${R(x)}" y2="${R(y2)}" stroke="${c}" stroke-width="${sw}"/>`;
-  const hl=(x1,x2,y,c,sw=2)=>
-    `<line x1="${R(x1)}" y1="${R(y)}" x2="${R(x2)}" y2="${R(y)}" stroke="${c}" stroke-width="${sw}"/>`;
-  const pill=(x,y,t,bg,tc,pw=72,ph=24)=>{
-    const xp=R(x-pw/2),yp=R(y-ph/2);
-    return `<rect x="${xp}" y="${yp}" width="${pw}" height="${ph}" rx="${ph/2}" fill="${bg}" stroke="${tc}" stroke-width="1.2"/>` +
-           tx(x,y+5,t,9,tc,700);
+  const t=(x,y,str,sz,f,fw=400,a='middle')=>
+    `<text x="${R(x)}" y="${R(y)}" font-size="${sz}" fill="${f}" font-weight="${fw}" text-anchor="${a}" font-family="'IBM Plex Mono',monospace">${str}</text>`;
+  const vl=(x,y1,y2,c,sw=2.5)=>
+    `<line x1="${R(x)}" y1="${R(y1)}" x2="${R(x)}" y2="${R(y2)}" stroke="${c}" stroke-width="${sw}" stroke-linecap="round"/>`;
+  const hl=(x1,x2,y,c,sw=2.5)=>
+    `<line x1="${R(x1)}" y1="${R(y)}" x2="${R(x2)}" y2="${R(y)}" stroke="${c}" stroke-width="${sw}" stroke-linecap="round"/>`;
+
+  // Pill: klar abgesetzte Beschriftung auf Linie
+  const pill=(x,y,str,bg2,tc,pw=84,ph=28)=>{
+    const xp=R(x-pw/2), yp=R(y-ph/2);
+    return `<rect x="${xp}" y="${yp}" width="${pw}" height="${ph}" rx="${ph/2}" fill="${bg2}" stroke="${tc}" stroke-width="1.8"/>` +
+           t(x,y+5.5,str,9.5,tc,700);
   };
 
   let svg=`<svg viewBox="0 0 ${W} ${H}" width="100%" xmlns="http://www.w3.org/2000/svg" style="max-width:${W}px;display:block;margin:0 auto;">` +
-    `<rect width="${W}" height="${H}" fill="${C.bg}"/>`;
+    `<rect width="${W}" height="${H}" fill="${bg}"/>`;
 
-  // ── EBENE 1: NETZ ──────────────────────────────────
-  svg+=rect(CX-NW/2,Y_N,NW,NH,C.bgN,C.cN,8);
-  svg+=tx(CX,Y_N+17,'NETZ / VNB',11,C.cN,700);
-  svg+=tx(CX,Y_N+32,'400 V · TN-C-S',8.5,C.tx2);
+  // ════════════════════════════════════
+  //  NETZ
+  // ════════════════════════════════════
+  svg+=box(CX-NW/2,Y_N,NW,NH,bgN,cN,10);
+  svg+=t(CX,Y_N+19,'NETZ / VNB',12,cN,700);
+  svg+=t(CX,Y_N+36,'400 V · TN-C-S',9,txS);
 
-  // NETZ → HAK  (Linie + Strom-Pill mittig)
-  const nhMid=Math.round((Y_N+NH+Y_H)/2);
-  svg+=vl(CX,Y_N+NH,Y_H,C.cH,2.5);
-  svg+=pill(CX,nhMid,r0(I_bem)+' A',C.bgH,C.cH,76,26);
+  // Linie NETZ → HAK  +  Strom-Pill
+  svg+=vl(CX,Y_N+NH,Y_H,cH);
+  svg+=pill(CX,Y_N+NH+LINE_NH/2,r0(I_bem)+' A',bgH,cH,88,30);
 
-  // ── EBENE 2: HAK ───────────────────────────────────
-  svg+=rect(CX-HW/2,Y_H,HW,HH,C.bgH,C.cH,8);
-  svg+=tx(CX,Y_H+17,'HAUSANSCHLUSSKASTEN (HAK)',10,C.cH,700);
-  svg+=tx(CX,Y_H+31,`NH ${cHA.hak} A  ·  ${cHA.cu}`,9,C.tx);
-  svg+=tx(CX,Y_H+44,`I_z ${cHA.iz_cu} A  ·  Verlegeart A2`,7.5,C.tx3);
+  // ════════════════════════════════════
+  //  HAK
+  // ════════════════════════════════════
+  svg+=box(CX-HW/2,Y_H,HW,HH,bgH,cH,10);
+  svg+=t(CX,Y_H+19,'HAUSANSCHLUSSKASTEN (HAK)',10.5,cH,700);
+  svg+=t(CX,Y_H+35,`NH ${cHA.hak} A  ·  ${cHA.cu}`,9.5,txD);
+  svg+=t(CX,Y_H+50,`I_z ${cHA.iz_cu} A  ·  Verlegeart A2`,8,txS);
 
-  // HAK → Busschiene
-  svg+=vl(CX,Y_H+HH,Y_BUS,C.cBus,2);
+  // Linie HAK → Busschiene
+  svg+=vl(CX,Y_H+HH,Y_BUS,cBus,2);
   if(zaCount>1){
     const bL=ZX0+ZW/2, bR=ZX0+(zaCount-1)*ZG+ZW/2;
-    svg+=hl(bL,bR,Y_BUS,C.cBus,2);
+    svg+=hl(bL,bR,Y_BUS,cBus,2.5);
   }
 
-  // ── EBENE 3: ZÄHLERANLAGEN ─────────────────────────
+  // ════════════════════════════════════
+  //  ZÄHLERANLAGEN
+  // ════════════════════════════════════
   za.forEach((z,i)=>{
-    const col=C.ZC[i%6], fill=C.ZF[i%6];
+    const col=ZC[i%6], fill=ZF[i%6];
     const zx=ZX0+i*ZG, zcx=zx+ZW/2;
     const d=duCards[i];
 
-    // Bus → ZA: vertikale Linie, 2 Pills klar getrennt
-    svg+=vl(zcx,Y_BUS,Y_Z,col,2);
+    // Busschiene → ZA  (2 Pills mit klarem Abstand)
+    svg+=vl(zcx,Y_BUS,Y_Z,col);
     if(d){
-      const p1y=Y_BUS+Math.round((Y_Z-Y_BUS)*0.30);
-      const p2y=Y_BUS+Math.round((Y_Z-Y_BUS)*0.72);
-      svg+=pill(zcx,p1y,r0(d.I_hak)+' A',fill,col,68,24);
-      const duC2=dc(d.du_hak);
-      svg+=pill(zcx,p2y,'ΔU '+r2(d.du_hak)+' %',fill,duC2,74,24);
+      // Pill 1: Strom  (oberes Drittel)
+      const p1y=Y_BUS+Math.round(LINE_BZ*0.28);
+      // Pill 2: ΔU     (unteres Drittel)
+      const p2y=Y_BUS+Math.round(LINE_BZ*0.72);
+      svg+=pill(zcx,p1y,r0(d.I_hak)+' A',fill,col,82,28);
+      svg+=pill(zcx,p2y,'ΔU '+r2(d.du_hak)+' %',fill,dc(d.du_hak),82,28);
     }
 
-    // ZA Box
-    svg+=rect(zx,Y_Z,ZW,ZH,fill,col,7,1.5);
-    svg+=tx(zcx,Y_Z+16,`ZÄHLERANLAGE ${z.id}`,9.5,col,700);
-    const nm=(z.name||'ZA '+z.id).slice(0,Math.floor(ZW/6));
-    svg+=tx(zcx,Y_Z+30,nm,8.5,C.tx);
+    // ZA-Box
+    svg+=box(zx,Y_Z,ZW,ZH,fill,col,9,2);
+    svg+=t(zcx,Y_Z+19,`ZÄHLERANLAGE ${z.id}`,10,col,700);
+    svg+=t(zcx,Y_Z+35,(z.name||'ZA '+z.id).slice(0,Math.floor(ZW/6.5)),9,txD);
     const zStr=z.n_wandler>0
-      ?`${z.n_we_zaehler} WE-Zähler + ${z.n_wandler}× CT`
-      :`${z.n_we_zaehler||0} Zähler  ·  ${z.nwe} WE`;
-    svg+=tx(zcx,Y_Z+43,zStr,7.5,C.tx2);
+      ?`${z.n_we_zaehler} WE + ${z.n_wandler}× Wandler`
+      :`${z.n_we_zaehler||0} Zähler · ${z.nwe} WE`;
+    svg+=t(zcx,Y_Z+50,zStr,8,txS);
     if(d){
-      const hakCol=dc(d.du_hak);
-      svg+=tx(zcx,Y_Z+56,'ΔU HAK→ZA: '+r2(d.du_hak)+' %',8,hakCol,700);
+      svg+=t(zcx,Y_Z+65,'ΔU: '+r2(d.du_hak)+' %',9,dc(d.du_hak),700);
     }
 
-    // ── EBENE 4: WE ────────────────────────────────
+    // ZA → WE
     if(z.nwe>0){
-      svg+=vl(zcx,Y_Z+ZH,Y_W,C.cWE,1.5);
+      svg+=vl(zcx,Y_Z+ZH,Y_W,cWE,2);
       if(d){
-        const weLY=Y_Z+ZH+Math.round((Y_W-Y_Z-ZH)/2);
-        svg+=pill(zcx,weLY,'ΔU '+r2(d.du_we)+' %',C.bgWE,C.cWE,68,24);
+        const weLY=Y_Z+ZH+Math.round(LINE_ZW/2);
+        svg+=pill(zcx,weLY,'ΔU '+r2(d.du_we)+' %',bgWE,cWE,78,28);
       }
-      svg+=rect(zx,Y_W,ZW,WH2,C.bgWE,C.cWE,6,1.5);
-      svg+=tx(zcx,Y_W+15,`WE (${z.nwe}× ${p_we} kW)`,9,C.cWE,700);
-      svg+=tx(zcx,Y_W+28,`${z.l_we} m · ${z.qs_we} mm² Cu`,7.5,C.tx2);
+      svg+=box(zx,Y_W,WW,WH,bgWE,cWE,8,1.8);
+      svg+=t(zcx,Y_W+18,`${z.nwe}× WE · ${p_we} kW`,9.5,cWE,700);
+      svg+=t(zcx,Y_W+34,`${z.l_we} m · ${z.qs_we} mm² Cu`,8,txS);
     }
   });
 
