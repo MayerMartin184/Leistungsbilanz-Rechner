@@ -144,10 +144,11 @@ footer{margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--border);fon
   body::before{display:none!important;}
   .wrapper{max-width:100%;padding:0;}
   .action-bar,.btn{display:none!important;}
-  :root{--bg:#fff;--bg2:#f8f8f8;--bg3:#f0f0f0;--bg4:#e8e8e8;--border:#ccc;--border2:#bbb;--text:#111;--text2:#444;--text3:#777;--accent:#1a5fb4;--green:#2d7a4f;--amber:#8a5a00;--red:#a00;--teal:#1a6a65;--purple:#5a3a9a;}
+  :root{--bg:#fff;--bg2:#f8f8f8;--bg3:#f0f0f0;--bg4:#e8e8e8;--border:#ccc;--border2:#bbb;--text:#111;--text2:#333;--text3:#666;--accent:#1a5fb4;--green:#2d7a4f;--amber:#7a5000;--red:#a00;--teal:#1a6a65;--purple:#5a3a9a;}
   .main-grid{display:block!important;}
   .panel{break-inside:avoid;border:1px solid #ccc!important;margin-bottom:6px!important;page-break-inside:avoid;}
   .panel-header{background:#e8e8e8!important;border-bottom:1px solid #ccc!important;}
+  .kpi{background:#eef4ff!important;}
   .kpi-val{font-size:15px!important;}
   .gz-grid{grid-template-columns:repeat(8,1fr)!important;}
   .detail-grid{grid-template-columns:repeat(3,1fr)!important;}
@@ -155,11 +156,34 @@ footer{margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--border);fon
   .du-grid{grid-template-columns:1fr 1fr!important;}
   .pdf-only{display:block!important;}
   .du-bar-wrap{display:none;}
-  #leitungsschema_svg svg rect[fill="#0f0f11"]{fill:#f8f8f8!important;}
-  #leitungsschema_svg svg rect[fill="#16161a"]{fill:#f4f4f4!important;}
-  #leitungsschema_svg svg rect[fill="#1e1e24"]{fill:#ececec!important;}
-  #leitungsschema_svg svg text{fill:#111!important;}
+  /* Panel-Hintergrundfarben im Druck – ganz leicht */
+  .panel-header[data-color="blue"]{background:#e8f0fb!important;}
+  .panel-header[data-color="green"]{background:#e6f4ed!important;}
+  .panel-header[data-color="amber"]{background:#fdf3e0!important;}
+  .pi-blue{background:#dce8f8!important;color:#1a5fb4!important;}
+  .pi-green{background:#d6f0e0!important;color:#2d7a4f!important;}
+  .pi-amber{background:#fde8c0!important;color:#7a5000!important;}
+  .pi-teal{background:#d0f0ee!important;color:#1a6a65!important;}
+  .pi-purple{background:#e8dcff!important;color:#5a3a9a!important;}
+  .pi-red{background:#fde0e0!important;color:#a00!important;}
+  /* KPI-Karten leicht eingefärbt */
+  .kv-blue{color:#1a5fb4!important;}
+  .kv-green{color:#2d7a4f!important;}
+  .kv-amber{color:#7a5000!important;}
+  .kv-red{color:#a00!important;}
+  /* Anschluss-Boxen */
+  .ab-ok{background:#e8f7ee!important;border-color:#2d7a4f!important;}
+  .ab-warn{background:#fdf3e0!important;border-color:#7a5000!important;}
+  .ab-crit{background:#fde8e8!important;border-color:#a00!important;}
+  /* Notes */
+  .note-blue{background:#eef4ff!important;border-color:#1a5fb4!important;}
+  .note-amber{background:#fdf3e0!important;border-color:#7a5000!important;}
+  .note-green{background:#e8f7ee!important;border-color:#2d7a4f!important;}
+  /* ZA Karten */
+  .za-dyn-card{background:#f8f8f8!important;}
   footer{font-size:9px;margin-top:1rem;}
+  /* Schema wird als eigenes SVG mit Print-Farben neu gerendert */
+  #leitungsschema_svg{margin-top:4px;}
 }
 .pdf-only{display:none;}
 </style>
@@ -449,10 +473,10 @@ footer{margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--border);fon
       <table class="din" id="du_table">
         <thead>
           <tr>
-            <th>ZA</th><th>Bezeichnung</th><th>Zähler</th><th>WE</th><th>GZ</th>
+            <th>ZA</th><th>Bezeichnung</th><th>WE-Zähler</th><th>Wandlerzähler</th><th>WE</th><th>GZ</th>
             <th>I HAK→ZA</th><th>Länge</th><th>Qs</th>
-            <th>ΔU HAK→ZA</th><th>Min-Qs</th>
-            <th>ΔU ZA→WE</th><th>ΔU gesamt</th><th>Status</th>
+            <th>ΔU HAK→ZA <span style="color:var(--amber)">(≤0,5%)</span></th><th>Min-Qs</th>
+            <th>ΔU ZA→WE <span style="color:var(--amber)">(≤1,0%)</span></th><th>ΔU gesamt</th><th>Status</th>
           </tr>
         </thead>
         <tbody id="du_tbody"></tbody>
@@ -460,8 +484,8 @@ footer{margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--border);fon
       </table>
     </div>
 
-    <div class="note note-blue">
-      ΔU = √3 × I × 2L × ρ / A &nbsp;·&nbsp; Grenzwert gesamt <strong>max. 3 %</strong> (DIN VDE 0100-520) &nbsp;·&nbsp; HAK→ZA max. 1,5 % &nbsp;·&nbsp; ZA→WE max. 1,5 %
+    <div class="note note-amber">
+      ΔU = √3 × I × 2L × ρ / A &nbsp;·&nbsp; <strong>HAK→Zähler max. 0,5 %</strong> (TAB Netzbetreiber) &nbsp;·&nbsp; ZA→WE max. 1,0 % &nbsp;·&nbsp; Gesamt max. 3 % (DIN VDE 0100-520)
     </div>
   </div>
 </div>
@@ -701,12 +725,14 @@ function calc(){
   }).join('');
 
   // ZÄHLERSCHRANK DETAIL
-  const totalZaehler=za.reduce((s,z)=>s+z.n_zaehler,0);
+  const totalWEZ=za.reduce((s,z)=>s+z.n_we_zaehler,0);
+  const totalWandlerZ=za.reduce((s,z)=>s+z.n_wandler,0);
+  const totalZaehler=totalWEZ+totalWandlerZ;
   document.getElementById('zaehler_detail').innerHTML=[
     {l:'Messeinrichtungen WE',  v:n_we+' Stk.'},
-    {l:'Allgemeinzähler',       v:azData.length+' Stk.'},
-    {l:'Zähleranlagen',         v:za.length+' Stk.'},
-    {l:'Zähler in ZA gesamt',   v:totalZaehler+' Stk.'},
+    {l:'WE-Zähler (Direktmessung)', v:totalWEZ+' Stk.'},
+    {l:'Wandlerzähler',             v:totalWandlerZ>0?totalWandlerZ+' Stk.':'–'},
+    {l:'Zähler in ZA gesamt',       v:totalZaehler+' Stk.'},
     {l:'Gesamt Zählerstellen',  v:(n_we+azData.length)+' Stk. (inkl. Allgem.)'},
     {l:'HAK Nennstrom',         v:recRow?recRow.hak+' A':'> 400 A'},
     {l:'NH-Sicherung',          v:'gG · NH Gr. 00 oder 0'},
@@ -724,40 +750,76 @@ function calc(){
     const P_za=z.nwe*p_we*gz_za;
     const I_hak=P_za/(sqrt3*(volt/1000)*cosPhi);
     const du_hak=calcDU(I_hak,z.l_hak,rho,z.qs,volt);
-    const qs_min_hak=minQS(I_hak,z.l_hak,rho,volt,1.5);
+    const qs_min_hak=minQS(I_hak,z.l_hak,rho,volt,0.5);   // TAB: max 0,5% vor Zähler
     const I_we_za=p_we/(sqrt3*(volt/1000)*cosPhi);
     const du_we=calcDU(I_we_za,z.l_we,rho,z.qs_we,volt);
-    const qs_min_we=minQS(I_we_za,z.l_we,rho,volt,1.5);
+    const qs_min_we=minQS(I_we_za,z.l_we,rho,volt,1.0);   // max 1,0% ZA→WE
     const du_total=du_hak+du_we;
     return{z,gz_za,P_za,I_hak,du_hak,qs_min_hak,I_we_za,du_we,qs_min_we,du_total};
   });
 
-  const duColor=p=>p<=1.5?'#3ecf8e':p<=3?'#f5a623':'#e05252';
+  // Wandlerzähler: typ. ab 63A Pflicht — Info in Karte
+  za.forEach((z,i)=>{
+    const el=document.getElementById(`za_result_${i}`);
+    if(!el) return;
+    const d=duCards[i];
+    const wandlerInfo=z.n_wandler>0
+      ? `<div style="margin-top:5px;padding:5px 7px;background:rgba(46,196,182,.08);border:1px solid rgba(46,196,182,.25);border-radius:4px;font-size:10.5px;color:var(--teal);">
+           <strong>${z.n_wandler}× Wandlermessung</strong> · CT ${z.wandler_ct}/5 A<br>
+           <span style="color:var(--text3);">Eichrechtlich zugelassen · DIN EN 62053-22 · Zählerfeld mit CT-Klemmen erforderlich</span>
+         </div>` : '';
+    if(!d){el.innerHTML=wandlerInfo;return;}
+    const hc=d.du_hak<=0.5?'#3ecf8e':d.du_hak<=1?'#f5a623':'#e05252';
+    const wc=d.du_we<=1.0?'#3ecf8e':d.du_we<=2?'#f5a623':'#e05252';
+    const tc=d.du_total<=3?( d.du_hak<=0.5&&d.du_we<=1.0?'#3ecf8e':'#f5a623'):'#e05252';
+    el.innerHTML=`
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:3px;font-size:11px;margin-top:4px;">
+        <div style="color:var(--text2);">I HAK→ZA</div><div style="font-family:var(--mono);text-align:right;">${r0(d.I_hak)} A</div>
+        <div style="color:var(--text2);">ΔU HAK→ZA <span style="color:var(--text3);font-size:9px;">(≤0,5%)</span></div><div style="font-family:var(--mono);text-align:right;color:${hc};font-weight:600;">${r2(d.du_hak)} %</div>
+        <div style="color:var(--text2);">Min-Qs HAK→ZA</div><div style="font-family:var(--mono);text-align:right;color:var(--accent);">${r2(d.qs_min_hak)} mm²</div>
+        <div style="color:var(--text2);">ΔU ZA→WE <span style="color:var(--text3);font-size:9px;">(≤1,0%)</span></div><div style="font-family:var(--mono);text-align:right;color:${wc};font-weight:600;">${r2(d.du_we)} %</div>
+        <div style="color:var(--text2);">Min-Qs ZA→WE</div><div style="font-family:var(--mono);text-align:right;color:var(--accent);">${r2(d.qs_min_we)} mm²</div>
+        <div style="font-weight:600;color:var(--text);padding-top:3px;border-top:1px solid var(--border);">ΔU gesamt</div>
+        <div style="font-family:var(--mono);text-align:right;color:${tc};font-weight:700;padding-top:3px;border-top:1px solid var(--border);">${r2(d.du_total)} %</div>
+      </div>
+      <div style="background:var(--bg);border-radius:3px;height:6px;overflow:hidden;margin-top:5px;">
+        <div style="height:100%;width:${Math.min(100,d.du_total/3*100).toFixed(0)}%;background:${tc};border-radius:3px;"></div>
+      </div>
+      ${wandlerInfo}`;
+  });
+
+  const duColor=p=>p<=0.5?'#3ecf8e':p<=1?'#f5a623':'#e05252'; // HAK→ZA limit 0.5%
+  const duColorWE=p=>p<=1.0?'#3ecf8e':p<=2?'#f5a623':'#e05252'; // ZA→WE limit 1.0%
   document.getElementById('du_tbody').innerHTML=duCards.map((d,i)=>{
-    if(!d) return`<tr><td>${i+1}</td><td style="color:var(--text3);">${za[i].name}</td><td colspan="11" style="color:var(--text3);">0 WE – nicht berücksichtigt</td></tr>`;
-    const tc=duColor(d.du_total);
+    if(!d) return`<tr><td style="font-weight:600;color:var(--text3);">ZA ${za[i].id}</td><td style="color:var(--text3);">${za[i].name}</td><td>${za[i].n_we_zaehler}</td><td style="color:var(--teal);">${za[i].n_wandler>0?za[i].n_wandler+'× CT '+za[i].wandler_ct+'/5A':'–'}</td><td colspan="10" style="color:var(--text3);">0 WE – nicht berücksichtigt</td></tr>`;
+    const hc=duColor(d.du_hak), wc=duColorWE(d.du_we);
+    const tc=d.du_hak<=0.5&&d.du_we<=1.0?'#3ecf8e':d.du_total<=3?'#f5a623':'#e05252';
+    const wandlerTxt=d.z.n_wandler>0?`${d.z.n_wandler}× CT ${d.z.wandler_ct}/5A`:'–';
     return`<tr>
       <td style="font-weight:600;color:var(--accent);">ZA ${d.z.id}</td>
       <td>${d.z.name}</td>
-      <td style="color:var(--teal);">${d.z.n_zaehler}</td>
+      <td>${d.z.n_we_zaehler}</td>
+      <td style="color:var(--teal);">${wandlerTxt}</td>
       <td>${d.z.nwe}</td>
       <td>${d.gz_za.toFixed(2)}</td>
       <td>${r0(d.I_hak)} A</td>
       <td>${d.z.l_hak} m</td>
       <td>${d.z.qs} mm²</td>
-      <td style="color:${duColor(d.du_hak)};font-weight:600;">${r2(d.du_hak)} %</td>
+      <td style="color:${hc};font-weight:600;">${r2(d.du_hak)} %</td>
       <td style="color:var(--accent);">${r2(d.qs_min_hak)} mm²</td>
-      <td style="color:${duColor(d.du_we)};font-weight:600;">${r2(d.du_we)} %</td>
+      <td style="color:${wc};font-weight:600;">${r2(d.du_we)} %</td>
       <td style="color:${tc};font-weight:700;font-size:12px;">${r2(d.du_total)} %</td>
-      <td style="color:${tc};">${duLabel(d.du_total)}</td>
+      <td style="color:${tc};">${duLabel(d.du_hak<=0.5&&d.du_we<=1.0?0:d.du_total)}</td>
     </tr>`;
   }).join('');
 
   // Summenzeile
-  const totalZaehlerRow=za.reduce((s,z)=>s+z.n_zaehler,0);
+  const totalWEZaehler=za.reduce((s,z)=>s+z.n_we_zaehler,0);
+  const totalWandler=za.reduce((s,z)=>s+z.n_wandler,0);
   document.getElementById('du_tfoot').innerHTML=`<tr style="border-top:1px solid var(--border2);">
-    <td colspan="2" style="font-weight:600;color:var(--text);font-family:var(--mono);font-size:11px;">SUMME / GESAMT</td>
-    <td style="color:var(--teal);font-weight:600;">${totalZaehlerRow} Zähler</td>
+    <td colspan="2" style="font-weight:600;color:var(--text);font-family:var(--mono);font-size:11px;">SUMME</td>
+    <td style="font-weight:600;">${totalWEZaehler} WE-Zähler</td>
+    <td style="color:var(--teal);font-weight:600;">${totalWandler} Wandlerzähler</td>
     <td style="font-weight:600;">${za.reduce((s,z)=>s+z.nwe,0)} WE</td>
     <td colspan="9"></td>
   </tr>`;
@@ -771,75 +833,87 @@ function calc(){
 }
 
 function renderSchema(s){
-  const {n_we,p_we,p_wp,n_em,p_em,p_aufz,total_gz,I_bem,recRow,volt,cosPhi,za,duCards,sqrt3}=s;
+  const {p_we,I_bem,recRow,za,duCards}=s;
+  const isPrint=!!(window._isPrint);
   const cHA=recRow||{hak:0,cu:'–',al:'–',iz_cu:0};
-  const ZCOLS=['#4a9eff','#3ecf8e','#f5a623','#9b72e6','#2ec4b6','#e05252'];
-  const ZFILLS=['#0d2540','#0d3324','#3d2800','#271a40','#0d2e2c','#3a0d0d'];
-  const W=960, hakY=80, zaY=175, conY=290;
-  const zaCount=za.length;
-  const ZAW=Math.min(175, Math.floor((W-80)/zaCount)-16);
-  const zaSpacing=ZAW+16;
-  const zaStartX=(W-(zaCount*zaSpacing-16))/2;
-  const H=conY+60;
+
+  const P={
+    bg:      isPrint?'#ffffff':'#0f0f11',
+    bgNetz:  isPrint?'#e8f0fb':'#1e3a5f',
+    bgHAK:   isPrint?'#fff8e8':'#3d2800',
+    bgWE:    isPrint?'#ede8ff':'#271a40',
+    cNetz:   isPrint?'#1a5fb4':'#4a9eff',
+    cHAK:    isPrint?'#7a5000':'#f5a623',
+    cBus:    isPrint?'#999':'#555577',
+    cWE:     isPrint?'#5a3a9a':'#9b72e6',
+    txtMain: isPrint?'#111':'#e8e8f0',
+    txtSub:  isPrint?'#444':'#9898b0',
+    txtMute: isPrint?'#777':'#6a6a88',
+    ZCOL:  isPrint?['#1a5fb4','#2d7a4f','#7a5000','#5a3a9a','#1a6a65','#a00']:['#4a9eff','#3ecf8e','#f5a623','#9b72e6','#2ec4b6','#e05252'],
+    ZFILL: isPrint?['#e8f0fb','#e6f4ed','#fdf3e0','#ede8ff','#e0f4f2','#fde8e8']:['#0d2540','#0d3324','#3d2800','#271a40','#0d2e2c','#3a0d0d'],
+  };
+  const duOk=isPrint?'#2d7a4f':'#3ecf8e';
+  const duWarn=isPrint?'#7a5000':'#f5a623';
+  const duCrit=isPrint?'#a00':'#e05252';
+  const duCol=p=>p<=0.5?duOk:p<=1?duWarn:duCrit;
+
+  const W=900,zaCount=za.length;
+  const NY=12,NH=34,HY=68,HH=42,BY=HY+HH+20;
+  const ZY=BY+28,ZH=50,WY=ZY+ZH+34,WH=34,H=WY+WH+14;
   const CX=W/2;
+  const ZAW=Math.min(158,Math.floor((W-60)/zaCount)-14);
+  const ZAG=ZAW+14,ZX0=(W-(zaCount*ZAG-14))/2;
 
-  const box=(x,y,w,h,fill,stroke,rx=5)=>`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${rx}" fill="${fill}" stroke="${stroke}" stroke-width="1.5"/>`;
-  const t=(x,y,txt,sz,fill,fw=400,anc='middle')=>`<text x="${x}" y="${y}" font-size="${sz}" fill="${fill}" font-weight="${fw}" text-anchor="${anc}" font-family="IBM Plex Mono,monospace">${txt}</text>`;
-  const ln=(x1,y1,x2,y2,col,sw=1.5,da='')=>`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${col}" stroke-width="${sw}" stroke-dasharray="${da}"/>`;
-  const pill=(x,y,lbl,bg,tc,w=52)=>`<rect x="${x-w/2}" y="${y-8}" width="${w}" height="16" rx="8" fill="${bg}"/>${t(x,y+4,lbl,8,tc)}`;
+  const box=(x,y,w,h,f,s2,rx=4,sw=1.5)=>`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${rx}" fill="${f}" stroke="${s2}" stroke-width="${sw}"/>`;
+  const tx=(x,y,s2,sz,f,fw=400,a='middle')=>`<text x="${x}" y="${y}" font-size="${sz}" fill="${f}" font-weight="${fw}" text-anchor="${a}" font-family="IBM Plex Mono,monospace">${s2}</text>`;
+  const vl=(x,y1,y2,c,sw=1.5)=>`<line x1="${x}" y1="${y1}" x2="${x}" y2="${y2}" stroke="${c}" stroke-width="${sw}"/>`;
+  const hl=(x1,x2,y,c,sw=1.5)=>`<line x1="${x1}" y1="${y}" x2="${x2}" y2="${y}" stroke="${c}" stroke-width="${sw}"/>`;
+  const lbl=(x,y,t,bg,tc,w=56)=>`<rect x="${x-w/2}" y="${y-9}" width="${w}" height="17" rx="8" fill="${bg}" stroke="${tc}" stroke-width="0.5"/>`+tx(x,y+4,t,8,tc,600);
 
-  let svg=`<svg viewBox="0 0 ${W} ${H}" width="100%" xmlns="http://www.w3.org/2000/svg" style="max-width:${W}px;display:block;margin:0 auto;">
-  <rect width="${W}" height="${H}" fill="#0f0f11" rx="8"/>`;
+  let svg=`<svg viewBox="0 0 ${W} ${H}" width="100%" xmlns="http://www.w3.org/2000/svg" style="max-width:${W}px;display:block;margin:0 auto;border-radius:6px;">`+
+    `<rect width="${W}" height="${H}" fill="${P.bg}" rx="6"/>`;
 
   // NETZ
-  svg+=box(CX-70,8,140,36,'#1e3a5f','#4a9eff');
-  svg+=t(CX,22,'NETZ / VNB',10,'#4a9eff',600);
-  svg+=t(CX,35,'400 V TN-C-S',8,'#9898b0');
-
+  svg+=box(CX-65,NY,130,NH,P.bgNetz,P.cNetz);
+  svg+=tx(CX,NY+14,'NETZ / VNB',10,P.cNetz,600);
+  svg+=tx(CX,NY+26,'400 V · TN-C-S',8,P.txtSub);
+  // NETZ→HAK
+  svg+=vl(CX,NY+NH,HY,P.cHAK,2);
+  svg+=lbl(CX,NY+NH+11,r0(I_bem)+' A',P.bgHAK,P.cHAK,58);
   // HAK
-  svg+=ln(CX,44,CX,hakY,'#f5a623',2.5);
-  svg+=pill(CX,62,r0(I_bem)+' A','#3d2800','#f5a623');
-  svg+=box(CX-115,hakY,230,40,'#3d2800','#f5a623');
-  svg+=t(CX,hakY+13,'HAUSANSCHLUSSKASTEN (HAK)',9,'#f5a623',600);
-  svg+=t(CX,hakY+25,`NH ${cHA.hak} A  ·  ${cHA.cu}`,8,'#e8e8f0');
-  svg+=t(CX,hakY+35,`I_z ${cHA.iz_cu} A  ·  Verlegeart A2`,7,'#9898b0');
+  svg+=box(CX-120,HY,240,HH,P.bgHAK,P.cHAK);
+  svg+=tx(CX,HY+14,'HAUSANSCHLUSSKASTEN (HAK)',9,P.cHAK,600);
+  svg+=tx(CX,HY+26,`NH ${cHA.hak} A  ·  ${cHA.cu}`,8,P.txtMain);
+  svg+=tx(CX,HY+37,`I_z ${cHA.iz_cu} A  ·  Verlegeart A2`,7,P.txtMute);
+  // HAK→Bus
+  svg+=vl(CX,HY+HH,BY,P.cBus,1);
+  // Busschiene
+  if(zaCount>1) svg+=hl(ZX0+ZAW/2,ZX0+(zaCount-1)*ZAG+ZAW/2,BY,P.cBus,2);
 
-  // horizontale Busschiene unter HAK
-  const busY=hakY+40+18;
-  if(zaCount>1){
-    const lx=zaStartX+ZAW/2, rx=zaStartX+(zaCount-1)*zaSpacing+ZAW/2;
-    svg+=ln(lx,busY,rx,busY,'#444466',1);
-  }
-  svg+=ln(CX,hakY+40,CX,busY,'#444466',1);
-
-  // ZA Karten + Leitungen
   za.forEach((z,i)=>{
-    const col=ZCOLS[i%ZCOLS.length], fill=ZFILLS[i%ZFILLS.length];
-    const zx=zaStartX+i*zaSpacing, zcx=zx+ZAW/2;
+    const col=P.ZCOL[i%6],fill=P.ZFILL[i%6];
+    const zx=ZX0+i*ZAG,zcx=zx+ZAW/2;
     const d=duCards[i];
-
-    // vertikale Linie Bus → ZA
-    svg+=ln(zcx,busY,zcx,zaY,col,2);
-    // Strom + ΔU Pills
+    // Bus→ZA senkrecht
+    svg+=vl(zcx,BY,ZY,col,1.5);
     if(d){
-      svg+=pill(zcx,busY+10,r0(d.I_hak)+' A',fill,col,54);
-      const duc=d.du_hak<=1.5?'#3ecf8e':d.du_hak<=3?'#f5a623':'#e05252';
-      svg+=pill(zcx,busY+26,'ΔU '+r2(d.du_hak)+'%',fill,duc,60);
+      svg+=lbl(zcx,BY+11,r0(d.I_hak)+' A',fill,col,54);
+      svg+=lbl(zcx,BY+25,'ΔU '+r2(d.du_hak)+'%',fill,duCol(d.du_hak),60);
     }
-
     // ZA Box
-    svg+=box(zx,zaY,ZAW,48,fill,col);
-    svg+=t(zcx,zaY+12,`ZÄHLERANLAGE ${z.id}`,8.5,col,600);
-    svg+=t(zcx,zaY+23,(z.name||'ZA '+z.id).slice(0,Math.floor(ZAW/6)),7.5,'#e8e8f0');
-    svg+=t(zcx,zaY+33,`${z.n_zaehler} Zähler  ·  ${z.nwe} WE`,7,'#9898b0');
-    if(d) svg+=t(zcx,zaY+43,`ΔU ges. ${r2(d.du_total)}%`,7,d.du_total<=1.5?'#3ecf8e':d.du_total<=3?'#f5a623':'#e05252');
-
-    // Verbraucher-Linie nach unten (WE)
+    svg+=box(zx,ZY,ZAW,ZH,fill,col);
+    svg+=tx(zcx,ZY+13,`ZÄHLERANLAGE ${z.id}`,8.5,col,600);
+    svg+=tx(zcx,ZY+24,(z.name||'ZA '+z.id).slice(0,Math.floor(ZAW/5.5)),7.5,P.txtMain);
+    const zStr=z.n_wandler>0?`${z.n_we_zaehler} WE + ${z.n_wandler}× CT`:`${z.n_we_zaehler||z.n_zaehler||'–'} Zähler`;
+    svg+=tx(zcx,ZY+34,zStr,7,P.txtSub);
+    if(d){const tc2=d.du_total<=1.5?duOk:d.du_total<=3?duWarn:duCrit;svg+=tx(zcx,ZY+44,`ΔU ges. ${r2(d.du_total)}%`,7,tc2);}
+    // ZA→WE senkrecht
     if(z.nwe>0){
-      svg+=ln(zcx,zaY+48,zcx,conY,'#9b72e6',1.2,'3 3');
-      svg+=box(zx,conY,ZAW,36,'#271a40','#9b72e6',4);
-      svg+=t(zcx,conY+13,`WE (${z.nwe}× ${p_we} kW)`,8,'#9b72e6',600);
-      if(d) svg+=t(zcx,conY+25,`ΔU→WE ${r2(d.du_we)}%`,7,d.du_we<=1.5?'#3ecf8e':d.du_we<=3?'#f5a623':'#e05252');
+      svg+=vl(zcx,ZY+ZH,WY,P.cWE,1.2);
+      if(d) svg+=lbl(zcx,ZY+ZH+11,'ΔU '+r2(d.du_we)+'%',P.bgWE,duCol(d.du_we),56);
+      svg+=box(zx,WY,ZAW,WH,P.bgWE,P.cWE,4,1.2);
+      svg+=tx(zcx,WY+13,`WE (${z.nwe}× ${p_we} kW)`,8,P.cWE,600);
+      svg+=tx(zcx,WY+24,`${z.l_we} m · ${z.qs_we} mm²`,7,P.txtSub);
     }
   });
 
@@ -847,14 +921,17 @@ function renderSchema(s){
   document.getElementById('leitungsschema_svg').innerHTML=svg;
 }
 
+window.addEventListener('beforeprint',()=>{window._isPrint=true; const s=window._calcState; if(s) renderSchema(s);});
+window.addEventListener('afterprint', ()=>{window._isPrint=false;const s=window._calcState; if(s) renderSchema(s);});
+
 // ── ZA KARTEN DYNAMISCH RENDERN ───────────────────────────────────────────────
 const ZA_DEFAULTS=[
-  {name:'EG / Treppenhaus',   nwe:6, n_zaehler:7, l_hak:10, qs:70, l_we:15, qs_we:10},
-  {name:'OG / Dachgeschoss',  nwe:6, n_zaehler:7, l_hak:25, qs:70, l_we:20, qs_we:10},
-  {name:'Seitentrakt A',      nwe:4, n_zaehler:5, l_hak:35, qs:50, l_we:18, qs_we:10},
-  {name:'Seitentrakt B',      nwe:4, n_zaehler:5, l_hak:40, qs:50, l_we:18, qs_we:10},
-  {name:'Anbau West',         nwe:3, n_zaehler:4, l_hak:50, qs:35, l_we:22, qs_we:10},
-  {name:'Anbau Ost',          nwe:3, n_zaehler:4, l_hak:55, qs:35, l_we:22, qs_we:10},
+  {name:'EG / Treppenhaus',   nwe:6, n_we_zaehler:6, n_wandler:0, wandler_ct:100, l_hak:10, qs:70, l_we:15, qs_we:10},
+  {name:'OG / Dachgeschoss',  nwe:6, n_we_zaehler:6, n_wandler:0, wandler_ct:100, l_hak:25, qs:70, l_we:20, qs_we:10},
+  {name:'Seitentrakt A',      nwe:4, n_we_zaehler:4, n_wandler:1, wandler_ct:100, l_hak:35, qs:50, l_we:18, qs_we:10},
+  {name:'Seitentrakt B',      nwe:4, n_we_zaehler:4, n_wandler:1, wandler_ct:100, l_hak:40, qs:50, l_we:18, qs_we:10},
+  {name:'Anbau West',         nwe:3, n_we_zaehler:3, n_wandler:1, wandler_ct:150, l_hak:50, qs:35, l_we:22, qs_we:10},
+  {name:'Anbau Ost',          nwe:3, n_we_zaehler:3, n_wandler:1, wandler_ct:150, l_hak:55, qs:35, l_we:22, qs_we:10},
 ];
 const ZCOLS_CSS=['rgba(74,158,255,.3)','rgba(62,207,142,.3)','rgba(245,166,35,.3)','rgba(155,114,230,.3)','rgba(46,196,182,.3)','rgba(224,82,82,.3)'];
 const ZCOLS_TXT=['var(--accent)','var(--green)','var(--amber)','var(--purple)','var(--teal)','var(--red)'];
@@ -864,11 +941,16 @@ function readZACards(){
   return Array.from(cards).map((card,i)=>{
     const g=id=>+card.querySelector('[data-f="'+id+'"]')?.value||0;
     const gs=id=>card.querySelector('[data-f="'+id+'"]')?.value||'ZA '+(i+1);
+    const n_we_z=g('n_we_zaehler');
+    const n_wandler=g('n_wandler');
     return{
       id:i+1,
       name:gs('name'),
       nwe:g('nwe'),
-      n_zaehler:g('n_zaehler'),
+      n_we_zaehler:n_we_z,
+      n_wandler:n_wandler,
+      n_zaehler:n_we_z+n_wandler,
+      wandler_ct:g('wandler_ct')||100,
       l_hak:g('l_hak'),
       qs:g('qs')||70,
       l_we:g('l_we'),
@@ -880,42 +962,71 @@ function readZACards(){
 function renderZACards(){
   const n=Math.min(6,Math.max(1,+document.getElementById('n_za').value||2));
   const grid=document.getElementById('za_cards_grid');
-  // preserve existing values
   const existing=readZACards();
   grid.innerHTML='';
   for(let i=0;i<n;i++){
-    const def=ZA_DEFAULTS[i]||{name:'Zähleranlage '+(i+1),nwe:4,n_zaehler:5,l_hak:20,qs:70,l_we:20,qs_we:10};
+    const def=ZA_DEFAULTS[i]||{name:'Zähleranlage '+(i+1),nwe:4,n_we_zaehler:4,n_wandler:0,wandler_ct:100,l_hak:20,qs:70,l_we:20,qs_we:10};
     const prev=existing[i]||{};
-    const v=k=>prev[k]!==undefined&&prev[k]!==0?prev[k]:def[k];
+    const v=k=>(prev[k]!==undefined&&prev[k]!==''&&prev[k]!==0)?prev[k]:def[k];
+    const vz=k=>(prev[k]!==undefined&&prev[k]!=='')?prev[k]:def[k]; // allow 0
     const card=document.createElement('div');
     card.className='za-card za-dyn-card';
     card.style.cssText=`border-color:${ZCOLS_CSS[i%ZCOLS_CSS.length]};`;
     card.innerHTML=`
       <div class="za-card-title" style="color:${ZCOLS_TXT[i%ZCOLS_TXT.length]};">Zähleranlage ${i+1}</div>
+
       <div class="za-irow"><label>Bezeichnung / Lage</label>
         <input type="text" data-f="name" value="${v('name')}" style="background:var(--bg);border:1px solid var(--border2);border-radius:4px;color:var(--text);font-size:11px;padding:3px 6px;grid-column:span 2;width:100%;font-family:var(--sans);">
-      </div>
-      <div class="za-irow"><label>Anzahl Zähler in ZA ${i+1}<small style="display:block;font-size:9px;color:var(--text3);">Messeinrichtungen</small></label>
-        <input class="num-input" type="number" data-f="n_zaehler" value="${v('n_zaehler')}" min="1" max="50" style="width:100%;"><span class="unit-label">Stk.</span>
       </div>
       <div class="za-irow"><label>Anzahl WE an ZA ${i+1}</label>
         <input class="num-input" type="number" data-f="nwe" value="${v('nwe')}" min="0" style="width:100%;"><span class="unit-label">WE</span>
       </div>
-      <div class="za-irow"><label>Länge HAK → ZA ${i+1}<small style="display:block;font-size:9px;color:var(--text3);">Einfachlänge</small></label>
+
+      <div style="margin:6px 0 3px;font-family:var(--mono);font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;border-top:1px solid var(--border);padding-top:6px;">Zähler / Messeinrichtungen</div>
+
+      <div class="za-irow"><label>WE-Zähler (Direktmessung)<small style="display:block;font-size:9px;color:var(--text3);">Standard bis 63 A</small></label>
+        <input class="num-input" type="number" data-f="n_we_zaehler" value="${vz('n_we_zaehler')}" min="0" max="50" style="width:100%;"><span class="unit-label">Stk.</span>
+      </div>
+      <div class="za-irow"><label>Wandlerzähler<small style="display:block;font-size:9px;color:var(--text3);">z.B. E-Mob, WP, &gt;63 A</small></label>
+        <input class="num-input" type="number" data-f="n_wandler" value="${vz('n_wandler')}" min="0" max="10" style="width:100%;"><span class="unit-label">Stk.</span>
+      </div>
+      <div class="za-irow" id="ct_row_${i}" style="${vz('n_wandler')>0?'':'opacity:.4;'}">
+        <label>Stromwandler-Verhältnis<small style="display:block;font-size:9px;color:var(--text3);">typ. 100/5 A, 150/5 A, 250/5 A</small></label>
+        <select class="sel-input" data-f="wandler_ct" style="width:100%;font-size:10px;">
+          <option value="63" ${(vz('wandler_ct')||100)==63?'selected':''}>63/5 A (ab 63 A)</option>
+          <option value="100" ${(vz('wandler_ct')||100)==100?'selected':''}>100/5 A</option>
+          <option value="150" ${(vz('wandler_ct')||100)==150?'selected':''}>150/5 A</option>
+          <option value="200" ${(vz('wandler_ct')||100)==200?'selected':''}>200/5 A</option>
+          <option value="250" ${(vz('wandler_ct')||100)==250?'selected':''}>250/5 A</option>
+          <option value="400" ${(vz('wandler_ct')||100)==400?'selected':''}>400/5 A</option>
+        </select>
+        <span class="unit-label">/5 A</span>
+      </div>
+
+      <div style="margin:6px 0 3px;font-family:var(--mono);font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;border-top:1px solid var(--border);padding-top:6px;">Zuleitung HAK → ZA ${i+1}</div>
+
+      <div class="za-irow"><label>Länge HAK → ZA<small style="display:block;font-size:9px;color:var(--text3);">Einfachlänge · ΔU max. 0,5%</small></label>
         <input class="num-input" type="number" data-f="l_hak" value="${v('l_hak')}" min="0" step="0.5" style="width:100%;"><span class="unit-label">m</span>
       </div>
       <div class="za-irow"><label>Querschnitt HAK → ZA<small style="display:block;font-size:9px;color:var(--text3);">Cu, DIN VDE 0298-4</small></label>
         <input class="num-input" type="number" data-f="qs" value="${v('qs')}" min="1" step="1" style="width:100%;"><span class="unit-label">mm²</span>
       </div>
-      <div class="za-irow"><label>Länge ZA → WE (mittl.)<small style="display:block;font-size:9px;color:var(--text3);">Einfachlänge je WE</small></label>
+      <div class="za-irow"><label>Länge ZA → WE (mittl.)<small style="display:block;font-size:9px;color:var(--text3);">Einfachlänge · ΔU max. 1,0%</small></label>
         <input class="num-input" type="number" data-f="l_we" value="${v('l_we')}" min="0" step="0.5" style="width:100%;"><span class="unit-label">m</span>
       </div>
       <div class="za-irow"><label>Querschnitt ZA → WE</label>
         <input class="num-input" type="number" data-f="qs_we" value="${v('qs_we')}" min="1" step="1" style="width:100%;"><span class="unit-label">mm²</span>
-      </div>`;
+      </div>
+
+      <div id="za_result_${i}" style="margin-top:.5rem;"></div>`;
     grid.appendChild(card);
+    // toggle CT row opacity on wandler count change
+    card.querySelector('[data-f="n_wandler"]').addEventListener('input',function(){
+      const row=card.querySelector(`#ct_row_${i}`);
+      if(row) row.style.opacity=+this.value>0?'1':'0.4';
+    });
   }
-  grid.querySelectorAll('input').forEach(el=>el.addEventListener('input',calc));
+  grid.querySelectorAll('input,select').forEach(el=>el.addEventListener('input',calc));
 }
 
 // ── PDF ───────────────────────────────────────────────────────────────────────
@@ -965,17 +1076,19 @@ function doExcel(){
   XLSX.utils.book_append_sheet(WB,ws1,'Leistungsbilanz');
 
   // Sheet 2: Zähleranlagen + ΔU
-  const zaHead=['ZA','Bezeichnung','Zähler (Stk.)','WE','GZ','Bemess. (kW)','I HAK→ZA (A)','Länge HAK→ZA (m)','Qs HAK→ZA (mm²)','ΔU HAK→ZA (%)','Min-Qs (mm²)','Länge ZA→WE (m)','Qs ZA→WE (mm²)','ΔU ZA→WE (%)','Min-Qs WE (mm²)','ΔU gesamt (%)','Status'];
+  const zaHead=['ZA','Bezeichnung','WE-Zähler','Wandlerzähler','CT-Verhältnis','WE','GZ','Bemess. (kW)','I HAK→ZA (A)','Länge HAK→ZA (m)','Qs HAK→ZA (mm²)','ΔU HAK→ZA % (≤0,5%)','Min-Qs HAK→ZA (mm²)','Länge ZA→WE (m)','Qs ZA→WE (mm²)','ΔU ZA→WE % (≤1,0%)','Min-Qs ZA→WE (mm²)','ΔU gesamt (%)','Status'];
   const zaRows=[
     ['ZÄHLERANLAGEN & SPANNUNGSABFALL ΔU'],
-    ['DIN VDE 0100-520 · max. 3% gesamt · max. 1,5% je Abschnitt'],
+    ['DIN VDE 0100-520 · TAB Netzbetreiber · HAK→Zähler max. 0,5% · ZA→WE max. 1,0% · Gesamt max. 3%'],
     [''],
     zaHead,
     ...s.za.map((z,i)=>{
       const d=s.duCards[i];
-      if(!d) return[z.id,z.name,z.n_zaehler,z.nwe,'–','–','–',z.l_hak,z.qs,'–','–',z.l_we,z.qs_we,'–','–','–','keine WE'];
-      return[z.id,z.name,z.n_zaehler,z.nwe,d.gz_za.toFixed(2),r0(d.P_za),r0(d.I_hak),z.l_hak,z.qs,d.du_hak.toFixed(2),d.qs_min_hak.toFixed(2),z.l_we,z.qs_we,d.du_we.toFixed(2),d.qs_min_we.toFixed(2),d.du_total.toFixed(2),duLabel(d.du_total)];
+      const ctTxt=z.n_wandler>0?z.wandler_ct+'/5 A':'–';
+      if(!d) return[z.id,z.name,z.n_we_zaehler,z.n_wandler,ctTxt,z.nwe,'–','–','–',z.l_hak,z.qs,'–','–',z.l_we,z.qs_we,'–','–','–','keine WE'];
+      return[z.id,z.name,z.n_we_zaehler,z.n_wandler,ctTxt,z.nwe,d.gz_za.toFixed(2),r0(d.P_za),r0(d.I_hak),z.l_hak,z.qs,d.du_hak.toFixed(2),d.qs_min_hak.toFixed(2),z.l_we,z.qs_we,d.du_we.toFixed(2),d.qs_min_we.toFixed(2),d.du_total.toFixed(2),duLabel(d.du_hak<=0.5&&d.du_we<=1.0?0:d.du_total)];
     }),
+    ['','SUMME',s.za.reduce((t,z)=>t+z.n_we_zaehler,0),s.za.reduce((t,z)=>t+z.n_wandler,0),'',s.za.reduce((t,z)=>t+z.nwe,0)],
   ];
   const ws2=XLSX.utils.aoa_to_sheet(zaRows);
   ws2['!cols']=[{wch:4},{wch:22},{wch:12},{wch:6},{wch:6},{wch:14},{wch:14},{wch:16},{wch:14},{wch:14},{wch:14},{wch:14},{wch:14},{wch:14},{wch:14},{wch:14},{wch:16}];
